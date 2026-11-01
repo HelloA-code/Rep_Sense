@@ -7,23 +7,25 @@ import type { CameraView, Recording, RecordingLabel } from "@/lib/recording/form
 import { ClipFields, clipSummary } from "./clip-fields";
 import { ClipPreview } from "./clip-preview";
 
+export type PendingClip = { recording: Recording; video: Blob | null };
+
 type SaveClipSheetProps = {
-  recording: Recording | null;
+  clip: PendingClip | null;
   saving: boolean;
-  onSave: (rec: Recording) => void;
+  onSave: (clip: PendingClip) => void;
   onDiscard: () => void;
 };
 
 /** Shown after a recording stops: watch it back, fix the tags, keep it or throw it away. */
-export function SaveClipSheet({ recording, saving, onSave, onDiscard }: SaveClipSheetProps) {
+export function SaveClipSheet({ clip, saving, onSave, onDiscard }: SaveClipSheetProps) {
   const [label, setLabel] = useState<RecordingLabel>("squat");
   const [view, setView] = useState<CameraView>("side");
 
   useEffect(() => {
-    if (!recording) return;
-    setLabel(recording.label);
-    setView(recording.view);
-  }, [recording]);
+    if (!clip) return;
+    setLabel(clip.recording.label);
+    setView(clip.recording.view);
+  }, [clip]);
 
   function close() {
     if (window.confirm("Discard this clip?")) onDiscard();
@@ -31,7 +33,7 @@ export function SaveClipSheet({ recording, saving, onSave, onDiscard }: SaveClip
 
   return (
     <Sheet
-      open={recording !== null}
+      open={clip !== null}
       onClose={close}
       title="Keep this clip?"
       footer={
@@ -39,21 +41,27 @@ export function SaveClipSheet({ recording, saving, onSave, onDiscard }: SaveClip
           <SecondaryButton onClick={onDiscard} disabled={saving}>
             Discard
           </SecondaryButton>
-          <PrimaryButton onClick={() => recording && onSave({ ...recording, label, view })} disabled={saving}>
+          <PrimaryButton
+            onClick={() => clip && onSave({ ...clip, recording: { ...clip.recording, label, view } })}
+            disabled={saving}
+          >
             {saving ? "Saving…" : "Save clip"}
           </PrimaryButton>
         </div>
       }
     >
-      {recording && (
+      {clip && (
         <>
-          <ClipPreview recording={recording} />
-          <p className="mt-2 text-[12px] font-semibold text-muted">{clipSummary(recording)}</p>
+          <ClipPreview recording={clip.recording} video={clip.video} />
+          <p className="mt-2 text-[12px] font-semibold text-muted">
+            {clipSummary(clip.recording)}
+            {clip.video ? ` · video ${(clip.video.size / 1e6).toFixed(1)} MB` : " · no video"}
+          </p>
           <div className="mt-5">
             <ClipFields label={label} view={view} onLabel={setLabel} onView={setView} />
           </div>
           <p className="mt-5 text-[12px] font-medium text-muted">
-            Saved clips stay on this device (landmark numbers only, no video). Find them in Profile → Recorded clips.
+            Saved clips stay on this device and are never uploaded. Find them in Profile → Recorded clips.
           </p>
         </>
       )}

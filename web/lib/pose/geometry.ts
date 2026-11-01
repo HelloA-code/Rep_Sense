@@ -7,13 +7,17 @@ export type Point = { x: number; y: number; z?: number };
  * The angle at vertex `b` formed by the segments b→a and b→c, in degrees, 0–180.
  * e.g. angle(hip, knee, ankle) is the knee angle: ~180 standing, ~90 at parallel.
  *
- * YOU WRITE THIS ONE (Day 3). Tests: geometry.test.ts.
+ * θ = arccos((BA·BC) / (|BA|·|BC|))
  */
 export function angle(a: Point, b: Point, c: Point): number {
-  void a;
-  void b;
-  void c;
-  throw new Error("TODO: write angle() — see the hints in the Day 3 notes");
+  const ba = { x: a.x - b.x, y: a.y - b.y, z: (a.z ?? 0) - (b.z ?? 0) };
+  const bc = { x: c.x - b.x, y: c.y - b.y, z: (c.z ?? 0) - (b.z ?? 0) };
+  const dot = ba.x * bc.x + ba.y * bc.y + ba.z * bc.z;
+  const lengths = Math.hypot(ba.x, ba.y, ba.z) * Math.hypot(bc.x, bc.y, bc.z);
+  if (lengths === 0) return 0;
+  // Rounding can push the cosine just past ±1, and Math.acos of that is NaN.
+  const cos = Math.min(1, Math.max(-1, dot / lengths));
+  return (Math.acos(cos) * 180) / Math.PI;
 }
 
 /** Straight-line distance between two points (2D or 3D). */

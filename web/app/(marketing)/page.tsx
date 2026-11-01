@@ -97,8 +97,9 @@ export default function LandingPage() {
             <div className="flex-1">
               <h2 className="text-[20px] font-extrabold tracking-tight">Your video stays yours</h2>
               <p className="mt-1.5 max-w-[62ch] text-[14px] leading-relaxed font-medium text-text/75">
-                The camera feed is processed frame by frame on your phone or laptop and thrown away.
-                Only numbers, such as rep counts and form scores, are ever saved to your account.
+                The camera feed is processed frame by frame on your phone or laptop. Clips you choose
+                to record stay on that device. Only numbers, such as rep counts and form scores, are
+                ever saved to your account.
               </p>
             </div>
             <Link href="/today" className={cn(primaryButtonClass, "sm:w-auto")}>

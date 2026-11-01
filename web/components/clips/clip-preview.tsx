@@ -9,20 +9,52 @@ import { cn } from "@/lib/utils";
 
 const fmt = (ms: number) => `${(ms / 1000).toFixed(1)}s`;
 
-/** Replays a clip's skeleton on a canvas, looping, with play/pause and a scrub bar. */
-export function ClipPreview({ recording, className }: { recording: Recording; className?: string }) {
+type ClipPreviewProps = {
+  recording: Recording;
+  /** The real video, if one was recorded. Without it we replay the skeleton alone. */
+  video?: Blob | null;
+  className?: string;
+};
+
+/**
+ * Plays a clip back, looping, with play/pause and a scrub bar. With a video, the
+ * skeleton is drawn on top in sync (landmark `t` = ms since recording start =
+ * video time) and can be toggled off.
+ */
+export function ClipPreview({ recording, video, className }: ClipPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(true);
   const [time, setTime] = useState(0);
+  const [skeleton, setSkeleton] = useState(true);
+  const [src, setSrc] = useState<string | null>(null);
   const timeRef = useRef(0);
 
   const { width, height, facing } = recording.source;
-  // Draw at a modest fixed size with the camera's aspect ratio; CSS scales it.
-  const w = 720;
-  const h = width > 0 && height > 0 ? Math.round((w * height) / width) : 405;
+  const w = width > 0 ? width : 1280;
+  const h = height > 0 ? height : 720;
   const duration = Math.max(recording.durationMs, 1);
 
-  // Playback loop: advance the clock while playing, draw the matching frame.
+  useEffect(() => {
+    if (!video) {
+      setSrc(null);
+      return;
+    }
+    const url = URL.createObjectURL(video);
+    setSrc(url);
+    return () => URL.revokeObjectURL(url);
+  }, [video]);
+
+  // Play/pause the real video along with our state.
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !src) return;
+    if (playing) el.play().catch(() => setPlaying(false));
+    else el.pause();
+  }, [playing, src]);
+
+  // One loop for both modes: the clock is the video's time when there is a video,
+  // otherwise our own. Each tick draws the landmark frame for that time.
   useEffect(() => {
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
@@ -30,17 +62,18 @@ export function ClipPreview({ recording, className }: { recording: Recording; cl
     let last = performance.now();
     let lastUi = 0;
 
-    const draw = () => {
-      const i = frameIndexAt(recording.frames, timeRef.current);
-      drawSkeleton(ctx, i >= 0 ? frameLandmarks(recording.frames[i]) : null, w, h);
-    };
-
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
-      const dt = now - last;
+      const el = videoRef.current;
+      if (src && el) {
+        timeRef.current = el.currentTime * 1000;
+        if (timeRef.current >= duration && !el.paused) el.currentTime = 0; // WebM may run past our duration
+      } else if (playing) {
+        timeRef.current = (timeRef.current + now - last) % duration;
+      }
       last = now;
-      if (playing) timeRef.current = (timeRef.current + dt) % duration;
-      draw();
+      const i = skeleton ? frameIndexAt(recording.frames, timeRef.current) : -1;
+      drawSkeleton(ctx, i >= 0 ? frameLandmarks(recording.frames[i]) : null, w, h);
       if (now - lastUi > 100) {
         lastUi = now;
         setTime(timeRef.current);
@@ -48,23 +81,34 @@ export function ClipPreview({ recording, className }: { recording: Recording; cl
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [recording, playing, duration, w, h]);
+  }, [recording, playing, duration, w, h, src, skeleton]);
 
   function seek(t: number) {
     timeRef.current = t;
     setTime(t);
+    if (videoRef.current) videoRef.current.currentTime = t / 1000;
   }
+
+  const mirror = facing === "user" && "-scale-x-100";
 
   return (
     <div className={className}>
-      <div className="relative overflow-hidden rounded-tile border border-border bg-[#0b0b0b]">
-        <canvas
-          ref={canvasRef}
-          width={w}
-          height={h}
-          className={cn("block max-h-[42dvh] w-full object-contain", facing === "user" && "-scale-x-100")}
-        />
-        {recording.frames.length === 0 && (
+      <div
+        className="relative mx-auto max-h-[46dvh] overflow-hidden rounded-tile border border-border bg-[#0b0b0b]"
+        style={{ aspectRatio: `${w} / ${h}` }}
+      >
+        {src && (
+          <video
+            ref={videoRef}
+            src={src}
+            muted
+            playsInline
+            loop
+            className={cn("absolute inset-0 size-full object-contain", mirror)}
+          />
+        )}
+        <canvas ref={canvasRef} width={w} height={h} className={cn("absolute inset-0 size-full object-contain", mirror)} />
+        {recording.frames.length === 0 && !src && (
           <p className="absolute inset-0 grid place-items-center text-[13px] font-semibold text-muted">No frames</p>
         )}
       </div>
@@ -85,11 +129,24 @@ export function ClipPreview({ recording, className }: { recording: Recording; cl
           step={10}
           value={Math.min(time, duration)}
           onChange={(e) => seek(Number(e.target.value))}
-          className="h-1 flex-1 cursor-pointer accent-[var(--accent)]"
+          className="h-1 min-w-0 flex-1 cursor-pointer accent-[var(--accent)]"
         />
-        <span className="w-[76px] text-right text-[12px] font-semibold text-muted tabular-nums">
-          {fmt(time)} / {fmt(duration)}
+        <span className="text-right text-[12px] font-semibold text-muted tabular-nums">
+          {fmt(Math.min(time, duration))} / {fmt(duration)}
         </span>
+        {src && (
+          <button
+            type="button"
+            aria-pressed={skeleton}
+            onClick={() => setSkeleton((s) => !s)}
+            className={cn(
+              "badge-text h-7 shrink-0 rounded-full border px-2.5",
+              skeleton ? "border-accent-border bg-accent-tint text-accent" : "border-white/15 text-white/70",
+            )}
+          >
+            Skeleton
+          </button>
+        )}
       </div>
     </div>
   );

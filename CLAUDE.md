@@ -25,7 +25,7 @@ The roadmap is in `IMPLEMENTATION_PLAN.md`, an **8-day plan**. The UI spec is in
 - Server components by default; `"use client"` only for camera, canvas, animation and interactive parts.
 - Landmark recordings use one consistent JSON format shared by the web recorder and `ml/` scripts. Document it in `ml/README.md`.
 - Supabase: every table has Row Level Security. Secrets in `.env.local` (gitignored); never hard-code keys.
-- Never store or upload video. Only numbers (landmarks, stats).
+- Never upload video; only numbers (landmarks, stats) leave the device. Video clips are opt-in, recorded by the user, and stored only on-device (IndexedDB).
 - Conventional commits (`feat:`, `fix:`, `docs:`). Suggest a commit at the end of each day.
 
 ## Design system

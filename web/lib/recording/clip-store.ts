@@ -1,13 +1,14 @@
 import type { CameraView, Recording, RecordingLabel } from "./format";
 
-// Saved clips live in IndexedDB on this device: landmark numbers only, never video.
-// Two stores so the list screen can read small metadata rows without loading
-// every clip's frames (a 60 s clip is ~1–3 MB).
+// Saved clips live in IndexedDB on this device and are never uploaded.
+// Three stores so the list screen can read small metadata rows without loading
+// every clip's frames (~1–3 MB) or video (~19 MB per minute).
 
 const DB_NAME = "repsense";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const META = "clipMeta";
 const DATA = "clipData";
+const VIDEO = "clipVideo";
 
 export type ClipMeta = {
   id: string;
@@ -17,6 +18,8 @@ export type ClipMeta = {
   createdAt: string;
   durationMs: number;
   frameCount: number;
+  /** Set when a real video was saved with the landmarks. */
+  video?: { type: string; bytes: number };
 };
 
 let dbPromise: Promise<IDBDatabase> | null = null;
@@ -33,6 +36,7 @@ function openDb(): Promise<IDBDatabase> {
       const db = req.result;
       if (!db.objectStoreNames.contains(META)) db.createObjectStore(META, { keyPath: "id" });
       if (!db.objectStoreNames.contains(DATA)) db.createObjectStore(DATA);
+      if (!db.objectStoreNames.contains(VIDEO)) db.createObjectStore(VIDEO);
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -58,8 +62,9 @@ function result<T>(req: IDBRequest<T>): Promise<T> {
   });
 }
 
-export function toMeta(id: string, rec: Recording): ClipMeta {
+export function toMeta(id: string, rec: Recording, video?: Blob | null): ClipMeta {
   return {
+    ...(video ? { video: { type: video.type, bytes: video.size } } : {}),
     id,
     label: rec.label,
     view: rec.view,
@@ -70,12 +75,13 @@ export function toMeta(id: string, rec: Recording): ClipMeta {
   };
 }
 
-export async function saveClip(rec: Recording): Promise<ClipMeta> {
+export async function saveClip(rec: Recording, video?: Blob | null): Promise<ClipMeta> {
   const db = await openDb();
-  const meta = toMeta(crypto.randomUUID(), rec);
-  const tx = db.transaction([META, DATA], "readwrite");
+  const meta = toMeta(crypto.randomUUID(), rec, video);
+  const tx = db.transaction([META, DATA, VIDEO], "readwrite");
   tx.objectStore(META).put(meta);
   tx.objectStore(DATA).put(rec, meta.id);
+  if (video) tx.objectStore(VIDEO).put(video, meta.id);
   await done(tx);
   // Ask the browser not to evict our data under storage pressure (Safari otherwise
   // may clear it after a few weeks without visits). Best effort.
@@ -94,6 +100,12 @@ export async function getClip(id: string): Promise<Recording | null> {
   const db = await openDb();
   const rec = await result(db.transaction(DATA).objectStore(DATA).get(id) as IDBRequest<Recording | undefined>);
   return rec ?? null;
+}
+
+export async function getClipVideo(id: string): Promise<Blob | null> {
+  const db = await openDb();
+  const blob = await result(db.transaction(VIDEO).objectStore(VIDEO).get(id) as IDBRequest<Blob | undefined>);
+  return blob ?? null;
 }
 
 export async function getAllClips(): Promise<Recording[]> {
@@ -119,8 +131,9 @@ export async function updateClip(id: string, patch: Partial<Pick<Recording, "lab
 
 export async function deleteClip(id: string): Promise<void> {
   const db = await openDb();
-  const tx = db.transaction([META, DATA], "readwrite");
+  const tx = db.transaction([META, DATA, VIDEO], "readwrite");
   tx.objectStore(META).delete(id);
   tx.objectStore(DATA).delete(id);
+  tx.objectStore(VIDEO).delete(id);
   await done(tx);
 }

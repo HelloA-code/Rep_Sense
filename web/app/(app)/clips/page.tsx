@@ -10,7 +10,7 @@ export default function ClipsPage() {
     <AppShell>
       <TopBar title="Recorded clips" backHref="/profile" />
       <p className="mb-5 text-[14px] font-medium text-muted">
-        Pose landmarks you recorded, stored on this device. No video is kept.
+        Your recordings: video plus pose landmarks. Stored only on this device, never uploaded.
       </p>
       <div className="pb-10">
         <ClipLibrary />

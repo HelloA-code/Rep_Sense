@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { VideoIcon } from "lucide-react";
 import { SegmentChip } from "@/components/ui/segment-chip";
 import { cn } from "@/lib/utils";
 import {
@@ -17,13 +18,26 @@ type RecorderControlsProps = {
   label: RecordingLabel;
   view: CameraView;
   subject: string;
+  /** null = this browser can't record video, so only landmarks are saved. */
+  withVideo: boolean | null;
   onLabel: (l: RecordingLabel) => void;
   onView: (v: CameraView) => void;
   onSubject: (s: string) => void;
+  onWithVideo: (v: boolean) => void;
 };
 
 /** Label, camera view and subject for the next clip. Locked while recording. */
-export function RecorderSettings({ phase, label, view, subject, onLabel, onView, onSubject }: RecorderControlsProps) {
+export function RecorderSettings({
+  phase,
+  label,
+  view,
+  subject,
+  withVideo,
+  onLabel,
+  onView,
+  onSubject,
+  onWithVideo,
+}: RecorderControlsProps) {
   const locked = phase !== "off";
   return (
     <fieldset disabled={locked} className={cn("min-w-0 transition-opacity", locked && "opacity-50")}>
@@ -51,6 +65,18 @@ export function RecorderSettings({ phase, label, view, subject, onLabel, onView,
             {v}
           </SegmentChip>
         ))}
+        {withVideo !== null && (
+          <SegmentChip
+            selected={withVideo}
+            onClick={() => onWithVideo(!withVideo)}
+            className="h-9 flex-none gap-1.5 px-3 text-[13px]"
+          >
+            <span className="flex items-center gap-1.5">
+              <VideoIcon className="size-4" />
+              {withVideo ? "Video" : "No video"}
+            </span>
+          </SegmentChip>
+        )}
         <label className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-chip border border-border-strong bg-surface px-3 focus-within:border-accent-border">
           <span className="text-[12px] font-semibold text-muted">Who</span>
           <input

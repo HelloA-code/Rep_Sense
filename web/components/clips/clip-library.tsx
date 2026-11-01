@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronRightIcon, DownloadIcon, FilmIcon, Trash2Icon } from "lucide-react";
+import { ChevronRightIcon, DownloadIcon, FileJsonIcon, FilmIcon, Trash2Icon, VideoIcon } from "lucide-react";
 import { PrimaryButton, SecondaryButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -12,12 +12,14 @@ import {
   deleteClip,
   getAllClips,
   getClip,
+  getClipVideo,
   listClips,
   updateClip,
   type ClipMeta,
 } from "@/lib/recording/clip-store";
 import { RECORDING_LABELS, recordingFileName, type Recording } from "@/lib/recording/format";
 import { bundleFileName, createBundle } from "@/lib/recording/replay";
+import { videoExtension } from "@/components/workout/video-recorder";
 import { ClipFields, clipSummary } from "./clip-fields";
 import { ClipPreview } from "./clip-preview";
 import { shareOrDownload } from "./export";
@@ -38,6 +40,7 @@ export function ClipLibrary() {
   const [usage, setUsage] = useState<number | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [open, setOpen] = useState<Recording | null>(null);
+  const [openVideo, setOpenVideo] = useState<Blob | null>(null);
   const [busy, setBusy] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -62,12 +65,21 @@ export function ClipLibrary() {
 
   async function openClip(id: string) {
     setOpenId(id);
-    setOpen(await getClip(id));
+    const [rec, video] = await Promise.all([getClip(id), getClipVideo(id)]);
+    setOpenVideo(video);
+    setOpen(rec);
   }
 
   function closeClip() {
     setOpenId(null);
     setOpen(null);
+    setOpenVideo(null);
+  }
+
+  function exportVideo() {
+    if (!open || !openVideo) return;
+    const name = recordingFileName(open).replace(/\.json$/, `.${videoExtension(openVideo.type)}`);
+    void shareOrDownload(name, openVideo);
   }
 
   async function retag(patch: Partial<Pick<Recording, "label" | "view">>) {
@@ -140,7 +152,8 @@ export function ClipLibrary() {
                     className="flex w-full items-center gap-3 px-5 py-3 text-left transition-colors hover:bg-surface-raised"
                   >
                     <span className="flex-1">
-                      <span className="block text-[14px] font-bold capitalize">
+                      <span className="flex items-center gap-1.5 text-[14px] font-bold capitalize">
+                        {c.video && <VideoIcon className="size-3.5 text-accent" aria-label="Has video" />}
                         {c.view} · {formatDate(c.createdAt)}
                       </span>
                       <span className="block text-[12px] font-medium text-muted">{clipSummary(c)}</span>
@@ -158,7 +171,7 @@ export function ClipLibrary() {
           {busy ? "Preparing…" : clips.length === 1 ? "Export 1 clip" : `Export all ${clips.length} clips`}
         </SecondaryButton>
         <p className="text-center text-[12px] font-medium text-muted">
-          One file with every clip, for training the model on a laptop.
+          One file with every clip&rsquo;s landmark data (no video), for training the model on a laptop.
           {usage !== null && ` Using ${formatBytes(usage)} on this device.`}
         </p>
       </div>
@@ -174,20 +187,38 @@ export function ClipLibrary() {
                 <Trash2Icon className="size-4" />
                 Delete
               </SecondaryButton>
-              <PrimaryButton onClick={() => shareOrDownload(recordingFileName(open), open)}>
-                <DownloadIcon className="size-4" />
-                Export
-              </PrimaryButton>
+              {openVideo ? (
+                <PrimaryButton onClick={exportVideo}>
+                  <DownloadIcon className="size-4" />
+                  Save video
+                </PrimaryButton>
+              ) : (
+                <PrimaryButton onClick={() => shareOrDownload(recordingFileName(open), open)}>
+                  <FileJsonIcon className="size-4" />
+                  Export data
+                </PrimaryButton>
+              )}
             </div>
           )
         }
       >
         {open ? (
           <>
-            <ClipPreview recording={open} />
+            <ClipPreview recording={open} video={openVideo} />
             <p className="mt-2 text-[12px] font-semibold text-muted">
               {formatDate(open.createdAt)} · {clipSummary(open)}
+              {openVideo && ` · video ${formatBytes(openVideo.size)}`}
             </p>
+            {openVideo && (
+              <button
+                type="button"
+                onClick={() => shareOrDownload(recordingFileName(open), open)}
+                className="mt-2 flex items-center gap-1.5 text-[13px] font-bold text-accent"
+              >
+                <FileJsonIcon className="size-4" />
+                Export landmark data (JSON)
+              </button>
+            )}
             <div className="mt-5">
               <ClipFields
                 label={open.label}

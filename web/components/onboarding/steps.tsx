@@ -126,7 +126,7 @@ export function CameraStep() {
 
       <div className="mt-5 flex items-start gap-3 rounded-tile border border-accent-border bg-accent-tint p-4 text-[13px] font-medium text-text/85">
         <ShieldCheckIcon className="mt-px size-5 shrink-0 text-accent" strokeWidth={1.75} />
-        Pose tracking runs on your device. Video is never recorded or uploaded.
+        Pose tracking runs on your device. Video is never uploaded; clips you record stay on this phone.
       </div>
     </div>
   );

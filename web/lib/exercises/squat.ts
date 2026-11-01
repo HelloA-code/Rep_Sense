@@ -1,22 +1,20 @@
-// Squat rep counter: STANDING → DOWN → STANDING, with hysteresis.
-//
-// YOU WRITE THIS ONE (Day 3). Tests: squat.test.ts.
+import { SIDE_LM, jointAngle, type RepExercise } from "./types";
 
-/** Enter "down" once the knee angle drops below this. */
-export const SQUAT_DOWN_BELOW = 90;
-/** Count the rep only when the knee angle comes back above this. */
-export const SQUAT_UP_ABOVE = 160;
+// Knee angle (hip–knee–ankle): ~175° standing, ~90° at parallel.
+// Side view measures it best. From the front, the 2D angle shrinks less, so the
+// bottom threshold is a little forgiving (100°, not 90°). Depth is judged on Day 4.
 
-export type SquatPhase = "standing" | "down";
-export type SquatState = { phase: SquatPhase; reps: number };
-
-export type SquatCounter = {
-  /** Feed one (smoothed) knee angle in degrees per frame; returns the state after it. */
-  update(kneeAngle: number): SquatState;
-  /** Back to standing with 0 reps. */
-  reset(): void;
+export const config: RepExercise = {
+  id: "squat",
+  name: "Squat",
+  mode: "reps",
+  preferredView: "side",
+  setupHint: "Side view, whole body in frame",
+  metric: "Knee angle",
+  counter: { downBelow: 100, upAbove: 160, minRepMs: 400 },
+  phaseLabel: { up: "Standing", down: "Down" },
+  measure(f) {
+    const s = SIDE_LM[f.side];
+    return jointAngle(f, [s.hip, s.knee, s.ankle]);
+  },
 };
-
-export function createSquatCounter(): SquatCounter {
-  throw new Error("TODO: write createSquatCounter() — see the hints in the Day 3 notes");
-}
