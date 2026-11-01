@@ -1,0 +1,15 @@
+# secrets
+.env*.local
+.env
+
+# python / ml
+__pycache__/
+.venv/
+*.pyc
+.ipynb_checkpoints/
+ml/data/raw/
+
+# os / editors
+.DS_Store
+Thumbs.db
+.vscode/

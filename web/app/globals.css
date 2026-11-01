@@ -1,0 +1,111 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* RepSense design tokens (DESIGN.md §2). The app is dark-only. */
+:root {
+  --bg: #000000;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-raised: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --accent: #ffc53d;
+  --accent-tint: rgba(255, 197, 61, 0.12);
+  --accent-border: rgba(255, 197, 61, 0.55);
+  --accent-fg: #111111;
+  --text: #ffffff;
+  --text-muted: #9a9a9a;
+  --danger: #ff4d4d;
+
+  --glow-warm: radial-gradient(60% 45% at 15% 0%, rgba(255, 190, 40, 0.18), transparent 70%);
+  --glow-cool: radial-gradient(55% 40% at 0% 100%, rgba(60, 90, 160, 0.12), transparent 70%);
+
+  /* shadcn/ui variables mapped onto our tokens, so added shadcn components match */
+  --radius: 1rem;
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: #121212;
+  --card-foreground: var(--text);
+  --popover: #141414;
+  --popover-foreground: var(--text);
+  --primary: var(--accent);
+  --primary-foreground: var(--accent-fg);
+  --secondary: #1a1a1a;
+  --secondary-foreground: var(--text);
+  --muted: #1a1a1a;
+  --muted-foreground: var(--text-muted);
+  --destructive: var(--danger);
+  --input: var(--border-strong);
+  --ring: var(--accent);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-tint: var(--accent-tint);
+  --color-accent-border: var(--accent-border);
+  --color-accent-fg: var(--accent-fg);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-danger: var(--danger);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-card: 20px;
+  --radius-tile: 16px;
+  --radius-chip: 14px;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-bg font-sans text-text antialiased;
+  }
+}
+
+@layer components {
+  .glow-warm {
+    background-image: var(--glow-warm);
+  }
+  .glow-cool {
+    background-image: var(--glow-cool);
+  }
+  /* Small uppercase pill text: BETA, FRONT */
+  .badge-text {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .pt-safe {
+    padding-top: max(env(safe-area-inset-top), 12px);
+  }
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 12px);
+  }
+}
