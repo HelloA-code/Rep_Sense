@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CalendarCheckIcon } from "lucide-react";
-import { PrimaryButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
+import { primaryButtonClass } from "@/components/ui/styles";
 import { availableExercises } from "@/lib/equipment";
 import { loadOnboarding, type OnboardingData } from "@/lib/onboarding";
 
@@ -62,9 +63,9 @@ export function TodayView() {
           text="Your daily session, streak and weekly chart will show up here."
         />
 
-        <PrimaryButton disabled className="mt-2">
+        <Link href="/workout" className={`${primaryButtonClass} mt-2`}>
           Start workout
-        </PrimaryButton>
+        </Link>
       </div>
     </>
   );
