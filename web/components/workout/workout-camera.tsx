@@ -3,17 +3,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { ActivityIcon, CameraIcon, RefreshCwIcon, XIcon } from "lucide-react";
+import { ActivityIcon, CameraIcon, FilmIcon, RefreshCwIcon, XIcon } from "lucide-react";
+import { SaveClipSheet } from "@/components/clips/save-clip-sheet";
 import { PrimaryButton } from "@/components/ui/button";
 import { iconButtonClass } from "@/components/ui/styles";
 import { drawSkeleton } from "@/lib/pose/draw";
 import { checkBodyInFrame } from "@/lib/pose/frame-check";
 import { createFpsMeter, type FrameStats } from "@/lib/pose/fps";
 import { getPoseLandmarker, type Delegate } from "@/lib/pose/landmarker";
+import { saveClip } from "@/lib/recording/clip-store";
 import {
   RECORDING_LABELS,
   createRecorder,
-  recordingFileName,
   type CameraView,
   type Recording,
   type RecordingLabel,
@@ -31,16 +32,6 @@ const WARNING_DELAY_MS = 700;
 const UI_UPDATE_MS = 250;
 
 const glassButton = cn(iconButtonClass, "border-white/15 bg-black/35 backdrop-blur-md");
-
-function downloadRecording(rec: Recording) {
-  const blob = new Blob([JSON.stringify(rec)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = recordingFileName(rec);
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 
 export function WorkoutCamera() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -64,6 +55,9 @@ export function WorkoutCamera() {
   const [subject, setSubject] = useState("");
   const [toast, setToast] = useState<string | null>(null);
   const recorderRef = useRef<Recorder | null>(null);
+  /** Finished clip waiting for Save / Discard. */
+  const [pending, setPending] = useState<Recording | null>(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     try {
@@ -107,10 +101,22 @@ export function WorkoutCamera() {
       setToast("Nothing saved: no body was detected.");
       return;
     }
-    downloadRecording(data);
-    const name = RECORDING_LABELS.find((l) => l.id === data.label)?.name ?? data.label;
-    setToast(`Saved ${name} clip · ${data.frameCount} frames · ${(data.durationMs / 1000).toFixed(1)}s`);
+    setPending(data);
   }, []);
+
+  async function keepClip(rec: Recording) {
+    setSaving(true);
+    try {
+      await saveClip(rec);
+      const name = RECORDING_LABELS.find((l) => l.id === rec.label)?.name ?? rec.label;
+      setToast(`${name} clip saved to Clips`);
+      setPending(null);
+    } catch {
+      setToast("Couldn't save: storage is blocked in this browser.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   // The loop calls this when the 60 s cap is hit; a ref avoids restarting the loop.
   const stopRecordingRef = useRef(stopRecording);
@@ -324,6 +330,13 @@ export function WorkoutCamera() {
                 <ActivityIcon className="size-3.5" />
                 FPS
               </button>
+              <Link
+                href="/clips"
+                aria-label="Recorded clips"
+                className={cn(glassButton, phase !== "off" && "pointer-events-none opacity-40")}
+              >
+                <FilmIcon className="size-[18px]" />
+              </Link>
               <RecordButton phase={phase} onClick={toggleRecording} />
             </div>
             <div className="mt-4 border-t border-white/10 pt-3">
@@ -340,6 +353,13 @@ export function WorkoutCamera() {
           </div>
         </div>
       )}
+
+      <SaveClipSheet
+        recording={pending}
+        saving={saving}
+        onSave={keepClip}
+        onDiscard={() => setPending(null)}
+      />
 
       {/* Start / loading / error gate */}
       {showGate && (

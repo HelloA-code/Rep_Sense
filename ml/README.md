@@ -17,7 +17,12 @@ converted with `extract_landmarks.py` must produce the **same** format. The sour
 truth for the TypeScript side is `web/lib/recording/format.ts`; change both together
 and bump `version` if the shape changes.
 
-File name: `repsense_<label>_<view>_<subject>_<YYYYMMDD-HHMMSS>.json` (UTC).
+Clips are saved inside the app (IndexedDB, Profile → Recorded clips) after you watch
+them back. Export one clip, or **Export all** to get a bundle file:
+
+- Single clip: `repsense_<label>_<view>_<subject>_<YYYYMMDD-HHMMSS>.json` (UTC), shape below.
+- Bundle: `repsense_clips_<YYYYMMDD-HHMMSS>.json` = `{ "version": 1, "exportedAt": "...", "clips": [<clip>, ...] }`.
+  `prepare.py` should accept both (a top-level `clips` key means bundle).
 
 ```jsonc
 {
