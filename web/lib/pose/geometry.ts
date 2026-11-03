@@ -41,3 +41,21 @@ export function toPixels(lm: Landmark, width: number, height: number): Point {
 export function bodyLineDeviation(shoulder: Point, hip: Point, ankle: Point): number {
   return 180 - angle(shoulder, hip, ankle);
 }
+
+/**
+ * bodyLineDeviation with a sign: + when the hips sag below the shoulder–ankle line,
+ * − when they pike above it. Image y grows downwards, so "below" means larger y.
+ */
+export function hipOffset(shoulder: Point, hip: Point, ankle: Point): number {
+  const deviation = bodyLineDeviation(shoulder, hip, ankle);
+  const dx = ankle.x - shoulder.x;
+  // Cross product: which side of the shoulder→ankle line the hip is on. Multiplying
+  // by the direction of dx makes the sign the same whichever way the person faces.
+  const cross = dx * (hip.y - shoulder.y) - (ankle.y - shoulder.y) * (hip.x - shoulder.x);
+  return cross * (Math.sign(dx) || 1) > 0 ? deviation : -deviation;
+}
+
+/** How far the torso (hip → shoulder) leans away from vertical, in degrees. 0 = upright. */
+export function torsoLean(shoulder: Point, hip: Point): number {
+  return angle(shoulder, hip, { x: hip.x, y: hip.y - 1 });
+}

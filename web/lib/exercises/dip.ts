@@ -11,6 +11,8 @@ export const config: RepExercise = {
   metric: "Elbow angle",
   counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
   phaseLabel: { up: "Top", down: "Bottom" },
+  rules: [],
+  missCues: { shallow: "Go lower", "no-lockout": "Lock out at the top" },
   measure(f) {
     const s = SIDE_LM[f.side];
     return jointAngle(f, [s.shoulder, s.elbow, s.wrist]);

@@ -5,6 +5,7 @@ import { PrimaryButton, SecondaryButton } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import type { CameraView, Recording, RecordingLabel } from "@/lib/recording/format";
 import { ClipFields, clipSummary } from "./clip-fields";
+import { ClipAppCount } from "./clip-app-count";
 import { ClipPreview } from "./clip-preview";
 
 export type PendingClip = { recording: Recording; video: Blob | null };
@@ -57,6 +58,7 @@ export function SaveClipSheet({ clip, saving, onSave, onDiscard }: SaveClipSheet
             {clipSummary(clip.recording)}
             {clip.video ? ` · video ${(clip.video.size / 1e6).toFixed(1)} MB` : " · no video"}
           </p>
+          <ClipAppCount recording={{ ...clip.recording, label }} />
           <div className="mt-5">
             <ClipFields label={label} view={view} onLabel={setLabel} onView={setView} />
           </div>

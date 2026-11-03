@@ -54,6 +54,28 @@ describe("createRepCounter", () => {
     expect(run(angles, squat, [false, false, true, false, false])).toMatchObject({ reps: 1 });
   });
 
+  it("flags a shallow attempt (past halfway, not to the bottom)", () => {
+    const counter = createRepCounter(squat); // halfway = 125
+    const states = [175, 140, 110, 100, 120, 150, 170].map((a, i) => counter.update(a, i * 100));
+    expect(states.at(-1)).toMatchObject({ reps: 0, rejected: "shallow" });
+  });
+
+  it("doesn't call a small dip or the start of the set shallow", () => {
+    const counter = createRepCounter(squat);
+    const dip = [175, 150, 140, 170].map((a, i) => counter.update(a, i * 100)); // never past halfway
+    expect(dip.some((s) => s.rejected)).toBe(false);
+    const fresh = createRepCounter(squat);
+    const start = [110, 130, 170].map((a, i) => fresh.update(a, i * 100)); // started mid-way, then stood
+    expect(start.some((s) => s.rejected)).toBe(false);
+  });
+
+  it("flags no-lockout when you go back down before reaching the top", () => {
+    const counter = createRepCounter(squat);
+    const states = [175, 80, 80, 140, 145, 80, 80, 80, 80, 170].map((a, i) => counter.update(a, i * 100));
+    expect(states.map((s) => s.rejected)).toContain("no-lockout");
+    expect(states.at(-1)).toMatchObject({ reps: 1 }); // the second, complete attempt still counts
+  });
+
   it("reset() goes back to up with 0 reps", () => {
     const counter = createRepCounter(squat);
     [170, 80, 80, 80, 80, 170].forEach((a, i) => counter.update(a, i * 100));

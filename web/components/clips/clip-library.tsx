@@ -21,6 +21,7 @@ import { RECORDING_LABELS, recordingFileName, type Recording } from "@/lib/recor
 import { bundleFileName, createBundle } from "@/lib/recording/replay";
 import { videoExtension } from "@/components/workout/video-recorder";
 import { ClipFields, clipSummary } from "./clip-fields";
+import { ClipAppCount } from "./clip-app-count";
 import { ClipPreview } from "./clip-preview";
 import { shareOrDownload } from "./export";
 
@@ -125,7 +126,7 @@ export function ClipLibrary() {
           title="No clips yet"
           text="Record yourself on the workout screen with the red button. You'll get to watch each clip back before saving it."
         />
-        <Link href="/workout" className={primaryButtonClass}>
+        <Link href="/record" className={primaryButtonClass}>
           Open camera
         </Link>
       </div>
@@ -209,6 +210,7 @@ export function ClipLibrary() {
               {formatDate(open.createdAt)} · {clipSummary(open)}
               {openVideo && ` · video ${formatBytes(openVideo.size)}`}
             </p>
+            <ClipAppCount recording={open} />
             {openVideo && (
               <button
                 type="button"

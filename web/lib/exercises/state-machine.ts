@@ -15,13 +15,28 @@ export type RepCounterConfig = {
   upAbove: number;
   /** Ignore "reps" faster than this from bottom to top: usually a tracking glitch. */
   minRepMs: number;
+  /**
+   * The halfway line for partial reps (default: midway between the two thresholds).
+   * Past it but not to the bottom, then back up → "shallow".
+   * Back past it from the bottom but not to the top, then down again → "no-lockout".
+   */
+  partialBelow?: number;
 };
+
+/**
+ * Why an attempt didn't count:
+ * - too-fast: a tracking glitch
+ * - goal: the extra condition wasn't met (pull-up chin)
+ * - shallow: didn't go deep enough
+ * - no-lockout: didn't come all the way back up before the next rep
+ */
+export type RepRejection = "too-fast" | "goal" | "shallow" | "no-lockout";
 
 export type RepState = {
   phase: RepPhase;
   reps: number;
-  /** A rep was rejected this frame (too fast, or the extra goal wasn't met). */
-  rejected: "too-fast" | "goal" | null;
+  /** An attempt was rejected this frame. */
+  rejected: RepRejection | null;
 };
 
 export type RepCounter = {
@@ -35,26 +50,50 @@ export type RepCounter = {
 };
 
 export function createRepCounter(config: RepCounterConfig): RepCounter {
+  const partial = config.partialBelow ?? (config.downBelow + config.upAbove) / 2;
   let phase: RepPhase = "up";
   let reps = 0;
   let downSince = 0;
   let goalSeen = false;
+  /** Seen the top at least once, so a "shallow" verdict is fair (not mid-rep at the start). */
+  let armed = false;
+  let minSinceTop = Infinity;
+  let maxSinceBottom = -Infinity;
   let state: RepState = { phase, reps, rejected: null };
 
   return {
     update(angle, tMs, goalMet = true) {
-      let rejected: RepState["rejected"] = null;
-      if (phase === "up" && angle < config.downBelow) {
-        phase = "down";
-        downSince = tMs;
-        goalSeen = goalMet;
-      } else if (phase === "down") {
+      let rejected: RepRejection | null = null;
+      if (phase === "up") {
+        if (angle < config.downBelow) {
+          phase = "down";
+          downSince = tMs;
+          goalSeen = goalMet;
+          maxSinceBottom = angle;
+        } else {
+          if (armed) minSinceTop = Math.min(minSinceTop, angle);
+          if (angle > config.upAbove) {
+            if (minSinceTop < partial) rejected = "shallow";
+            armed = true;
+            minSinceTop = angle;
+          }
+        }
+      } else {
         if (goalMet) goalSeen = true;
+        maxSinceBottom = Math.max(maxSinceBottom, angle);
         if (angle > config.upAbove) {
           phase = "up";
+          armed = true;
+          minSinceTop = angle;
           if (tMs - downSince < config.minRepMs) rejected = "too-fast";
           else if (!goalSeen) rejected = "goal";
           else reps += 1;
+        } else if (angle < config.downBelow && maxSinceBottom > partial) {
+          // Came halfway up and went back down: the last attempt never locked out.
+          rejected = "no-lockout";
+          downSince = tMs;
+          goalSeen = goalMet;
+          maxSinceBottom = angle;
         }
       }
       state = { phase, reps, rejected };
@@ -64,6 +103,9 @@ export function createRepCounter(config: RepCounterConfig): RepCounter {
       phase = "up";
       reps = 0;
       goalSeen = false;
+      armed = false;
+      minSinceTop = Infinity;
+      maxSinceBottom = -Infinity;
       state = { phase, reps, rejected: null };
     },
     get state() {

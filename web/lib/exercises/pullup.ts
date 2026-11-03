@@ -29,4 +29,6 @@ export const config: RepExercise = {
     return jointAngle(f, [s.shoulder, s.elbow, s.wrist]);
   },
   goal: chinOverBar,
+  rules: [],
+  missCues: { goal: "Chin over the bar", shallow: "Pull higher", "no-lockout": "Full hang at the bottom" },
 };

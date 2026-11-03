@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FilmIcon, UserIcon } from "lucide-react";
+import { CameraIcon, FilmIcon, UserIcon } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { secondaryButtonClass } from "@/components/ui/styles";
@@ -17,6 +17,10 @@ export default function ProfilePage() {
         <Link href="/clips" className={secondaryButtonClass}>
           <FilmIcon className="size-4" />
           Recorded clips
+        </Link>
+        <Link href="/record" className={secondaryButtonClass}>
+          <CameraIcon className="size-4" />
+          Free camera &amp; clip recorder
         </Link>
         <Link href="/onboarding" className={secondaryButtonClass}>
           Edit onboarding answers
