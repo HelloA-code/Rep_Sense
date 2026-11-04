@@ -1,31 +1,17 @@
-import Link from "next/link";
-import { CameraIcon, FilmIcon, UserIcon } from "lucide-react";
-import { EmptyState } from "@/components/ui/empty-state";
+import { ProfileView } from "@/components/tabs/profile-view";
 import { PageHeader } from "@/components/ui/page-header";
-import { secondaryButtonClass } from "@/components/ui/styles";
+import { fetchProfile } from "@/lib/data/queries";
+import { currentUser } from "@/lib/supabase/server";
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const user = await currentUser();
   return (
     <>
       <PageHeader title="Profile" subtitle="Body stats, equipment and settings." />
-      <EmptyState
-        icon={UserIcon}
-        title="Account coming soon"
-        text="Sign-in, units and voice cues arrive with accounts. Your answers are saved on this device."
+      <ProfileView
+        email={user?.email ?? null}
+        serverProfile={user ? await fetchProfile(user.supabase, user.id) : null}
       />
-      <div className="mt-4 flex flex-col gap-3">
-        <Link href="/clips" className={secondaryButtonClass}>
-          <FilmIcon className="size-4" />
-          Recorded clips
-        </Link>
-        <Link href="/record" className={secondaryButtonClass}>
-          <CameraIcon className="size-4" />
-          Free camera &amp; clip recorder
-        </Link>
-        <Link href="/onboarding" className={secondaryButtonClass}>
-          Edit onboarding answers
-        </Link>
-      </div>
     </>
   );
 }

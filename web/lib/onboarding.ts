@@ -57,6 +57,14 @@ export function loadOnboarding(): OnboardingData | null {
   }
 }
 
+export function clearOnboarding(): void {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Storage blocked: nothing was saved.
+  }
+}
+
 export function saveOnboarding(data: OnboardingData): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));

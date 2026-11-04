@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { PrimaryButton } from "@/components/ui/button";
 import { TopBar } from "@/components/ui/top-bar";
+import { pushProfile } from "@/lib/data/sync";
 import { PRESETS, type EquipmentId } from "@/lib/equipment";
 import {
   BODY_LIMITS,
@@ -74,15 +75,19 @@ export function OnboardingFlow() {
     if (!canContinue) return;
     if (!isLast) return go(1);
     if (!goal || !level) return;
-    saveOnboarding({
+    const data = {
       goal,
       level,
       equipment,
       weightKg: Number(weight),
       heightCm: Number(height),
       completedAt: new Date().toISOString(),
+    };
+    saveOnboarding(data);
+    void pushProfile(data).finally(() => {
+      router.push("/today");
+      router.refresh();
     });
-    router.push("/today");
   }
 
   function back() {
