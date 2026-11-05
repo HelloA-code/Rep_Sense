@@ -9,8 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "predev": "node scripts/copy-mediapipe-wasm.mjs",
-    "prebuild": "node scripts/copy-mediapipe-wasm.mjs"
+    "predev": "node scripts/copy-wasm.mjs",
+    "prebuild": "node scripts/copy-wasm.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -22,6 +22,7 @@
     "framer-motion": "^14.9.0",
     "lucide-react": "^1.66.0",
     "next": "15.5.28",
+    "onnxruntime-web": "1.30.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "recharts": "3.10.1",

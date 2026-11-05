@@ -1,0 +1,21 @@
+{
+  "provenance": "synthetic",
+  "featureVersion": 1,
+  "labels": [
+    "idle",
+    "squat",
+    "pushup",
+    "pullup",
+    "dip",
+    "lunge",
+    "plank"
+  ],
+  "macroF1": 0.998,
+  "people": 6,
+  "split": "person",
+  "window": 30,
+  "numFeatures": 34,
+  "hz": 15,
+  "stride": 5,
+  "quantised": false
+}

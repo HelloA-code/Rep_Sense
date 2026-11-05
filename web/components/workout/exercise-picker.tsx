@@ -86,7 +86,7 @@ export function ExercisePicker({ available, selected, sets, onToggle, onSets, on
           className="mt-3 flex items-center justify-center gap-2 py-2 text-[13px] font-semibold text-muted hover:text-text"
         >
           <FilmIcon className="size-4" />
-          Free camera &amp; clip recorder
+          Just start moving (free camera &amp; recorder)
         </Link>
       </div>
     </div>

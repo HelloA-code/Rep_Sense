@@ -9,6 +9,7 @@ import {
   FilmIcon,
   RefreshCwIcon,
   RotateCcwIcon,
+  SparklesIcon,
   Volume2Icon,
   VolumeXIcon,
   XIcon,
@@ -20,6 +21,9 @@ import { iconButtonClass } from "@/components/ui/styles";
 import { EXERCISES, type ExerciseId } from "@/lib/equipment";
 import { EXERCISE_CONFIGS, type ExerciseConfig } from "@/lib/exercises";
 import type { RepPhase } from "@/lib/exercises/state-machine";
+import { createAutoDetector } from "@/lib/ml/auto-detect";
+import { loadClassifier, loadModelInfo, type Classifier, type ModelInfo } from "@/lib/ml/classifier";
+import { createRollingWindow } from "@/lib/ml/rolling-window";
 import { drawIssues, drawSkeleton } from "@/lib/pose/draw";
 import { checkBodyInFrame } from "@/lib/pose/frame-check";
 import { createFpsMeter, type FrameStats } from "@/lib/pose/fps";
@@ -30,6 +34,7 @@ import { RECORDING_LABELS, createRecorder, type CameraView, type RecordingLabel 
 import { cn } from "@/lib/utils";
 import { createSetEngine, type SetEngine, type SetResult } from "@/lib/workout/set-engine";
 import { AngleGraph, GRAPH_WINDOW_MS, type GraphSample } from "./angle-graph";
+import { AutoDetectBar, type AutoStatus } from "./auto-detect-bar";
 import { PlacementTip } from "./placement-tip";
 import { RecordButton, RecorderSettings, type RecorderPhase } from "./recorder-controls";
 import { RepDisplay, formatClock, type RepFlash } from "./rep-display";
@@ -64,6 +69,8 @@ const VIDEO_KEY = "repsense.recorder.video";
 const WARNING_DELAY_MS = 700;
 const UI_UPDATE_MS = 250;
 const CUE_TOAST_MS = 2200;
+/** Run the classifier every this many 15 Hz ticks (three times a second). */
+const CLASSIFY_EVERY_TICKS = 5;
 
 const glassButton = cn(iconButtonClass, "border-white/15 bg-black/35 backdrop-blur-md");
 
@@ -126,6 +133,15 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
   const [voiceOn, setVoiceOn] = useState(true);
   const voiceOnRef = useRef(true);
 
+  // Auto-detect ("just start moving"): free mode only, and only if a model is available.
+  const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
+  const [auto, setAuto] = useState<AutoStatus | null>(null);
+  const [inferMs, setInferMs] = useState<number | null>(null);
+  const classifierRef = useRef<Classifier | null>(null);
+  const rollingRef = useRef(createRollingWindow());
+  const detectorRef = useRef(createAutoDetector());
+  const onDetectedRef = useRef<(id: ExerciseId) => void>(() => {});
+
   // Recorder
   const [phase, setPhase] = useState<RecorderPhase>("off");
   const [countdown, setCountdown] = useState(3);
@@ -167,6 +183,37 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
     },
     [resetSet],
   );
+
+  const pickExercise = useCallback(
+    (id: ExerciseId) => {
+      setAuto(null);
+      classifierRef.current = null;
+      detectorRef.current.setCurrent(id);
+      changeExercise(id);
+    },
+    [changeExercise],
+  );
+
+  useEffect(() => {
+    onDetectedRef.current = changeExercise;
+  }, [changeExercise]);
+
+  async function turnOnAuto() {
+    setAuto({ state: "loading" });
+    try {
+      classifierRef.current = await loadClassifier();
+      rollingRef.current.reset();
+      detectorRef.current.setCurrent(null);
+      setAuto({ state: "watching" });
+    } catch {
+      setAuto(null);
+      setToast("Couldn't load auto-detect on this device.");
+    }
+  }
+
+  useEffect(() => {
+    if (!guided) void loadModelInfo().then(setModelInfo);
+  }, [guided]);
 
   // Restore last choices (browser-only APIs, so after mount).
   useEffect(() => {
@@ -379,6 +426,26 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
     let lastInFrame = performance.now();
     let shown: { reps: number; phase: RepPhase } = { reps: 0, phase: "up" };
     let shownEngine: SetEngine | null = null;
+    let ticks = 0;
+    let classifying = false;
+
+    // Async and skipped if the last one is still running, so it can never slow the camera.
+    const classify = (classifier: Classifier) => {
+      classifying = true;
+      const started = performance.now();
+      void classifier
+        .predict(rollingRef.current.values())
+        .then((probabilities) => {
+          if (!classifierRef.current) return; // turned off meanwhile
+          setInferMs(performance.now() - started);
+          const detection = detectorRef.current.update(probabilities);
+          setAuto({ state: "detected", label: detection.label, confidence: detection.confidence });
+          if (detection.switchTo) onDetectedRef.current(detection.switchTo);
+        })
+        .finally(() => {
+          classifying = false;
+        });
+    };
 
     const loop = () => {
       raf = requestAnimationFrame(loop);
@@ -429,6 +496,16 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
         const samples = samplesRef.current;
         samples.push({ t: now, raw: out.rawValue, smooth: out.value });
         while (samples.length && now - samples[0].t > GRAPH_WINDOW_MS) samples.shift();
+      }
+
+      const classifier = classifierRef.current;
+      if (classifier && raw) {
+        // Raw landmarks: that's what the model was trained on.
+        ticks += rollingRef.current.push({ landmarks: raw, width: canvas.width, height: canvas.height }, now);
+        if (rollingRef.current.full && ticks >= CLASSIFY_EVERY_TICKS && !classifying) {
+          ticks = 0;
+          classify(classifier);
+        }
       }
 
       const rec = recorderRef.current;
@@ -550,6 +627,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
           </div>
           <div>
             {delegate} · {camera.size?.width}×{camera.size?.height}
+            {inferMs !== null && auto && ` · model ${inferMs.toFixed(1)} ms`}
           </div>
           <div>
             side {metric.side ?? "–"} · view {metric.view ?? "–"}
@@ -617,11 +695,23 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
               </p>
             ) : (
               <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
+                {modelInfo && (
+                  <SegmentChip
+                    selected={auto !== null}
+                    onClick={() => (auto ? pickExercise(exerciseId) : void turnOnAuto())}
+                    className="h-9 flex-none gap-1.5 px-3.5 text-[13px]"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <SparklesIcon className="size-3.5" />
+                      Auto
+                    </span>
+                  </SegmentChip>
+                )}
                 {EXERCISES.map((e) => (
                   <SegmentChip
                     key={e.id}
-                    selected={exerciseId === e.id}
-                    onClick={() => changeExercise(e.id)}
+                    selected={!auto && exerciseId === e.id}
+                    onClick={() => pickExercise(e.id)}
                     className="h-9 flex-none px-3.5 text-[13px]"
                   >
                     {e.name}
@@ -629,6 +719,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
                 ))}
               </div>
             )}
+            {auto && <AutoDetectBar status={auto} synthetic={modelInfo?.provenance === "synthetic"} exercise={exercise.name} />}
             <p className="mt-2 text-[12px] font-semibold text-muted">
               {exercise.setupHint}
               {metric.smooth !== null && ` · ${exercise.metric} ${metric.smooth.toFixed(0)}°`}

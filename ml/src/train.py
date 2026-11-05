@@ -209,6 +209,14 @@ def write_report(path: Path, synthetic: bool, stats: dict, rf: dict, cnn: dict, 
         "",
         confusion_table(rf["confusion"]),
         "",
+        "## In the browser",
+        "",
+        "Measure on your phone with the camera debug panel (Auto on), then fill this in:",
+        "",
+        "| Device | Model inference | FPS with pose + model |",
+        "|---|---|---|",
+        "| | | |",
+        "",
     ]
     path.write_text("\n".join(lines), encoding="utf-8")
 
