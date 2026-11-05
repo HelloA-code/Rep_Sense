@@ -1,0 +1,10 @@
+# Python 3.11+. CPU-only PyTorch is enough:
+#   pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+numpy==2.4.6
+scikit-learn==1.6.1
+matplotlib==3.10.8
+torch==2.10.0
+onnx==1.23.2
+onnxruntime==1.31.0
+onnxscript==0.7.2
+pytest==9.1.1
