@@ -37,6 +37,7 @@ export function TopBar({ title, backHref, onBack, right, progress, className }: 
         <div className="flex flex-1 items-center gap-4">
           <div
             role="progressbar"
+            aria-label="Progress"
             aria-valuemin={0}
             aria-valuemax={progress.total}
             aria-valuenow={progress.step}

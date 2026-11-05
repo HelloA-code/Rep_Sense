@@ -41,10 +41,10 @@ export default function LandingPage() {
       <div aria-hidden className="glow-warm pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px]" />
       <div aria-hidden className="glow-cool pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[720px]" />
 
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <main className="mx-auto max-w-6xl px-5 sm:px-8">
         <nav className="flex h-20 items-center justify-between">
           <Logo />
-          <Link href="/today" className="text-[14px] font-bold text-accent hover:underline">
+          <Link href="/today" prefetch={false} className="text-[14px] font-bold text-accent hover:underline">
             Open the app
           </Link>
         </nav>
@@ -60,7 +60,7 @@ export default function LandingPage() {
               as you move, with pose tracking that never leaves your device.
             </p>
             <div className="mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
-              <Link href="/today" className={primaryButtonClass}>
+              <Link href="/today" prefetch={false} className={primaryButtonClass}>
                 Open the app
               </Link>
               <a href="#how" className={secondaryButtonClass}>
@@ -102,7 +102,7 @@ export default function LandingPage() {
                 ever saved to your account.
               </p>
             </div>
-            <Link href="/today" className={cn(primaryButtonClass, "sm:w-auto")}>
+            <Link href="/today" prefetch={false} className={cn(primaryButtonClass, "sm:w-auto")}>
               Open the app
             </Link>
           </Card>
@@ -112,7 +112,7 @@ export default function LandingPage() {
           <Logo />
           <p>A student project. Video never leaves your device.</p>
         </footer>
-      </div>
+      </main>
     </div>
   );
 }

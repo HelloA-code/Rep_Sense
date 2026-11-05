@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { SegmentChip } from "@/components/ui/segment-chip";
 import { TopBar } from "@/components/ui/top-bar";
 import { safeNext } from "@/lib/safe-next";
-import { browserSupabase } from "@/lib/supabase/client";
+import { supabaseEnv } from "@/lib/supabase/env";
 
 const inputClass =
   "h-[52px] w-full rounded-tile border border-border-strong bg-surface px-4 text-[16px] font-semibold outline-none placeholder:text-white/30 focus:border-accent-border";
@@ -16,7 +16,7 @@ export function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = safeNext(params.get("next"));
-  const supabase = browserSupabase();
+  const configured = supabaseEnv() !== null;
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +24,9 @@ export function LoginForm() {
   const [message, setMessage] = useState<{ text: string; error: boolean } | null>(
     params.get("error") ? { text: "That link didn't work. Try signing in again.", error: true } : null,
   );
+
+  /** The Supabase client is big, so it's only fetched when someone actually signs in. */
+  const client = async () => (await import("@/lib/supabase/client")).browserSupabase();
 
   const callback = () => `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
 
@@ -34,9 +37,10 @@ export function LoginForm() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!supabase) return;
     setBusy(true);
     setMessage(null);
+    const supabase = await client();
+    if (!supabase) return;
     if (mode === "signin") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (!error) return enter();
@@ -56,8 +60,9 @@ export function LoginForm() {
   }
 
   async function google() {
-    if (!supabase) return;
     setBusy(true);
+    const supabase = await client();
+    if (!supabase) return;
     const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: callback() } });
     if (error) {
       setMessage({ text: error.message, error: true });
@@ -72,7 +77,7 @@ export function LoginForm() {
         Save your workouts and see your progress on any device. Only numbers are stored, never video.
       </p>
 
-      {!supabase ? (
+      {!configured ? (
         <Card className="mt-6">
           <p className="text-[15px] font-bold">Accounts aren&rsquo;t set up yet</p>
           <p className="mt-1 text-[13px] font-medium text-muted">You can still train; workouts stay on this device.</p>

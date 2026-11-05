@@ -15,7 +15,7 @@ The roadmap is in `IMPLEMENTATION_PLAN.md`, an **8-day plan**. The UI spec is in
 
 ## Stack
 - `web/`: Next.js 15 (App Router), TypeScript (strict), Tailwind CSS, shadcn/ui, Framer Motion, Recharts, @mediapipe/tasks-vision, onnxruntime-web, @supabase/supabase-js + @supabase/ssr. Tests: Vitest.
-- `ml/`: Python 3.12, NumPy, Pandas, OpenCV, MediaPipe, scikit-learn, PyTorch, Jupyter.
+- `ml/`: Python 3.11+, NumPy, Pandas, OpenCV, MediaPipe, scikit-learn, PyTorch, Jupyter.
 - Deploy: Vercel. CI: GitHub Actions.
 
 ## Conventions

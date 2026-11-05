@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { PrimaryButton } from "@/components/ui/button";
 import { TopBar } from "@/components/ui/top-bar";
-import { pushProfile } from "@/lib/data/sync";
 import { PRESETS, type EquipmentId } from "@/lib/equipment";
 import {
   BODY_LIMITS,
@@ -84,7 +83,8 @@ export function OnboardingFlow() {
       completedAt: new Date().toISOString(),
     };
     saveOnboarding(data);
-    void pushProfile(data).finally(() => {
+    // Loaded on demand so the first screens a new user sees stay light.
+    void import("@/lib/data/sync").then(({ pushProfile }) => pushProfile(data)).finally(() => {
       router.push("/today");
       router.refresh();
     });

@@ -1,13 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { BarChart3Icon } from "lucide-react";
-import { FormTrendChart } from "@/components/charts/form-trend-chart";
-import { RepsBarChart } from "@/components/charts/reps-bar-chart";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formTrend, monthCalendar, repsPerDay, type SessionWithSets } from "@/lib/data/stats";
 import { cn } from "@/lib/utils";
+
+const RepsBarChart = dynamic(() => import("@/components/charts/reps-bar-chart").then((m) => m.RepsBarChart), {
+  ssr: false,
+});
+const FormTrendChart = dynamic(() => import("@/components/charts/form-trend-chart").then((m) => m.FormTrendChart), {
+  ssr: false,
+});
 
 const WEEKDAYS = ["M", "T", "W", "T", "F", "S", "S"];
 

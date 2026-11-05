@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { CalendarCheckIcon, FlameIcon } from "lucide-react";
-import { RepsBarChart } from "@/components/charts/reps-bar-chart";
 import { SignInCard } from "@/components/tabs/sign-in-card";
 import { PrimaryButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,6 +14,11 @@ import { suggestSession } from "@/lib/data/suggest";
 import { EXERCISES } from "@/lib/equipment";
 import { loadOnboarding, saveOnboarding, type OnboardingData } from "@/lib/onboarding";
 import { savePlan } from "@/lib/workout/plan-store";
+
+// Recharts is heavy and only shown to signed-in users with workouts.
+const RepsBarChart = dynamic(() => import("@/components/charts/reps-bar-chart").then((m) => m.RepsBarChart), {
+  ssr: false,
+});
 
 function greeting(hour: number) {
   if (hour < 12) return "Good morning";
