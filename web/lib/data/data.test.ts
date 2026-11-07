@@ -5,7 +5,7 @@ import type { LoggedSet } from "@/lib/workout/summary";
 import { adjustPlan, checkinReason, describeAdjustment, recommend, type PlanItem } from "./checkin";
 import { addToOutbox, drainOutbox, isPermanentError, type OutboxItem, type UploadResult } from "./outbox";
 import { onboardingToRow, rowToOnboarding, sessionToRow, setToRow } from "./rows";
-import { dayKey, formTrend, lastTrained, monthCalendar, repsPerDay, streak, type SessionWithSets } from "./stats";
+import { dayKey, formTrend, lastTrained, monthCalendar, profileStats, repsPerDay, streak, type SessionWithSets } from "./stats";
 import { suggestSession } from "./suggest";
 
 const logged = (over: Partial<LoggedSet> = {}): LoggedSet => ({
@@ -168,6 +168,15 @@ describe("stats", () => {
     expect(weeks[1][2]).toMatchObject({ date: 4, trained: false, today: true });
     expect(weeks.every((w) => w.length === 7)).toBe(true);
     expect(weeks.flat().filter(Boolean)).toHaveLength(30);
+  });
+
+  it("adds up lifetime totals", () => {
+    expect(profileStats([workout(on(4), 90, [row(5), row(7)]), workout(on(3), 80, [row(3)])], now)).toEqual({
+      workouts: 2,
+      reps: 15,
+      streak: 2,
+    });
+    expect(profileStats([], now)).toEqual({ workouts: 0, reps: 0, streak: 0 });
   });
 
   it("finds when each exercise was last trained", () => {

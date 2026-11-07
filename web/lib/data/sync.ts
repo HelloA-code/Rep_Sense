@@ -102,6 +102,35 @@ export async function syncProfile(): Promise<void> {
   saveVoiceOn(row.voice_on);
 }
 
+/** Change the user's name or password. Returns an error message, or null on success. */
+export async function updateAccount(attributes: { data?: { full_name: string }; password?: string }): Promise<string | null> {
+  const supabase = browserSupabase();
+  if (!supabase) return "Accounts aren't set up.";
+  const { error } = await supabase.auth.updateUser(attributes);
+  return error?.message ?? null;
+}
+
+/** A full copy of the user's saved data, for the Download my data button. */
+export async function exportMyData() {
+  const supabase = browserSupabase();
+  if (!supabase) throw new Error("Accounts aren't set up.");
+  const [profile, sessions, sets, checkins] = await Promise.all([
+    supabase.from("profiles").select("*"),
+    supabase.from("workout_sessions").select("*").order("started_at"),
+    supabase.from("exercise_sets").select("*").order("created_at"),
+    supabase.from("checkins").select("*").order("created_at"),
+  ]);
+  const failed = [profile, sessions, sets, checkins].find((r) => r.error);
+  if (failed?.error) throw failed.error;
+  return {
+    exportedAt: new Date().toISOString(),
+    profile: profile.data?.[0] ?? null,
+    workouts: sessions.data,
+    sets: sets.data,
+    checkins: checkins.data,
+  };
+}
+
 /** How many rows wouldn't make it if the user signed out right now. */
 export async function unsavedCount(): Promise<number> {
   return (await flushOutbox()).remaining;

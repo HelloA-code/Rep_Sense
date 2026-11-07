@@ -59,7 +59,7 @@ export function BodyStep({ weight, height, onWeight, onHeight }: BodyStepProps) 
         <StatField label="Bodyweight" unit="kg" value={weight} onChange={onWeight} placeholder="70" />
         <StatField label="Height" unit="cm" value={height} onChange={onHeight} placeholder="175" />
       </div>
-      <p className="mt-4 text-[13px] font-medium text-muted">Stored on this device for now. You can change it later in Profile.</p>
+      <p className="mt-4 text-[13px] font-medium text-muted">You can change this later in Profile.</p>
     </div>
   );
 }

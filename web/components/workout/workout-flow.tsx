@@ -169,7 +169,10 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
           summary={summarizeSession(logged, profile.weightKg, endedAt - startedAt)}
           weightKg={profile.weightKg}
           saved={saved}
-          onDone={() => router.push("/today")}
+          onDone={() => {
+            router.push("/today");
+            router.refresh(); // tabs are cached for 30 s; show this workout now
+          }}
           onAgain={() => setStep("pick")}
         />
       </AppShell>

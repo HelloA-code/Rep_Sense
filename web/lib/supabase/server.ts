@@ -25,11 +25,25 @@ export async function serverSupabase() {
 export type ServerSupabase = NonNullable<Awaited<ReturnType<typeof serverSupabase>>>;
 
 /** The verified signed-in user. getClaims checks the token; never trust the raw session cookie. */
-export async function currentUser(): Promise<{ supabase: ServerSupabase; id: string; email: string | null } | null> {
+export async function currentUser(): Promise<{
+  supabase: ServerSupabase;
+  id: string;
+  email: string | null;
+  name: string | null;
+  hasPassword: boolean;
+} | null> {
   const supabase = await serverSupabase();
   if (!supabase) return null;
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
   if (!claims?.sub) return null;
-  return { supabase, id: claims.sub, email: typeof claims.email === "string" ? claims.email : null };
+  const meta = claims.user_metadata as { full_name?: unknown; name?: unknown } | undefined;
+  const name = meta?.full_name ?? meta?.name;
+  return {
+    supabase,
+    id: claims.sub,
+    email: typeof claims.email === "string" ? claims.email : null,
+    name: typeof name === "string" && name ? name : null,
+    hasPassword: (claims.app_metadata as { provider?: unknown } | undefined)?.provider === "email",
+  };
 }

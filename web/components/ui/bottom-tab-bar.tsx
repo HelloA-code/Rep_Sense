@@ -30,7 +30,7 @@ export function BottomTabBar() {
       aria-label="Main"
       className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[440px] px-4"
     >
-      <ul className="flex rounded-[28px] border border-border-strong bg-[#0c0c0c]/85 p-1.5 backdrop-blur-xl">
+      <ul className="flex rounded-[28px] border border-border-strong bg-[#0c0c0c] p-1.5">
         {TABS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (

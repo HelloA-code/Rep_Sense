@@ -19,7 +19,7 @@ export function PlacementTip({ exercise, onStart }: { exercise: ExerciseConfig; 
     { icon: Volume2Icon, text: "Turn your sound up: form cues are spoken." },
   ];
   return (
-    <div className="absolute inset-0 z-20 flex items-end bg-black/55 backdrop-blur-[2px]">
+    <div className="absolute inset-0 z-20 flex items-end bg-black/65">
       <motion.div
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

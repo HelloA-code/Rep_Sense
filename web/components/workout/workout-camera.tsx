@@ -71,8 +71,10 @@ const UI_UPDATE_MS = 250;
 const CUE_TOAST_MS = 2200;
 /** Run the classifier every this many 15 Hz ticks (three times a second). */
 const CLASSIFY_EVERY_TICKS = 5;
+/** Leave this much idle time per unit of detection time, to keep the UI responsive. */
+const DETECT_IDLE_RATIO = 0.5;
 
-const glassButton = cn(iconButtonClass, "border-white/15 bg-black/35 backdrop-blur-md");
+const glassButton = cn(iconButtonClass, "border-white/15 bg-black/60");
 
 function readStorage(key: string): string | null {
   try {
@@ -428,6 +430,8 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
     let shownEngine: SetEngine | null = null;
     let ticks = 0;
     let classifying = false;
+    let lastDetectMs = 0;
+    let lastDetectEnd = 0;
 
     // Async and skipped if the last one is still running, so it can never slow the camera.
     const classify = (classifier: Classifier) => {
@@ -452,6 +456,9 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
       if (pausedRef.current) return;
       // rAF runs at screen rate (60–120 Hz); only process frames the camera actually produced.
       if (video.readyState < 2 || video.currentTime === lastVideoTime) return;
+      // Detection runs on the main thread. On a slow phone, skip frames so taps and
+      // animations still get time; counting works fine at a lower rate.
+      if (performance.now() - lastDetectEnd < lastDetectMs * DETECT_IDLE_RATIO) return;
       lastVideoTime = video.currentTime;
 
       if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
@@ -463,6 +470,8 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
       const result = landmarker.detectForVideo(video, start); // timestamps must keep increasing
       const now = performance.now();
       meter.tick(now, now - start);
+      lastDetectMs = now - start;
+      lastDetectEnd = now;
 
       const raw = result.landmarks[0] ?? null;
       const world = result.worldLandmarks[0] ?? null;
@@ -578,7 +587,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
           </Link>
         )}
         {live && (
-          <span className="badge-text flex h-8 items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3.5 text-white/90 backdrop-blur-md tabular-nums">
+          <span className="badge-text flex h-8 items-center gap-2 rounded-full border border-white/10 bg-black/65 px-3.5 text-white/90 tabular-nums">
             <span className={cn("size-2 rounded-full", recording ? "animate-pulse bg-danger" : "bg-white/50")} />
             {recording ? `Rec ${Math.floor(elapsedMs / 1000)}s` : "Live"} · {pillCount}
           </span>
@@ -620,7 +629,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
 
       {/* Debug panel: performance + raw vs smoothed metric */}
       {live && showDebug && (
-        <div className="absolute top-[calc(max(env(safe-area-inset-top),12px)+56px)] left-4 z-10 rounded-tile border border-white/10 bg-black/60 px-3 py-2 font-mono text-[11px] leading-relaxed text-white/85 backdrop-blur-md">
+        <div className="absolute top-[calc(max(env(safe-area-inset-top),12px)+56px)] left-4 z-10 rounded-tile border border-white/10 bg-black/75 px-3 py-2 font-mono text-[11px] leading-relaxed text-white/85">
           <div>
             fps <b className={stats.fps >= 25 ? "text-accent" : "text-danger"}>{stats.fps.toFixed(1)}</b> · infer{" "}
             {stats.latencyMs.toFixed(1)} ms
@@ -654,7 +663,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
               transition={{ duration: 0.2 }}
               role="status"
               className={cn(
-                "rounded-full border px-4 py-2 text-center font-bold backdrop-blur-md",
+                "rounded-full border px-4 py-2 text-center font-bold",
                 warning
                   ? "border-accent-border bg-black/60 text-[13px] text-accent"
                   : cue
@@ -687,7 +696,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
       {/* Bottom panel */}
       {live && (
         <div className="pb-safe absolute inset-x-0 bottom-0 z-10 mx-auto max-w-[440px] px-3">
-          <div className="rounded-card border border-white/10 bg-black/55 p-4 backdrop-blur-md">
+          <div className="rounded-card border border-white/10 bg-black/75 p-4">
             {guided ? (
               <p className="flex items-baseline justify-between gap-3">
                 <span className="text-[16px] font-extrabold">{exercise.name}</span>

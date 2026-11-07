@@ -76,6 +76,18 @@ export function monthCalendar(sessionDates: readonly string[], now: Date): (Cale
   return Array.from({ length: cells.length / 7 }, (_, w) => cells.slice(w * 7, w * 7 + 7));
 }
 
+/** Lifetime totals for the Profile header. */
+export function profileStats(sessions: readonly SessionWithSets[], now: Date) {
+  return {
+    workouts: sessions.length,
+    reps: sessions.reduce((sum, s) => sum + s.sets.reduce((n, set) => n + set.reps, 0), 0),
+    streak: streak(
+      sessions.map((s) => s.started_at),
+      now,
+    ),
+  };
+}
+
 /** When each exercise was last trained, for picking today's session. */
 export function lastTrained(sessions: readonly SessionWithSets[]): Record<string, string> {
   const out: Record<string, string> = {};
