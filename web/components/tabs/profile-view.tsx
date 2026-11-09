@@ -347,6 +347,11 @@ export function ProfileView({ account, serverProfile, sessions }: ProfileViewPro
           <li>Pose tracking runs on your device. Video is never uploaded.</li>
           <li>Clips you record stay in this browser, on this device.</li>
           <li>With an account, only workout numbers are saved: reps, times, form scores and check-in answers.</li>
+          <li>
+            AI features (Coach chat, describing or photographing a meal, diet plans) send that text or photo, plus a
+            numbers-only summary of your training and food log, to Google&rsquo;s Gemini. Photos aren&rsquo;t stored by
+            RepSense. On Gemini&rsquo;s free tier, Google may use this content to improve its products.
+          </li>
           <li>Only you can read your data. Use Download my data to get a copy.</li>
         </ul>
       </Sheet>

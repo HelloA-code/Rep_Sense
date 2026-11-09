@@ -20,7 +20,10 @@ import {
   type NutritionAnswers,
 } from "@/lib/nutrition/profile";
 import { loadOnboarding, saveOnboarding, type OnboardingData } from "@/lib/onboarding";
+import { isDietPlan, type DietPlan, type PlanMeal } from "@/lib/ai/plan";
 import { AddFoodSheet } from "./add-food-sheet";
+import { AiFoodInput } from "./ai-food-input";
+import { DietPlanCard } from "./diet-plan-card";
 import { CalorieRing, MacroBars } from "./macro-summary";
 import { NutritionSetup } from "./nutrition-setup";
 
@@ -32,11 +35,11 @@ type DietViewProps = {
   serverProfile: OnboardingData | null;
   /** Opened from Profile → Nutrition: start with the setup sheet open. */
   editSetup: boolean;
-  /** AI modes for the Add food sheet, when Gemini is configured. */
-  aiModes?: React.ComponentProps<typeof AddFoodSheet>["extraModes"];
+  /** Gemini is configured on the server: show photo/text logging and diet plans. */
+  aiEnabled: boolean;
 };
 
-export function DietView({ data, serverProfile, editSetup, aiModes }: DietViewProps) {
+export function DietView({ data, serverProfile, editSetup, aiEnabled }: DietViewProps) {
   const router = useRouter();
   const [body, setBody] = useState<OnboardingData | null>(null);
   const [now, setNow] = useState<Date | null>(null);
@@ -44,6 +47,7 @@ export function DietView({ data, serverProfile, editSetup, aiModes }: DietViewPr
   const [adding, setAdding] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [plan, setPlan] = useState<DietPlan | null>(isDietPlan(data.plan) ? data.plan : null);
 
   const answers = data.nutrition ? rowToAnswers(data.nutrition) : null;
 
@@ -79,6 +83,10 @@ export function DietView({ data, serverProfile, editSetup, aiModes }: DietViewPr
     if (!body) return;
     const ok = await run(async () => (await writes()).saveNutritionProfile(answersToRow(next, targetsFor(next, body))));
     if (ok) setSetupOpen(false);
+  }
+
+  async function logPlanMeal(meal: PlanMeal) {
+    await run(async () => (await writes()).saveMeal(meal.items, meal.type, "plan"));
   }
 
   async function logFood(items: DraftItem[], mealType: MealType, source: "search" | "text" | "photo") {
@@ -168,6 +176,8 @@ export function DietView({ data, serverProfile, editSetup, aiModes }: DietViewPr
             );
           })}
 
+          {aiEnabled && <DietPlanCard plan={plan} onPlan={setPlan} onLog={logPlanMeal} logging={saving} />}
+
           {targets.notes.map((n) => (
             <p key={n} className="text-[12px] font-semibold text-accent">
               {n}
@@ -197,7 +207,13 @@ export function DietView({ data, serverProfile, editSetup, aiModes }: DietViewPr
         onClose={() => setSetupOpen(false)}
         onSave={saveSetup}
       />
-      <AddFoodSheet open={adding} saving={saving} onClose={() => setAdding(false)} onSave={logFood} extraModes={aiModes} />
+      <AddFoodSheet
+        open={adding}
+        saving={saving}
+        onClose={() => setAdding(false)}
+        onSave={logFood}
+        extraModes={aiEnabled ? (add) => <AiFoodInput onFound={add} /> : undefined}
+      />
     </>
   );
 }

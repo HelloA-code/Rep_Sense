@@ -36,9 +36,12 @@ export async function fetchSession(supabase: ServerSupabase, id: string): Promis
   return { ...session, sets: sets ?? [] };
 }
 
-/** Everything the Diet tab needs. Meals from the last 36 h: the browser picks today in its own timezone. */
-export async function fetchDiet(supabase: ServerSupabase, userId: string) {
-  const since = new Date(Date.now() - 36 * 3600 * 1000).toISOString();
+/**
+ * Everything the Diet tab needs. Meals from the last 36 h by default: the browser picks
+ * "today" in its own timezone. The coach asks for a week.
+ */
+export async function fetchDiet(supabase: ServerSupabase, userId: string, hours = 36) {
+  const since = new Date(Date.now() - hours * 3600 * 1000).toISOString();
   const [profile, meals, plan] = await Promise.all([
     supabase.from("nutrition_profiles").select("*").eq("user_id", userId).maybeSingle(),
     supabase.from("meals").select("*").eq("user_id", userId).gte("eaten_at", since).order("eaten_at"),

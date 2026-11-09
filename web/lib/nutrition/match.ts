@@ -19,12 +19,15 @@ function singular(word: string): string {
 
 const key = (text: string) => normalize(text).split(" ").map(singular).join(" ");
 
-function score(query: string, food: Food): number {
+/** `typing`: the search box, where "chap" should already suggest Chapati. */
+function score(query: string, food: Food, typing = false): number {
   const names = [food.name, ...food.aliases].map(key);
   let best = 0;
   for (const name of names) {
     if (name === query) return 100;
-    if (name.startsWith(query) || query.startsWith(name)) best = Math.max(best, 80);
+    // Whole-word prefixes only: "rice" → "rice white cooked", but "bad" must not match "badam".
+    if (name.startsWith(`${query} `) || query.startsWith(`${name} `)) best = Math.max(best, 80);
+    else if (typing && name.split(" ").some((w) => w.startsWith(query))) best = Math.max(best, 60);
     const words = new Set(name.split(" "));
     const shared = query.split(" ").filter((w) => words.has(w)).length;
     if (shared) best = Math.max(best, 40 + (30 * shared) / Math.max(words.size, query.split(" ").length));
@@ -36,7 +39,7 @@ function score(query: string, food: Food): number {
 export function searchFoods(text: string, limit = 8): Food[] {
   const query = key(text);
   if (!query) return [];
-  return FOODS.map((food) => ({ food, s: score(query, food) }))
+  return FOODS.map((food) => ({ food, s: score(query, food, true) }))
     .filter((x) => x.s > 0)
     .sort((a, b) => b.s - a.s)
     .slice(0, limit)

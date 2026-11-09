@@ -16,6 +16,8 @@
 - **Auto-detect:** just start moving, and an on-device model works out the exercise and switches the counter.
 - **Progress:** streaks, reps per day, form trend, calendar and full session history, once you sign in.
 - **Clip recorder:** save your own clips on your device, watch them back with the skeleton on top, and export landmarks to train the model.
+- **Diet:** daily calorie and macro targets for your goal, meal logging by search, by describing it ("2 rotis and a bowl of dal") or by photo, and a one-day diet plan.
+- **AI coach:** a chat that answers from your own workout and food numbers.
 - **Installable** on a phone home screen.
 
 ## Architecture
@@ -78,12 +80,21 @@ Numbers here only come from real measurements in [`ml/reports/`](ml/reports).
 
 > **Current model:** the app ships with a stand-in model trained on generated stick figures, marked "Preview" in the app, to prove the pipeline end to end. Its scores in [`RESULTS_synthetic.md`](ml/reports/RESULTS_synthetic.md) are not real-world results. Retraining on recorded clips replaces it.
 
+## Diet and AI coach
+
+- **Targets come from equations, not the AI:** Mifflin–St Jeor resting energy × activity, adjusted for your goal, with protein per kg and safety floors (no deficit under 18, minimum calories).
+- **Food numbers come from USDA FoodData Central** (public domain): 98 common foods, including many Indian dishes, with USDA serving sizes. Built by [`ml/src/build_foods.py`](ml/src/build_foods.py).
+- **Gemini only works out *what* and *how much*:** when you describe or photograph a meal, Gemini lists the foods and portions. The app then takes the calories and macros from the USDA list. Foods the list doesn't have use Gemini's estimate, labelled "AI estimate", and only if its protein, carbs and fat add up to its calories.
+- **The coach sees numbers only:** a compact summary of your workouts (reps, form scores, form issues, streak) and food log, plus your question. Never video, photos of you, or your email.
+- **Guard rails:** AI needs a sign-in; daily limits per user are enforced by a database function; all AI replies are validated before use.
+
 ## Privacy
 
 - Pose tracking and classification happen on your device. Video is never uploaded.
 - Saving a clip is opt-in, and clips stay in your browser's storage.
 - With an account, only workout numbers go to the database: reps, durations, form scores, check-in answers.
 - Every table has Row Level Security. The policies are in [`supabase/migrations`](supabase/migrations).
+- AI features send your message, an opt-in meal photo, or a numbers-only summary to Google's Gemini. Meal photos aren't stored by RepSense. On Gemini's free tier, Google may use this content to improve its products; enable billing on the Google Cloud project for real users.
 
 ## Run it locally
 
@@ -95,7 +106,7 @@ npm install
 npm run dev
 ```
 
-The app works without any keys, signed out. To enable accounts, create a Supabase project, run [`0001_init.sql`](supabase/migrations/0001_init.sql) in its SQL editor, and copy `web/.env.example` to `web/.env.local` with your project URL and publishable key.
+The app works without any keys, signed out. To enable accounts, create a Supabase project, run [`0001_init.sql`](supabase/migrations/0001_init.sql) and then [`0002_nutrition.sql`](supabase/migrations/0002_nutrition.sql) in its SQL editor, and copy `web/.env.example` to `web/.env.local` with your project URL and publishable key. Add `GEMINI_API_KEY` to switch on the diet AI and the coach.
 
 The camera needs HTTPS or localhost.
 

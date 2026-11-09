@@ -1,6 +1,7 @@
 import { DietView } from "@/components/diet/diet-view";
 import { SignInCard } from "@/components/tabs/sign-in-card";
 import { PageHeader } from "@/components/ui/page-header";
+import { geminiConfigured } from "@/lib/ai/gemini";
 import { fetchDiet, fetchProfile } from "@/lib/data/queries";
 import { currentUser } from "@/lib/supabase/server";
 
@@ -15,5 +16,12 @@ export default async function DietPage({ searchParams }: { searchParams: Promise
     );
   }
   const [profile, data] = await Promise.all([fetchProfile(user.supabase, user.id), fetchDiet(user.supabase, user.id)]);
-  return <DietView data={data} serverProfile={profile} editSetup={(await searchParams).setup === "1"} />;
+  return (
+    <DietView
+      data={data}
+      serverProfile={profile}
+      editSetup={(await searchParams).setup === "1"}
+      aiEnabled={geminiConfigured()}
+    />
+  );
 }

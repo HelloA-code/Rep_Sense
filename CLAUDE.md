@@ -14,7 +14,7 @@ The roadmap is in `IMPLEMENTATION_PLAN.md`, an **8-day plan**. The UI spec is in
 - If something will take much longer than expected, tell me and suggest what to cut.
 
 ## Stack
-- `web/`: Next.js 15 (App Router), TypeScript (strict), Tailwind CSS, shadcn/ui, Framer Motion, Recharts, @mediapipe/tasks-vision, onnxruntime-web, @supabase/supabase-js + @supabase/ssr. Tests: Vitest.
+- `web/`: Next.js 15 (App Router), TypeScript (strict), Tailwind CSS, shadcn/ui, Framer Motion, Recharts, @mediapipe/tasks-vision, onnxruntime-web, @supabase/supabase-js + @supabase/ssr, @google/genai (Gemini), zod. Tests: Vitest.
 - `ml/`: Python 3.11+, NumPy, Pandas, OpenCV, MediaPipe, scikit-learn, PyTorch, Jupyter.
 - Deploy: Vercel. CI: GitHub Actions.
 
@@ -26,6 +26,7 @@ The roadmap is in `IMPLEMENTATION_PLAN.md`, an **8-day plan**. The UI spec is in
 - Landmark recordings use one consistent JSON format shared by the web recorder and `ml/` scripts. Document it in `ml/README.md`.
 - Supabase: every table has Row Level Security. Secrets in `.env.local` (gitignored); never hard-code keys.
 - Never upload video; only numbers (landmarks, stats) leave the device. Video clips are opt-in, recorded by the user, and stored only on-device (IndexedDB).
+- AI (Gemini) runs only in server route handlers under `web/app/api/`; `GEMINI_API_KEY` is server-only. Send Gemini only what a feature needs: the user's message, an opt-in meal photo, or a numbers-only stats summary. Calories and macros come from formulas and the USDA food list, never from the model; AI estimates are labelled.
 - Conventional commits (`feat:`, `fix:`, `docs:`). Suggest a commit at the end of each day.
 
 ## Design system

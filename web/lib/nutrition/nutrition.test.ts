@@ -86,7 +86,13 @@ describe("matching", () => {
 
   it("returns nothing rather than a wrong guess", () => {
     expect(bestMatch("quantum soup")).toBeNull();
+    expect(bestMatch("bad")).toBeNull(); // not "badam" (almonds)
     expect(bestMatch("")).toBeNull();
+  });
+
+  it("suggests foods while typing", () => {
+    expect(searchFoods("chap").map((f) => f.id)).toContain("roti");
+    expect(searchFoods("bad").map((f) => f.id)).toContain("almonds"); // fine for suggestions
   });
 
   it("ranks search results", () => {
