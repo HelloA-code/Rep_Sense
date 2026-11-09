@@ -52,6 +52,48 @@ export type CheckinRow = {
   created_at: string;
 };
 
+export type NutritionProfileRow = {
+  user_id: string;
+  age: number;
+  sex: string;
+  activity: string;
+  diet_type: string;
+  allergies: string[];
+  cuisine: string;
+  target_kcal: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  updated_at: string;
+};
+
+export type MealRow = {
+  id: string;
+  user_id: string;
+  eaten_at: string;
+  meal_type: string;
+  source: string;
+  created_at: string;
+};
+
+export type MealItemRow = {
+  id: string;
+  meal_id: string;
+  user_id: string;
+  name: string;
+  food_id: string | null;
+  grams: number;
+  kcal: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  data_source: string;
+};
+
+export type DietPlanRow = { user_id: string; plan: unknown; created_at: string };
+
+export type CoachMessageRow = { id: string; user_id: string; role: string; content: string; created_at: string };
+
 type Table<Row, Required extends keyof Row> = {
   Row: Row;
   Insert: Pick<Row, Required> & Partial<Row>;
@@ -66,9 +108,22 @@ export type Database = {
       workout_sessions: Table<SessionRow, "id" | "user_id" | "started_at">;
       exercise_sets: Table<SetRow, "id" | "session_id" | "user_id" | "exercise" | "set_number">;
       checkins: Table<CheckinRow, "id" | "user_id" | "sleep" | "energy" | "soreness" | "choice">;
+      nutrition_profiles: Table<
+        NutritionProfileRow,
+        "age" | "sex" | "activity" | "diet_type" | "target_kcal" | "protein_g" | "carbs_g" | "fat_g"
+      >;
+      meals: Table<MealRow, "meal_type" | "source">;
+      meal_items: Table<
+        MealItemRow,
+        "meal_id" | "user_id" | "name" | "grams" | "kcal" | "protein" | "carbs" | "fat" | "data_source"
+      >;
+      diet_plans: Table<DietPlanRow, "plan">;
+      coach_messages: Table<CoachMessageRow, "role" | "content">;
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      consume_ai_quota: { Args: { request_kind: string }; Returns: boolean };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

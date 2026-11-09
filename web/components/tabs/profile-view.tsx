@@ -15,6 +15,7 @@ import {
   RulerIcon,
   ShieldCheckIcon,
   TargetIcon,
+  UtensilsIcon,
   Volume2Icon,
 } from "lucide-react";
 import { shareOrDownload } from "@/components/clips/export";
@@ -250,6 +251,12 @@ export function ProfileView({ account, serverProfile, sessions }: ProfileViewPro
       ) : (
         <SettingsGroup title="Training">
           <SettingsLink icon={TargetIcon} label="Set up your training" href="/onboarding" />
+        </SettingsGroup>
+      )}
+
+      {account && (
+        <SettingsGroup title="Nutrition">
+          <SettingsLink icon={UtensilsIcon} label="Diet targets and preferences" href="/diet?setup=1" />
         </SettingsGroup>
       )}
 

@@ -1,0 +1,3496 @@
+{
+ "source": "USDA FoodData Central (public domain, CC0 1.0). fdc.nal.usda.gov",
+ "foods": [
+  {
+   "id": "rice-white",
+   "name": "Rice, white (cooked)",
+   "aliases": [
+    "rice",
+    "chawal",
+    "steamed rice",
+    "plain rice"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 129.0,
+    "protein": 2.67,
+    "carbs": 27.99,
+    "fat": 0.28,
+    "fiber": 0.4
+   },
+   "servings": [
+    {
+     "label": "1 cup, cooked",
+     "grams": 158.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708408,
+    "description": "Rice, white, cooked, no added fat"
+   }
+  },
+  {
+   "id": "rice-brown",
+   "name": "Rice, brown (cooked)",
+   "aliases": [
+    "brown rice"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 123.0,
+    "protein": 2.43,
+    "carbs": 25.76,
+    "fat": 1.11,
+    "fiber": 1.0
+   },
+   "servings": [
+    {
+     "label": "1 cup, cooked",
+     "grams": 195.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708414,
+    "description": "Rice, brown, cooked, no added fat"
+   }
+  },
+  {
+   "id": "roti",
+   "name": "Roti / chapati",
+   "aliases": [
+    "roti",
+    "chapati",
+    "chapatti",
+    "phulka",
+    "fulka"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 310.0,
+    "protein": 9.76,
+    "carbs": 45.89,
+    "fat": 9.76,
+    "fiber": 9.8
+   },
+   "servings": [
+    {
+     "label": "1 large",
+     "grams": 71.0
+    },
+    {
+     "label": "1 extra large",
+     "grams": 104.0
+    },
+    {
+     "label": "1 small",
+     "grams": 33.0
+    },
+    {
+     "label": "1 medium",
+     "grams": 45.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707825,
+    "description": "Tortilla, whole wheat"
+   },
+   "note": "USDA has no roti entry; values are its closest match, a whole-wheat flatbread"
+  },
+  {
+   "id": "naan",
+   "name": "Naan",
+   "aliases": [
+    "nan"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 311.0,
+    "protein": 11.09,
+    "carbs": 50.23,
+    "fat": 7.28,
+    "fiber": 5.2
+   },
+   "servings": [
+    {
+     "label": "1 piece (1/4 of 10\" dia)",
+     "grams": 44.0
+    },
+    {
+     "label": "1 surface inch",
+     "grams": 2.4
+    },
+    {
+     "label": "1 Naan (10\" dia)",
+     "grams": 177.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707613,
+    "description": "Bread, naan"
+   }
+  },
+  {
+   "id": "paratha",
+   "name": "Paratha",
+   "aliases": [
+    "parantha",
+    "parotta"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 326.0,
+    "protein": 6.36,
+    "carbs": 45.35,
+    "fat": 13.2,
+    "fiber": 9.6
+   },
+   "servings": [
+    {
+     "label": "1 paratha",
+     "grams": 70.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707715,
+    "description": "Bread, paratha"
+   }
+  },
+  {
+   "id": "bread-white",
+   "name": "Bread, white",
+   "aliases": [
+    "white bread",
+    "bread slice"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 267.0,
+    "protein": 9.43,
+    "carbs": 49.2,
+    "fat": 3.59,
+    "fiber": 2.3
+   },
+   "servings": [
+    {
+     "label": "1 medium or regular slice",
+     "grams": 28.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 40.0
+    },
+    {
+     "label": "1 slice, crust not eaten",
+     "grams": 13.0
+    },
+    {
+     "label": "1 slice, snack-size",
+     "grams": 10.0
+    },
+    {
+     "label": "1 large or thick slice",
+     "grams": 43.0
+    },
+    {
+     "label": "1 cubic inch",
+     "grams": 2.8
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707598,
+    "description": "Bread, white"
+   }
+  },
+  {
+   "id": "bread-wheat",
+   "name": "Bread, whole wheat",
+   "aliases": [
+    "brown bread",
+    "wheat bread",
+    "atta bread"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 254.0,
+    "protein": 12.3,
+    "carbs": 43.1,
+    "fat": 3.55,
+    "fiber": 6.0
+   },
+   "servings": [
+    {
+     "label": "1 slice, snack-size",
+     "grams": 10.0
+    },
+    {
+     "label": "1 cubic inch",
+     "grams": 3.2
+    },
+    {
+     "label": "1 small or thin/very thin slice",
+     "grams": 24.0
+    },
+    {
+     "label": "1 slice, crust not eaten",
+     "grams": 16.0
+    },
+    {
+     "label": "1 medium or regular slice",
+     "grams": 36.0
+    },
+    {
+     "label": "1 large or thick slice",
+     "grams": 43.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707709,
+    "description": "Bread, whole wheat"
+   }
+  },
+  {
+   "id": "oats",
+   "name": "Oatmeal (cooked with water)",
+   "aliases": [
+    "oats",
+    "oatmeal",
+    "porridge",
+    "daliya"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 64.0,
+    "protein": 2.21,
+    "carbs": 11.36,
+    "fat": 1.09,
+    "fiber": 1.7
+   },
+   "servings": [
+    {
+     "label": "1 cup, dry, yields",
+     "grams": 485.0
+    },
+    {
+     "label": "1 oz, dry, yields",
+     "grams": 170.0
+    },
+    {
+     "label": "1 cup, cooked",
+     "grams": 240.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708381,
+    "description": "Oatmeal, regular or quick, made with water, no added fat"
+   }
+  },
+  {
+   "id": "oats-milk",
+   "name": "Oatmeal (cooked with milk)",
+   "aliases": [
+    "oats with milk"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 116.0,
+    "protein": 5.56,
+    "carbs": 16.23,
+    "fat": 3.25,
+    "fiber": 1.7
+   },
+   "servings": [
+    {
+     "label": "1 cup, cooked",
+     "grams": 240.0
+    },
+    {
+     "label": "1 cup, dry, yields",
+     "grams": 485.0
+    },
+    {
+     "label": "1 oz, dry, yields",
+     "grams": 170.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708383,
+    "description": "Oatmeal, regular or quick, made with milk, no added fat"
+   }
+  },
+  {
+   "id": "pasta",
+   "name": "Pasta (cooked)",
+   "aliases": [
+    "spaghetti",
+    "macaroni",
+    "penne"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 157.0,
+    "protein": 5.76,
+    "carbs": 30.68,
+    "fat": 0.92,
+    "fiber": 1.8
+   },
+   "servings": [
+    {
+     "label": "1 oz, dry, yields",
+     "grams": 80.0
+    },
+    {
+     "label": "1 cup, cooked",
+     "grams": 140.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708357,
+    "description": "Pasta, cooked"
+   }
+  },
+  {
+   "id": "noodles",
+   "name": "Noodles (cooked)",
+   "aliases": [
+    "noodle"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 137.0,
+    "protein": 4.51,
+    "carbs": 25.01,
+    "fat": 2.06,
+    "fiber": 1.2
+   },
+   "servings": [
+    {
+     "label": "1 oz, dry, yields",
+     "grams": 75.0
+    },
+    {
+     "label": "1 cup, cooked",
+     "grams": 160.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708352,
+    "description": "Noodles, cooked"
+   }
+  },
+  {
+   "id": "quinoa",
+   "name": "Quinoa (cooked)",
+   "aliases": [],
+   "category": "grains",
+   "per100g": {
+    "kcal": 120.0,
+    "protein": 4.38,
+    "carbs": 21.21,
+    "fat": 1.91,
+    "fiber": 2.8
+   },
+   "servings": [
+    {
+     "label": "1 cup, cooked",
+     "grams": 170.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708400,
+    "description": "Quinoa, no added fat"
+   }
+  },
+  {
+   "id": "idli",
+   "name": "Idli",
+   "aliases": [
+    "idly"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 128.0,
+    "protein": 6.36,
+    "carbs": 24.98,
+    "fat": 0.35,
+    "fiber": 5.8
+   },
+   "servings": [
+    {
+     "label": "1 item",
+     "grams": 38.0
+    },
+    {
+     "label": "1 surface inch",
+     "grams": 9.8
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708346,
+    "description": "Idli"
+   }
+  },
+  {
+   "id": "dosa",
+   "name": "Dosa, plain",
+   "aliases": [
+    "dosai",
+    "plain dosa"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 210.0,
+    "protein": 5.7,
+    "carbs": 37.04,
+    "fat": 4.05,
+    "fiber": 1.8
+   },
+   "servings": [
+    {
+     "label": "1 small",
+     "grams": 35.0
+    },
+    {
+     "label": "1 medium",
+     "grams": 80.0
+    },
+    {
+     "label": "1 surface inch",
+     "grams": 1.0
+    },
+    {
+     "label": "1 large",
+     "grams": 155.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708347,
+    "description": "Dosa, plain"
+   }
+  },
+  {
+   "id": "dosa-masala",
+   "name": "Dosa, with filling",
+   "aliases": [
+    "masala dosa"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 184.0,
+    "protein": 5.46,
+    "carbs": 30.8,
+    "fat": 4.27,
+    "fiber": 2.2
+   },
+   "servings": [
+    {
+     "label": "1 large",
+     "grams": 523.0
+    },
+    {
+     "label": "1 medium",
+     "grams": 267.0
+    },
+    {
+     "label": "1 surface inch",
+     "grams": 3.4
+    },
+    {
+     "label": "1 small",
+     "grams": 113.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709129,
+    "description": "Dosa, with filling"
+   }
+  },
+  {
+   "id": "upma",
+   "name": "Upma",
+   "aliases": [
+    "uppit",
+    "rava upma"
+   ],
+   "category": "grains",
+   "per100g": {
+    "kcal": 87.0,
+    "protein": 1.98,
+    "carbs": 13.81,
+    "fat": 2.64,
+    "fiber": 1.3
+   },
+   "servings": [
+    {
+     "label": "1 cup, cooked",
+     "grams": 170.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709128,
+    "description": "Upma"
+   }
+  },
+  {
+   "id": "biryani-chicken",
+   "name": "Chicken biryani",
+   "aliases": [
+    "biryani",
+    "chicken biriyani"
+   ],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 104.0,
+    "protein": 7.15,
+    "carbs": 13.55,
+    "fat": 2.38,
+    "fiber": 1.1
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 196.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706538,
+    "description": "Biryani with chicken"
+   }
+  },
+  {
+   "id": "biryani-veg",
+   "name": "Veg biryani",
+   "aliases": [
+    "vegetable biryani",
+    "pulao",
+    "pulav"
+   ],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 109.0,
+    "protein": 1.93,
+    "carbs": 17.91,
+    "fat": 3.2,
+    "fiber": 1.2
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 172.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708985,
+    "description": "Biryani with vegetables"
+   }
+  },
+  {
+   "id": "biryani-meat",
+   "name": "Mutton biryani",
+   "aliases": [
+    "mutton biryani",
+    "meat biryani"
+   ],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 145.0,
+    "protein": 8.5,
+    "carbs": 12.19,
+    "fat": 6.79,
+    "fiber": 1.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 196.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706490,
+    "description": "Biryani with meat"
+   }
+  },
+  {
+   "id": "dal",
+   "name": "Dal",
+   "aliases": [
+    "daal",
+    "dhal",
+    "lentil dal",
+    "toor dal",
+    "moong dal",
+    "masoor dal",
+    "arhar dal"
+   ],
+   "category": "legumes",
+   "per100g": {
+    "kcal": 145.0,
+    "protein": 8.6,
+    "carbs": 19.17,
+    "fat": 4.31,
+    "fiber": 7.5
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 240.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707427,
+    "description": "Dal"
+   }
+  },
+  {
+   "id": "lentil-curry",
+   "name": "Lentil curry",
+   "aliases": [
+    "dal makhani",
+    "dal tadka",
+    "dal fry"
+   ],
+   "category": "legumes",
+   "per100g": {
+    "kcal": 111.0,
+    "protein": 3.68,
+    "carbs": 12.33,
+    "fat": 5.65,
+    "fiber": 3.4
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 240.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707431,
+    "description": "Lentil curry"
+   }
+  },
+  {
+   "id": "lentils",
+   "name": "Lentils, boiled",
+   "aliases": [
+    "boiled lentils",
+    "masoor"
+   ],
+   "category": "legumes",
+   "per100g": {
+    "kcal": 115.0,
+    "protein": 8.97,
+    "carbs": 20.01,
+    "fat": 0.38,
+    "fiber": 7.9
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 180.0
+    },
+    {
+     "label": "1 oz dry, yield after cooking",
+     "grams": 70.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707425,
+    "description": "Lentils, from dried, no added fat"
+   }
+  },
+  {
+   "id": "chickpeas",
+   "name": "Chickpeas (cooked)",
+   "aliases": [
+    "chole",
+    "chana",
+    "chhole",
+    "kabuli chana",
+    "chana masala"
+   ],
+   "category": "legumes",
+   "per100g": {
+    "kcal": 211.0,
+    "protein": 8.23,
+    "carbs": 25.48,
+    "fat": 8.91,
+    "fiber": 7.1
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 185.0
+    },
+    {
+     "label": "1 pea",
+     "grams": 2.0
+    },
+    {
+     "label": "1 oz dry, yield after cooking",
+     "grams": 72.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707415,
+    "description": "Chickpeas, from dried, fat added"
+   }
+  },
+  {
+   "id": "rajma",
+   "name": "Rajma / kidney beans (cooked)",
+   "aliases": [
+    "rajma",
+    "kidney beans",
+    "rajmah"
+   ],
+   "category": "legumes",
+   "per100g": {
+    "kcal": 177.0,
+    "protein": 8.06,
+    "carbs": 21.19,
+    "fat": 6.97,
+    "fiber": 6.9
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 185.0
+    },
+    {
+     "label": "1 oz dry, yield after cooking",
+     "grams": 72.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707380,
+    "description": "Kidney beans, from dried, fat added"
+   }
+  },
+  {
+   "id": "soybeans",
+   "name": "Soybeans (cooked)",
+   "aliases": [
+    "soya",
+    "soy chunks",
+    "soya chunks"
+   ],
+   "category": "legumes",
+   "per100g": {
+    "kcal": 218.0,
+    "protein": 16.92,
+    "carbs": 7.77,
+    "fat": 14.84,
+    "fiber": 5.6
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 185.0
+    },
+    {
+     "label": "1 oz dry, yield after cooking",
+     "grams": 72.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707388,
+    "description": "Soybeans, cooked"
+   }
+  },
+  {
+   "id": "tofu",
+   "name": "Tofu, firm",
+   "aliases": [
+    "bean curd"
+   ],
+   "category": "legumes",
+   "per100g": {
+    "kcal": 78.0,
+    "protein": 9.04,
+    "carbs": 2.85,
+    "fat": 4.17,
+    "fiber": 0.9
+   },
+   "servings": [
+    {
+     "label": "0.5 cup",
+     "grams": 126.0
+    },
+    {
+     "label": "0.25 block",
+     "grams": 81.0
+    },
+    {
+     "label": "0.2 block",
+     "grams": 91.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA SR Legacy",
+    "fdcId": 172448,
+    "description": "Tofu, firm, prepared with calcium sulfate and magnesium chloride (nigari)"
+   }
+  },
+  {
+   "id": "hummus",
+   "name": "Hummus",
+   "aliases": [
+    "houmous"
+   ],
+   "category": "legumes",
+   "per100g": {
+    "kcal": 243.0,
+    "protein": 7.35,
+    "carbs": 14.9,
+    "fat": 17.1,
+    "fiber": 5.4
+   },
+   "servings": [
+    {
+     "label": "1 tablespoon",
+     "grams": 15.0
+    },
+    {
+     "label": "1 individual container",
+     "grams": 70.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707402,
+    "description": "Hummus, plain"
+   }
+  },
+  {
+   "id": "soy-milk",
+   "name": "Soy milk, unsweetened",
+   "aliases": [
+    "soya milk"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 38.0,
+    "protein": 3.55,
+    "carbs": 1.29,
+    "fat": 2.12,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 244.0
+    },
+    {
+     "label": "1 fl oz",
+     "grams": 30.5
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705405,
+    "description": "Soy milk, unsweetened"
+   }
+  },
+  {
+   "id": "milk-whole",
+   "name": "Milk, whole",
+   "aliases": [
+    "milk",
+    "full cream milk",
+    "doodh"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 61.0,
+    "protein": 3.27,
+    "carbs": 4.63,
+    "fat": 3.2,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 individual school container",
+     "grams": 244.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 244.0
+    },
+    {
+     "label": "1 fl oz",
+     "grams": 30.5
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705385,
+    "description": "Milk, whole"
+   }
+  },
+  {
+   "id": "milk-2",
+   "name": "Milk, toned (2%)",
+   "aliases": [
+    "toned milk",
+    "2% milk"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 50.0,
+    "protein": 3.36,
+    "carbs": 4.9,
+    "fat": 1.9,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 individual school container",
+     "grams": 244.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 244.0
+    },
+    {
+     "label": "1 fl oz",
+     "grams": 30.5
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705386,
+    "description": "Milk, reduced fat (2%)"
+   }
+  },
+  {
+   "id": "milk-skim",
+   "name": "Milk, skimmed",
+   "aliases": [
+    "skim milk",
+    "skimmed milk",
+    "double toned milk"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 34.0,
+    "protein": 3.43,
+    "carbs": 4.92,
+    "fat": 0.08,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 individual school container",
+     "grams": 244.0
+    },
+    {
+     "label": "1 fl oz",
+     "grams": 30.5
+    },
+    {
+     "label": "1 cup",
+     "grams": 244.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705388,
+    "description": "Milk, fat free (skim)"
+   }
+  },
+  {
+   "id": "curd",
+   "name": "Curd / yogurt, plain",
+   "aliases": [
+    "curd",
+    "dahi",
+    "yoghurt",
+    "yogurt"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 78.0,
+    "protein": 3.82,
+    "carbs": 5.57,
+    "fat": 4.48,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 245.0
+    },
+    {
+     "label": "1 6 oz container",
+     "grams": 170.0
+    },
+    {
+     "label": "1 4 oz container",
+     "grams": 113.0
+    },
+    {
+     "label": "1 container, NFS",
+     "grams": 170.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705418,
+    "description": "Yogurt, whole milk, plain"
+   }
+  },
+  {
+   "id": "greek-yogurt",
+   "name": "Greek yogurt, plain, nonfat",
+   "aliases": [
+    "hung curd",
+    "greek yoghurt"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 59.0,
+    "protein": 10.3,
+    "carbs": 3.64,
+    "fat": 0.37,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 6 oz container",
+     "grams": 170.0
+    },
+    {
+     "label": "1 container, NFS",
+     "grams": 150.0
+    },
+    {
+     "label": "1 5.3 oz container",
+     "grams": 150.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 245.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705424,
+    "description": "Yogurt, Greek, nonfat milk, plain"
+   }
+  },
+  {
+   "id": "buttermilk",
+   "name": "Buttermilk",
+   "aliases": [
+    "chaas",
+    "chhaas",
+    "mattha"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 56.0,
+    "protein": 4.1,
+    "carbs": 5.3,
+    "fat": 2.0,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 245.0
+    },
+    {
+     "label": "1 fl oz",
+     "grams": 30.6
+    }
+   ],
+   "source": {
+    "dataset": "USDA SR Legacy",
+    "fdcId": 167697,
+    "description": "Milk, buttermilk, fluid, cultured, reduced fat"
+   }
+  },
+  {
+   "id": "paneer",
+   "name": "Paneer",
+   "aliases": [
+    "cottage cheese indian",
+    "panir"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 299.0,
+    "protein": 15.86,
+    "carbs": 22.46,
+    "fat": 15.52,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 246.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705740,
+    "description": "Cheese, paneer"
+   },
+   "note": "USDA's paneer entry; homemade paneer usually has far fewer carbs"
+  },
+  {
+   "id": "palak-paneer",
+   "name": "Palak paneer",
+   "aliases": [
+    "saag paneer"
+   ],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 101.0,
+    "protein": 5.42,
+    "carbs": 4.28,
+    "fat": 7.02,
+    "fiber": 0.9
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 200.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709631,
+    "description": "Palak Paneer"
+   }
+  },
+  {
+   "id": "cheddar",
+   "name": "Cheese, cheddar",
+   "aliases": [
+    "cheese",
+    "cheese slice"
+   ],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 409.0,
+    "protein": 23.3,
+    "carbs": 2.44,
+    "fat": 34.0,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup, cubed",
+     "grams": 132.0
+    },
+    {
+     "label": "1 cubic inch",
+     "grams": 17.0
+    },
+    {
+     "label": "1 slice",
+     "grams": 21.0
+    },
+    {
+     "label": "1 cup, melted",
+     "grams": 244.0
+    },
+    {
+     "label": "1 cup, shredded",
+     "grams": 113.0
+    },
+    {
+     "label": "1 cup, diced",
+     "grams": 132.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705709,
+    "description": "Cheese, Cheddar"
+   }
+  },
+  {
+   "id": "mozzarella",
+   "name": "Cheese, mozzarella",
+   "aliases": [],
+   "category": "dairy",
+   "per100g": {
+    "kcal": 296.0,
+    "protein": 23.7,
+    "carbs": 4.44,
+    "fat": 20.4,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 stick",
+     "grams": 28.4
+    },
+    {
+     "label": "1 cup, diced",
+     "grams": 132.0
+    },
+    {
+     "label": "1 cup, shredded",
+     "grams": 113.0
+    },
+    {
+     "label": "1 cubic inch",
+     "grams": 17.6
+    },
+    {
+     "label": "1 cup, NFS",
+     "grams": 113.0
+    },
+    {
+     "label": "1 string",
+     "grams": 4.7
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705723,
+    "description": "Cheese, Mozzarella, part skim"
+   }
+  },
+  {
+   "id": "egg-boiled",
+   "name": "Egg, boiled",
+   "aliases": [
+    "egg",
+    "eggs",
+    "boiled egg",
+    "anda"
+   ],
+   "category": "protein",
+   "per100g": {
+    "kcal": 143.0,
+    "protein": 12.4,
+    "carbs": 0.96,
+    "fat": 9.96,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 egg",
+     "grams": 50.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 135.0
+    },
+    {
+     "label": "1 slice",
+     "grams": 5.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707154,
+    "description": "Egg, whole, boiled or poached"
+   }
+  },
+  {
+   "id": "egg-fried",
+   "name": "Egg, fried",
+   "aliases": [
+    "fried egg",
+    "omelette",
+    "omelet",
+    "bhurji"
+   ],
+   "category": "protein",
+   "per100g": {
+    "kcal": 192.0,
+    "protein": 11.56,
+    "carbs": 0.9,
+    "fat": 15.81,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 135.0
+    },
+    {
+     "label": "1 egg",
+     "grams": 55.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707158,
+    "description": "Egg, whole, fried with oil"
+   }
+  },
+  {
+   "id": "whey",
+   "name": "Whey protein powder",
+   "aliases": [
+    "whey",
+    "protein powder",
+    "protein shake"
+   ],
+   "category": "protein",
+   "per100g": {
+    "kcal": 352.0,
+    "protein": 78.13,
+    "carbs": 6.25,
+    "fat": 1.56,
+    "fiber": 3.1
+   },
+   "servings": [
+    {
+     "label": "0.33 cup",
+     "grams": 32.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA SR Legacy",
+    "fdcId": 173180,
+    "description": "Beverages, Protein powder whey based"
+   }
+  },
+  {
+   "id": "chicken-breast",
+   "name": "Chicken breast (cooked)",
+   "aliases": [
+    "chicken",
+    "grilled chicken",
+    "chicken breast",
+    "tandoori chicken"
+   ],
+   "category": "protein",
+   "per100g": {
+    "kcal": 161.0,
+    "protein": 30.22,
+    "carbs": 0.0,
+    "fat": 3.52,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 large breast",
+     "grams": 135.0
+    },
+    {
+     "label": "1 large or thick slice",
+     "grams": 85.0
+    },
+    {
+     "label": "1 medium slice",
+     "grams": 60.0
+    },
+    {
+     "label": "1 small or thin slice",
+     "grams": 30.0
+    },
+    {
+     "label": "1 breast quarter (yield after cooking, bone removed)",
+     "grams": 155.0
+    },
+    {
+     "label": "1 medium breast",
+     "grams": 120.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705956,
+    "description": "Chicken breast, baked, broiled, or roasted, skin not eaten, from raw"
+   }
+  },
+  {
+   "id": "chicken-curry",
+   "name": "Chicken curry",
+   "aliases": [
+    "butter chicken",
+    "chicken gravy",
+    "murgh curry"
+   ],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 107.0,
+    "protein": 6.48,
+    "carbs": 6.54,
+    "fat": 6.48,
+    "fiber": 1.4
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 240.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706437,
+    "description": "Chicken curry"
+   }
+  },
+  {
+   "id": "fish-curry",
+   "name": "Fish curry",
+   "aliases": [
+    "machli curry",
+    "fish gravy"
+   ],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 93.0,
+    "protein": 4.94,
+    "carbs": 6.65,
+    "fat": 5.42,
+    "fiber": 1.4
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 240.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706460,
+    "description": "Fish curry"
+   }
+  },
+  {
+   "id": "salmon",
+   "name": "Salmon (cooked)",
+   "aliases": [
+    "fish"
+   ],
+   "category": "protein",
+   "per100g": {
+    "kcal": 274.0,
+    "protein": 25.4,
+    "carbs": 0.01,
+    "fat": 18.4,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 135.0
+    },
+    {
+     "label": "1 steak",
+     "grams": 210.0
+    },
+    {
+     "label": "1 small/regular fillet",
+     "grams": 140.0
+    },
+    {
+     "label": "1 large fillet",
+     "grams": 210.0
+    },
+    {
+     "label": "1 oz yields",
+     "grams": 20.0
+    },
+    {
+     "label": "1 cubic inch",
+     "grams": 17.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706286,
+    "description": "Fish, salmon, baked or broiled"
+   }
+  },
+  {
+   "id": "tuna",
+   "name": "Tuna, canned",
+   "aliases": [
+    "tuna"
+   ],
+   "category": "protein",
+   "per100g": {
+    "kcal": 85.0,
+    "protein": 19.0,
+    "carbs": 0.08,
+    "fat": 0.94,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 small can",
+     "grams": 75.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 135.0
+    },
+    {
+     "label": "1 large can",
+     "grams": 255.0
+    },
+    {
+     "label": "1 pouch",
+     "grams": 75.0
+    },
+    {
+     "label": "1 standard can",
+     "grams": 115.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706311,
+    "description": "Fish, tuna, canned"
+   }
+  },
+  {
+   "id": "mutton-curry",
+   "name": "Mutton / lamb with gravy",
+   "aliases": [
+    "mutton",
+    "mutton curry",
+    "lamb curry",
+    "goat curry"
+   ],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 219.0,
+    "protein": 17.29,
+    "carbs": 1.58,
+    "fat": 15.37,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 slice with gravy",
+     "grams": 43.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 244.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706413,
+    "description": "Lamb or mutton with gravy"
+   }
+  },
+  {
+   "id": "beef-curry",
+   "name": "Beef curry",
+   "aliases": [],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 113.0,
+    "protein": 7.57,
+    "carbs": 6.53,
+    "fat": 6.57,
+    "fiber": 1.4
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 240.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706388,
+    "description": "Beef curry"
+   }
+  },
+  {
+   "id": "shrimp",
+   "name": "Prawns / shrimp (cooked)",
+   "aliases": [
+    "prawns",
+    "prawn",
+    "jhinga"
+   ],
+   "category": "protein",
+   "per100g": {
+    "kcal": 90.0,
+    "protein": 17.19,
+    "carbs": 1.15,
+    "fat": 1.28,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 large/jumbo shrimp",
+     "grams": 15.0
+    },
+    {
+     "label": "1 tiny shrimp",
+     "grams": 5.0
+    },
+    {
+     "label": "1 prawn",
+     "grams": 20.0
+    },
+    {
+     "label": "1 small/medium shrimp",
+     "grams": 10.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 135.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706363,
+    "description": "Shrimp, steamed or boiled"
+   }
+  },
+  {
+   "id": "banana",
+   "name": "Banana",
+   "aliases": [
+    "kela"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 97.0,
+    "protein": 0.74,
+    "carbs": 22.71,
+    "fat": 0.28,
+    "fiber": 1.7
+   },
+   "servings": [
+    {
+     "label": "1 linear inch",
+     "grams": 15.0
+    },
+    {
+     "label": "1 banana",
+     "grams": 126.0
+    },
+    {
+     "label": "1 cup, mashed",
+     "grams": 225.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 150.0
+    },
+    {
+     "label": "1 slice",
+     "grams": 6.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709224,
+    "description": "Banana, raw"
+   }
+  },
+  {
+   "id": "apple",
+   "name": "Apple",
+   "aliases": [
+    "seb"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 61.0,
+    "protein": 0.17,
+    "carbs": 14.8,
+    "fat": 0.15,
+    "fiber": 2.1
+   },
+   "servings": [
+    {
+     "label": "1 medium",
+     "grams": 200.0
+    },
+    {
+     "label": "1 small",
+     "grams": 165.0
+    },
+    {
+     "label": "1 single serving package",
+     "grams": 34.0
+    },
+    {
+     "label": "1 extra large",
+     "grams": 295.0
+    },
+    {
+     "label": "1 slice",
+     "grams": 25.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 125.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709215,
+    "description": "Apple, raw"
+   }
+  },
+  {
+   "id": "orange",
+   "name": "Orange",
+   "aliases": [
+    "santra"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 50.0,
+    "protein": 0.92,
+    "carbs": 11.78,
+    "fat": 0.14,
+    "fiber": 2.2
+   },
+   "servings": [
+    {
+     "label": "1 fruit",
+     "grams": 154.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 180.0
+    },
+    {
+     "label": "1 section/slice",
+     "grams": 15.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709171,
+    "description": "Orange, raw"
+   }
+  },
+  {
+   "id": "mango",
+   "name": "Mango",
+   "aliases": [
+    "aam"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 60.0,
+    "protein": 0.82,
+    "carbs": 14.98,
+    "fat": 0.38,
+    "fiber": 1.6
+   },
+   "servings": [
+    {
+     "label": "1 slice/chunk",
+     "grams": 25.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 165.0
+    },
+    {
+     "label": "1 mango",
+     "grams": 210.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709242,
+    "description": "Mango, raw"
+   }
+  },
+  {
+   "id": "grapes",
+   "name": "Grapes",
+   "aliases": [
+    "angoor"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 83.0,
+    "protein": 0.9,
+    "carbs": 19.4,
+    "fat": 0.2,
+    "fiber": 0.9
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 150.0
+    },
+    {
+     "label": "1 grape",
+     "grams": 7.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709237,
+    "description": "Grapes, raw"
+   }
+  },
+  {
+   "id": "papaya",
+   "name": "Papaya",
+   "aliases": [
+    "papita"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 43.0,
+    "protein": 0.47,
+    "carbs": 10.82,
+    "fat": 0.26,
+    "fiber": 1.7
+   },
+   "servings": [
+    {
+     "label": "1 slice/chunk",
+     "grams": 40.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 165.0
+    },
+    {
+     "label": "1 fruit",
+     "grams": 330.0
+    },
+    {
+     "label": "1 cup, mashed",
+     "grams": 230.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709246,
+    "description": "Papaya, raw"
+   }
+  },
+  {
+   "id": "guava",
+   "name": "Guava",
+   "aliases": [
+    "amrood"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 68.0,
+    "protein": 2.55,
+    "carbs": 14.32,
+    "fat": 0.95,
+    "fiber": 5.4
+   },
+   "servings": [
+    {
+     "label": "1 slice",
+     "grams": 15.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 165.0
+    },
+    {
+     "label": "1 fruit",
+     "grams": 55.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709238,
+    "description": "Guava, raw"
+   }
+  },
+  {
+   "id": "watermelon",
+   "name": "Watermelon",
+   "aliases": [
+    "tarbooz"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 30.0,
+    "protein": 0.61,
+    "carbs": 7.55,
+    "fat": 0.15,
+    "fiber": 0.4
+   },
+   "servings": [
+    {
+     "label": "1 miniature melon",
+     "grams": 1300.0
+    },
+    {
+     "label": "1 large melon",
+     "grams": 6000.0
+    },
+    {
+     "label": "1 small wedge/slice",
+     "grams": 218.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 155.0
+    },
+    {
+     "label": "1 ball",
+     "grams": 15.0
+    },
+    {
+     "label": "1 large wedge/slice",
+     "grams": 432.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709270,
+    "description": "Watermelon, raw"
+   }
+  },
+  {
+   "id": "pineapple",
+   "name": "Pineapple",
+   "aliases": [
+    "ananas"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 60.0,
+    "protein": 0.46,
+    "carbs": 14.09,
+    "fat": 0.21,
+    "fiber": 0.9
+   },
+   "servings": [
+    {
+     "label": "1 chunk",
+     "grams": 15.0
+    },
+    {
+     "label": "1 slice",
+     "grams": 56.0
+    },
+    {
+     "label": "1 fruit",
+     "grams": 905.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 165.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709260,
+    "description": "Pineapple, raw"
+   }
+  },
+  {
+   "id": "pomegranate",
+   "name": "Pomegranate",
+   "aliases": [
+    "anar"
+   ],
+   "category": "fruit",
+   "per100g": {
+    "kcal": 83.0,
+    "protein": 1.67,
+    "carbs": 18.7,
+    "fat": 1.17,
+    "fiber": 4.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 175.0
+    },
+    {
+     "label": "1 fruit",
+     "grams": 250.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709267,
+    "description": "Pomegranate, raw"
+   }
+  },
+  {
+   "id": "potato",
+   "name": "Potato, boiled",
+   "aliases": [
+    "aloo",
+    "potatoes"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 93.0,
+    "protein": 1.95,
+    "carbs": 21.46,
+    "fat": 0.1,
+    "fiber": 1.5
+   },
+   "servings": [
+    {
+     "label": "1 small",
+     "grams": 130.0
+    },
+    {
+     "label": "1 large",
+     "grams": 300.0
+    },
+    {
+     "label": "1 medium",
+     "grams": 170.0
+    },
+    {
+     "label": "1 baby potato",
+     "grams": 60.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 160.0
+    },
+    {
+     "label": "1 new potato",
+     "grams": 60.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709388,
+    "description": "Potato, boiled, from fresh, peel not eaten, no added fat"
+   }
+  },
+  {
+   "id": "sweet-potato",
+   "name": "Sweet potato, boiled",
+   "aliases": [
+    "shakarkandi"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 82.0,
+    "protein": 1.64,
+    "carbs": 17.98,
+    "fat": 0.39,
+    "fiber": 3.1
+   },
+   "servings": [
+    {
+     "label": "1 cup, mashed",
+     "grams": 250.0
+    },
+    {
+     "label": "1 large",
+     "grams": 235.0
+    },
+    {
+     "label": "1 oz, raw, yields",
+     "grams": 25.0
+    },
+    {
+     "label": "1 medium",
+     "grams": 150.0
+    },
+    {
+     "label": "1 small",
+     "grams": 80.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709702,
+    "description": "Sweet potato, boiled, no added fat"
+   }
+  },
+  {
+   "id": "spinach",
+   "name": "Spinach, raw",
+   "aliases": [
+    "palak"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 27.0,
+    "protein": 2.85,
+    "carbs": 2.41,
+    "fat": 0.62,
+    "fiber": 1.6
+   },
+   "servings": [
+    {
+     "label": "1 leaf",
+     "grams": 10.0
+    },
+    {
+     "label": "1 baby leaf",
+     "grams": 0.6
+    },
+    {
+     "label": "1 cup",
+     "grams": 25.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709614,
+    "description": "Spinach, raw"
+   }
+  },
+  {
+   "id": "broccoli",
+   "name": "Broccoli, raw",
+   "aliases": [],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 39.0,
+    "protein": 2.57,
+    "carbs": 6.27,
+    "fat": 0.34,
+    "fiber": 2.4
+   },
+   "servings": [
+    {
+     "label": "1 floweret",
+     "grams": 10.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 90.0
+    },
+    {
+     "label": "1 piece",
+     "grams": 10.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709643,
+    "description": "Broccoli, raw"
+   }
+  },
+  {
+   "id": "cauliflower",
+   "name": "Cauliflower (cooked with oil)",
+   "aliases": [
+    "gobi",
+    "aloo gobi"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 52.0,
+    "protein": 1.94,
+    "carbs": 5.01,
+    "fat": 3.31,
+    "fiber": 2.0
+   },
+   "servings": [
+    {
+     "label": "1 piece",
+     "grams": 13.0
+    },
+    {
+     "label": "1 floweret",
+     "grams": 13.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 160.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709902,
+    "description": "Cauliflower, fresh, cooked with oil"
+   }
+  },
+  {
+   "id": "okra",
+   "name": "Okra / bhindi (cooked)",
+   "aliases": [
+    "bhindi",
+    "lady finger",
+    "ladyfinger"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 59.0,
+    "protein": 2.02,
+    "carbs": 7.76,
+    "fat": 2.94,
+    "fiber": 3.3
+   },
+   "servings": [
+    {
+     "label": "1 pod",
+     "grams": 10.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 165.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709947,
+    "description": "Okra, fresh, cooked, fat added"
+   }
+  },
+  {
+   "id": "peas",
+   "name": "Green peas (cooked)",
+   "aliases": [
+    "matar",
+    "peas"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 78.0,
+    "protein": 5.15,
+    "carbs": 14.26,
+    "fat": 0.27,
+    "fiber": 4.5
+   },
+   "servings": [
+    {
+     "label": "0.5 cup",
+     "grams": 80.0
+    },
+    {
+     "label": "1 package (10 oz) yields",
+     "grams": 253.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA SR Legacy",
+    "fdcId": 170017,
+    "description": "Peas, green, frozen, cooked, boiled, drained, without salt"
+   }
+  },
+  {
+   "id": "tomato",
+   "name": "Tomato",
+   "aliases": [
+    "tamatar",
+    "tomatoes"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 20.0,
+    "protein": 0.82,
+    "carbs": 4.04,
+    "fat": 0.31,
+    "fiber": 1.2
+   },
+   "servings": [
+    {
+     "label": "1 slice",
+     "grams": 20.0
+    },
+    {
+     "label": "1 grape tomato",
+     "grams": 8.0
+    },
+    {
+     "label": "1 plum tomato",
+     "grams": 60.0
+    },
+    {
+     "label": "1 whole",
+     "grams": 125.0
+    },
+    {
+     "label": "1 Italian tomato",
+     "grams": 60.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 180.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709719,
+    "description": "Tomatoes, raw"
+   }
+  },
+  {
+   "id": "cucumber",
+   "name": "Cucumber",
+   "aliases": [
+    "kheera",
+    "kakdi"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 16.0,
+    "protein": 0.62,
+    "carbs": 2.95,
+    "fat": 0.18,
+    "fiber": 0.5
+   },
+   "servings": [
+    {
+     "label": "1 stick",
+     "grams": 10.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 120.0
+    },
+    {
+     "label": "1 miniature",
+     "grams": 65.0
+    },
+    {
+     "label": "1 regular",
+     "grams": 200.0
+    },
+    {
+     "label": "1 piece/slice",
+     "grams": 10.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709784,
+    "description": "Cucumber, raw"
+   }
+  },
+  {
+   "id": "carrot",
+   "name": "Carrot",
+   "aliases": [
+    "gajar",
+    "carrots"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 44.0,
+    "protein": 0.87,
+    "carbs": 9.68,
+    "fat": 0.24,
+    "fiber": 2.9
+   },
+   "servings": [
+    {
+     "label": "1 single serving bag",
+     "grams": 80.0
+    },
+    {
+     "label": "1 regular carrot",
+     "grams": 60.0
+    },
+    {
+     "label": "1 baby carrot",
+     "grams": 10.0
+    },
+    {
+     "label": "1 strip/stick",
+     "grams": 10.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 120.0
+    },
+    {
+     "label": "1 piece/slice",
+     "grams": 5.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709660,
+    "description": "Carrots, raw"
+   }
+  },
+  {
+   "id": "onion",
+   "name": "Onion",
+   "aliases": [
+    "pyaz",
+    "onions"
+   ],
+   "category": "vegetables",
+   "per100g": {
+    "kcal": 38.0,
+    "protein": 0.86,
+    "carbs": 8.46,
+    "fat": 0.08,
+    "fiber": 1.7
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 160.0
+    },
+    {
+     "label": "1 ring",
+     "grams": 5.0
+    },
+    {
+     "label": "1 whole",
+     "grams": 148.0
+    },
+    {
+     "label": "1 slice",
+     "grams": 15.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709795,
+    "description": "Onions, raw"
+   }
+  },
+  {
+   "id": "peanuts",
+   "name": "Peanuts, roasted",
+   "aliases": [
+    "moongphali",
+    "groundnuts",
+    "peanut"
+   ],
+   "category": "nuts",
+   "per100g": {
+    "kcal": 599.0,
+    "protein": 28.03,
+    "carbs": 15.26,
+    "fat": 52.5,
+    "fiber": 9.4
+   },
+   "servings": [
+    {
+     "label": "1 cup, without shell, NS as to form",
+     "grams": 146.0
+    },
+    {
+     "label": "1 peanut, NFS",
+     "grams": 1.0
+    },
+    {
+     "label": "1 oz, in shell, yields",
+     "grams": 21.0
+    },
+    {
+     "label": "1 peanut in shell, yields",
+     "grams": 2.0
+    },
+    {
+     "label": "1 cup, NFS",
+     "grams": 146.0
+    },
+    {
+     "label": "1 package",
+     "grams": 50.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707515,
+    "description": "Peanuts, roasted, salted"
+   }
+  },
+  {
+   "id": "peanut-butter",
+   "name": "Peanut butter",
+   "aliases": [
+    "pb"
+   ],
+   "category": "nuts",
+   "per100g": {
+    "kcal": 598.0,
+    "protein": 22.21,
+    "carbs": 22.31,
+    "fat": 51.36,
+    "fiber": 5.0
+   },
+   "servings": [
+    {
+     "label": "1 single serving",
+     "grams": 45.0
+    },
+    {
+     "label": "1 tablespoon",
+     "grams": 16.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707537,
+    "description": "Peanut butter"
+   }
+  },
+  {
+   "id": "almonds",
+   "name": "Almonds",
+   "aliases": [
+    "badam",
+    "almond"
+   ],
+   "category": "nuts",
+   "per100g": {
+    "kcal": 607.0,
+    "protein": 20.33,
+    "carbs": 20.38,
+    "fat": 53.96,
+    "fiber": 10.6
+   },
+   "servings": [
+    {
+     "label": "1 nut",
+     "grams": 1.2
+    },
+    {
+     "label": "1 package",
+     "grams": 50.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 141.0
+    },
+    {
+     "label": "1 oz",
+     "grams": 28.4
+    },
+    {
+     "label": "1 100 calorie package",
+     "grams": 18.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707489,
+    "description": "Almonds, unsalted"
+   }
+  },
+  {
+   "id": "cashews",
+   "name": "Cashews",
+   "aliases": [
+    "kaju",
+    "cashew"
+   ],
+   "category": "nuts",
+   "per100g": {
+    "kcal": 584.0,
+    "protein": 14.85,
+    "carbs": 31.71,
+    "fat": 47.96,
+    "fiber": 2.9
+   },
+   "servings": [
+    {
+     "label": "1 package",
+     "grams": 50.0
+    },
+    {
+     "label": "1 oz",
+     "grams": 28.4
+    },
+    {
+     "label": "1 cup",
+     "grams": 130.0
+    },
+    {
+     "label": "1 nut",
+     "grams": 1.5
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707497,
+    "description": "Cashews, unsalted"
+   }
+  },
+  {
+   "id": "ghee",
+   "name": "Ghee",
+   "aliases": [
+    "desi ghee"
+   ],
+   "category": "fats",
+   "per100g": {
+    "kcal": 876.0,
+    "protein": 0.28,
+    "carbs": 0.0,
+    "fat": 99.48,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 tablespoon",
+     "grams": 14.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 224.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710168,
+    "description": "Ghee, clarified butter"
+   }
+  },
+  {
+   "id": "butter",
+   "name": "Butter",
+   "aliases": [
+    "makhan"
+   ],
+   "category": "fats",
+   "per100g": {
+    "kcal": 743.0,
+    "protein": 0.85,
+    "carbs": 0.06,
+    "fat": 82.2,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 224.0
+    },
+    {
+     "label": "1 tablespoon",
+     "grams": 14.0
+    },
+    {
+     "label": "1 pat",
+     "grams": 7.0
+    },
+    {
+     "label": "1 stick",
+     "grams": 113.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710155,
+    "description": "Butter, stick"
+   }
+  },
+  {
+   "id": "oil",
+   "name": "Cooking oil",
+   "aliases": [
+    "oil",
+    "refined oil",
+    "vegetable oil",
+    "mustard oil",
+    "sunflower oil"
+   ],
+   "category": "fats",
+   "per100g": {
+    "kcal": 900.0,
+    "protein": 0.0,
+    "carbs": 0.0,
+    "fat": 100.0,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 224.0
+    },
+    {
+     "label": "1 tablespoon",
+     "grams": 14.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710180,
+    "description": "Vegetable oil, NFS"
+   }
+  },
+  {
+   "id": "olive-oil",
+   "name": "Olive oil",
+   "aliases": [],
+   "category": "fats",
+   "per100g": {
+    "kcal": 900.0,
+    "protein": 0.0,
+    "carbs": 0.0,
+    "fat": 100.0,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 tablespoon",
+     "grams": 14.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 224.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710186,
+    "description": "Olive oil"
+   }
+  },
+  {
+   "id": "sugar",
+   "name": "Sugar",
+   "aliases": [
+    "cheeni",
+    "shakkar"
+   ],
+   "category": "sweets",
+   "per100g": {
+    "kcal": 401.0,
+    "protein": 0.0,
+    "carbs": 99.6,
+    "fat": 0.32,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 teaspoon",
+     "grams": 4.2
+    },
+    {
+     "label": "1 cup",
+     "grams": 200.0
+    },
+    {
+     "label": "1 cube",
+     "grams": 2.3
+    },
+    {
+     "label": "1 individual packet",
+     "grams": 3.5
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710258,
+    "description": "Sugar, white, granulated or lump"
+   }
+  },
+  {
+   "id": "honey",
+   "name": "Honey",
+   "aliases": [
+    "shahad"
+   ],
+   "category": "sweets",
+   "per100g": {
+    "kcal": 304.0,
+    "protein": 0.3,
+    "carbs": 82.4,
+    "fat": 0.0,
+    "fiber": 0.2
+   },
+   "servings": [
+    {
+     "label": "1 tablespoon",
+     "grams": 20.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 320.0
+    },
+    {
+     "label": "1 single serving container",
+     "grams": 14.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710281,
+    "description": "Honey"
+   }
+  },
+  {
+   "id": "chocolate",
+   "name": "Chocolate",
+   "aliases": [
+    "chocolate bar",
+    "dairy milk"
+   ],
+   "category": "sweets",
+   "per100g": {
+    "kcal": 535.0,
+    "protein": 7.65,
+    "carbs": 59.4,
+    "fat": 29.66,
+    "fiber": 3.4
+   },
+   "servings": [
+    {
+     "label": "1 pouch/regular size",
+     "grams": 45.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 160.0
+    },
+    {
+     "label": "1 piece",
+     "grams": 8.0
+    },
+    {
+     "label": "1 miniature/bite size",
+     "grams": 10.0
+    },
+    {
+     "label": "1 large/king size",
+     "grams": 90.0
+    },
+    {
+     "label": "1 fun/snack size",
+     "grams": 15.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710328,
+    "description": "Chocolate candy"
+   }
+  },
+  {
+   "id": "ice-cream",
+   "name": "Ice cream, vanilla",
+   "aliases": [
+    "ice cream",
+    "icecream"
+   ],
+   "category": "sweets",
+   "per100g": {
+    "kcal": 207.0,
+    "protein": 3.5,
+    "carbs": 23.6,
+    "fat": 11.0,
+    "fiber": 0.7
+   },
+   "servings": [
+    {
+     "label": "1 large ice cream cup",
+     "grams": 360.0
+    },
+    {
+     "label": "1 medium ice cream cup",
+     "grams": 240.0
+    },
+    {
+     "label": "1 small ice cream cup",
+     "grams": 120.0
+    },
+    {
+     "label": "1 individual container",
+     "grams": 75.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 135.0
+    },
+    {
+     "label": "1 cubic inch",
+     "grams": 9.2
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2705630,
+    "description": "Ice cream, vanilla"
+   }
+  },
+  {
+   "id": "biscuit",
+   "name": "Biscuit",
+   "aliases": [
+    "biscuits",
+    "cookie"
+   ],
+   "category": "sweets",
+   "per100g": {
+    "kcal": 370.0,
+    "protein": 7.08,
+    "carbs": 42.82,
+    "fat": 18.92,
+    "fiber": 2.5
+   },
+   "servings": [
+    {
+     "label": "1 cubic inch",
+     "grams": 8.5
+    },
+    {
+     "label": "1 biscuit",
+     "grams": 45.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707801,
+    "description": "Biscuit, NFS"
+   }
+  },
+  {
+   "id": "tea",
+   "name": "Tea, black (no milk)",
+   "aliases": [
+    "black tea"
+   ],
+   "category": "drinks",
+   "per100g": {
+    "kcal": 1.0,
+    "protein": 0.0,
+    "carbs": 0.3,
+    "fat": 0.0,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 small",
+     "grams": 360.0
+    },
+    {
+     "label": "1 fl oz",
+     "grams": 30.0
+    },
+    {
+     "label": "1 large",
+     "grams": 600.0
+    },
+    {
+     "label": "1 medium",
+     "grams": 480.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 240.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710488,
+    "description": "Tea, hot, leaf, black"
+   }
+  },
+  {
+   "id": "coffee",
+   "name": "Coffee, black",
+   "aliases": [
+    "black coffee"
+   ],
+   "category": "drinks",
+   "per100g": {
+    "kcal": 1.0,
+    "protein": 0.12,
+    "carbs": 0.0,
+    "fat": 0.02,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 fl oz",
+     "grams": 30.0
+    },
+    {
+     "label": "1 large",
+     "grams": 600.0
+    },
+    {
+     "label": "1 cup (8 fl oz)",
+     "grams": 240.0
+    },
+    {
+     "label": "1 small pot (20 FO, 4 servings)",
+     "grams": 600.0
+    },
+    {
+     "label": "1 medium",
+     "grams": 480.0
+    },
+    {
+     "label": "1 large pot (60 FO, 12 servings)",
+     "grams": 1800.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710375,
+    "description": "Coffee, brewed"
+   }
+  },
+  {
+   "id": "orange-juice",
+   "name": "Orange juice",
+   "aliases": [
+    "juice",
+    "fresh juice"
+   ],
+   "category": "drinks",
+   "per100g": {
+    "kcal": 47.0,
+    "protein": 0.81,
+    "carbs": 10.01,
+    "fat": 0.36,
+    "fiber": 0.3
+   },
+   "servings": [
+    {
+     "label": "1 fl oz (no ice)",
+     "grams": 31.0
+    },
+    {
+     "label": "Juice of 1 orange (2-5/8\" dia)",
+     "grams": 86.0
+    },
+    {
+     "label": "1 fl oz (with ice)",
+     "grams": 23.0
+    },
+    {
+     "label": "1 fl oz (NFS)",
+     "grams": 31.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709187,
+    "description": "Orange juice, 100%,  freshly squeezed"
+   }
+  },
+  {
+   "id": "cola",
+   "name": "Cola",
+   "aliases": [
+    "coke",
+    "pepsi",
+    "soft drink"
+   ],
+   "category": "drinks",
+   "per100g": {
+    "kcal": 42.0,
+    "protein": 0.0,
+    "carbs": 10.36,
+    "fat": 0.25,
+    "fiber": 0.0
+   },
+   "servings": [
+    {
+     "label": "1 fl oz (NFS)",
+     "grams": 31.0
+    },
+    {
+     "label": "1 bottle (20 fl oz)",
+     "grams": 620.0
+    },
+    {
+     "label": "1 fl oz (no ice)",
+     "grams": 31.0
+    },
+    {
+     "label": "1 bottle (16.9 fl oz or 500 ml)",
+     "grams": 524.0
+    },
+    {
+     "label": "1 small drink",
+     "grams": 372.0
+    },
+    {
+     "label": "1 fl oz (with ice)",
+     "grams": 23.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710541,
+    "description": "Soft drink, cola"
+   }
+  },
+  {
+   "id": "samosa",
+   "name": "Samosa",
+   "aliases": [
+    "samosaa"
+   ],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 310.0,
+    "protein": 5.14,
+    "carbs": 33.16,
+    "fat": 17.47,
+    "fiber": 1.8
+   },
+   "servings": [
+    {
+     "label": "1 regular/large",
+     "grams": 100.0
+    },
+    {
+     "label": "1 small/individual",
+     "grams": 25.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708730,
+    "description": "Samosa"
+   }
+  },
+  {
+   "id": "pakora",
+   "name": "Pakora",
+   "aliases": [
+    "pakoda",
+    "bhajji",
+    "bhaji"
+   ],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 125.0,
+    "protein": 4.92,
+    "carbs": 16.24,
+    "fat": 4.77,
+    "fiber": 3.2
+   },
+   "servings": [
+    {
+     "label": "1 pakora",
+     "grams": 12.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2710066,
+    "description": "Pakora"
+   }
+  },
+  {
+   "id": "vada",
+   "name": "Vada",
+   "aliases": [
+    "medu vada",
+    "wada"
+   ],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 266.0,
+    "protein": 12.75,
+    "carbs": 33.25,
+    "fat": 9.73,
+    "fiber": 5.8
+   },
+   "servings": [
+    {
+     "label": "1 item, any size",
+     "grams": 30.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709130,
+    "description": "Vada"
+   }
+  },
+  {
+   "id": "chips",
+   "name": "Potato chips",
+   "aliases": [
+    "chips",
+    "crisps",
+    "wafers"
+   ],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 532.0,
+    "protein": 6.39,
+    "carbs": 53.83,
+    "fat": 33.98,
+    "fiber": 3.1
+   },
+   "servings": [
+    {
+     "label": "1 large single serving bag",
+     "grams": 85.0
+    },
+    {
+     "label": "1 medium single serving bag",
+     "grams": 57.0
+    },
+    {
+     "label": "1 100 calorie package",
+     "grams": 18.0
+    },
+    {
+     "label": "1 cup",
+     "grams": 25.0
+    },
+    {
+     "label": "1 small single serving bag",
+     "grams": 28.0
+    },
+    {
+     "label": "1 chip",
+     "grams": 2.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2709422,
+    "description": "Potato chips, plain"
+   }
+  },
+  {
+   "id": "popcorn",
+   "name": "Popcorn",
+   "aliases": [],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 498.0,
+    "protein": 8.96,
+    "carbs": 57.87,
+    "fat": 27.99,
+    "fiber": 10.0
+   },
+   "servings": [
+    {
+     "label": "1 oz, unpopped, yields",
+     "grams": 25.0
+    },
+    {
+     "label": "1 cup, unpopped, yields",
+     "grams": 177.0
+    },
+    {
+     "label": "1 cup, popped",
+     "grams": 11.0
+    },
+    {
+     "label": "1 kernel",
+     "grams": 0.2
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708221,
+    "description": "Popcorn, popped in oil, no butter added"
+   }
+  },
+  {
+   "id": "pizza",
+   "name": "Pizza, cheese",
+   "aliases": [
+    "pizza slice"
+   ],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 266.0,
+    "protein": 11.39,
+    "carbs": 33.33,
+    "fat": 9.69,
+    "fiber": 2.3
+   },
+   "servings": [
+    {
+     "label": "1 piece, medium pizza",
+     "grams": 86.0
+    },
+    {
+     "label": "1 medium pizza (11-12\" diameter)",
+     "grams": 691.0
+    },
+    {
+     "label": "1 surface inch",
+     "grams": 6.2
+    },
+    {
+     "label": "1 piece, small pizza",
+     "grams": 80.0
+    },
+    {
+     "label": "1 piece, large pizza",
+     "grams": 119.0
+    },
+    {
+     "label": "1 piece, extra-large pizza",
+     "grams": 128.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2708614,
+    "description": "Pizza, cheese, from restaurant or fast food, NS as to type of crust"
+   }
+  },
+  {
+   "id": "burger",
+   "name": "Cheeseburger",
+   "aliases": [
+    "burger"
+   ],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 296.0,
+    "protein": 17.87,
+    "carbs": 18.71,
+    "fat": 16.15,
+    "fiber": 0.6
+   },
+   "servings": [
+    {
+     "label": "1 cheeseburger",
+     "grams": 165.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2706888,
+    "description": "Cheeseburger, NFS"
+   }
+  },
+  {
+   "id": "fries",
+   "name": "French fries",
+   "aliases": [
+    "fries",
+    "finger chips"
+   ],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 323.0,
+    "protein": 3.41,
+    "carbs": 42.58,
+    "fat": 15.47,
+    "fiber": 3.9
+   },
+   "servings": [
+    {
+     "label": "1 small serving",
+     "grams": 71.0
+    },
+    {
+     "label": "1 medium serving",
+     "grams": 117.0
+    },
+    {
+     "label": "1 large serving",
+     "grams": 154.0
+    },
+    {
+     "label": "1 kids serving",
+     "grams": 31.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA SR Legacy",
+    "fdcId": 170721,
+    "description": "McDONALD'S, french fries"
+   }
+  },
+  {
+   "id": "pb-sandwich",
+   "name": "Peanut butter sandwich",
+   "aliases": [],
+   "category": "snacks",
+   "per100g": {
+    "kcal": 380.0,
+    "protein": 15.16,
+    "carbs": 37.38,
+    "fat": 20.46,
+    "fiber": 5.3
+   },
+   "servings": [
+    {
+     "label": "1 sandwich (1 slice bread)",
+     "grams": 46.0
+    },
+    {
+     "label": "1 sandwich",
+     "grams": 92.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707551,
+    "description": "Peanut butter sandwich, with regular peanut butter, on wheat bread"
+   }
+  },
+  {
+   "id": "lentil-soup",
+   "name": "Lentil soup",
+   "aliases": [
+    "dal soup"
+   ],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 60.0,
+    "protein": 3.82,
+    "carbs": 10.2,
+    "fat": 0.69,
+    "fiber": 3.7
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 255.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707462,
+    "description": "Soup, lentil"
+   }
+  },
+  {
+   "id": "chicken-soup",
+   "name": "Chicken soup",
+   "aliases": [],
+   "category": "dishes",
+   "per100g": {
+    "kcal": 40.0,
+    "protein": 3.44,
+    "carbs": 4.04,
+    "fat": 1.14,
+    "fiber": 0.8
+   },
+   "servings": [
+    {
+     "label": "1 cup",
+     "grams": 245.0
+    }
+   ],
+   "source": {
+    "dataset": "USDA FNDDS 2021-2023",
+    "fdcId": 2707134,
+    "description": "Soup, chicken"
+   }
+  }
+ ]
+}

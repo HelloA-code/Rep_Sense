@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { CalendarCheckIcon, FlameIcon } from "lucide-react";
+import Link from "next/link";
+import { CalendarCheckIcon, ChevronRightIcon, FlameIcon, UtensilsIcon } from "lucide-react";
 import { SignInCard } from "@/components/tabs/sign-in-card";
 import { PrimaryButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
-import { lastTrained, repsPerDay, streak, type SessionWithSets } from "@/lib/data/stats";
+import { dayKey, lastTrained, repsPerDay, streak, type SessionWithSets } from "@/lib/data/stats";
 import { suggestSession } from "@/lib/data/suggest";
 import { EXERCISES } from "@/lib/equipment";
 import { loadOnboarding, saveOnboarding, type OnboardingData } from "@/lib/onboarding";
@@ -28,11 +29,13 @@ function greeting(hour: number) {
 
 type TodayViewProps = {
   signedIn: boolean;
+  /** Calories eaten recently and the target, when the Diet tab is set up. */
+  calories?: { meals: { eaten_at: string; kcal: number }[]; target: number } | null;
   serverProfile: OnboardingData | null;
   sessions: SessionWithSets[];
 };
 
-export function TodayView({ signedIn, serverProfile, sessions }: TodayViewProps) {
+export function TodayView({ signedIn, serverProfile, sessions, calories }: TodayViewProps) {
   const router = useRouter();
   const [data, setData] = useState<OnboardingData | null>(null);
   const [now, setNow] = useState<Date | null>(null);
@@ -87,6 +90,28 @@ export function TodayView({ signedIn, serverProfile, sessions }: TodayViewProps)
             Start workout
           </PrimaryButton>
         </Card>
+
+        {calories && (
+          <Link href="/diet" className="block">
+            <Card className="flex items-center gap-4 p-4">
+              <span className="grid size-11 place-items-center rounded-full border border-accent-border bg-accent-tint text-accent">
+                <UtensilsIcon className="size-5" />
+              </span>
+              <div className="flex-1">
+                <p className="text-[22px] leading-none font-extrabold tabular-nums">
+                  {Math.round(
+                    calories.meals
+                      .filter((m) => dayKey(new Date(m.eaten_at)) === dayKey(now))
+                      .reduce((sum, m) => sum + m.kcal, 0),
+                  ).toLocaleString("en")}{" "}
+                  <span className="text-[14px] text-muted">/ {calories.target.toLocaleString("en")} kcal</span>
+                </p>
+                <p className="mt-1 text-[12px] font-semibold text-muted">Eaten today</p>
+              </div>
+              <ChevronRightIcon className="size-4 text-muted" />
+            </Card>
+          </Link>
+        )}
 
         {signedIn ? (
           sessions.length > 0 ? (

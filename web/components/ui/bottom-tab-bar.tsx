@@ -9,6 +9,7 @@ import {
   HistoryIcon,
   MessageCircleIcon,
   UserIcon,
+  UtensilsIcon,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils";
 const TABS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/today", label: "Today", icon: FlameIcon },
   { href: "/week", label: "Week", icon: CalendarDaysIcon },
+  { href: "/diet", label: "Diet", icon: UtensilsIcon },
   { href: "/coach", label: "Coach", icon: MessageCircleIcon },
   { href: "/history", label: "History", icon: HistoryIcon },
   { href: "/profile", label: "Profile", icon: UserIcon },
@@ -28,7 +30,7 @@ export function BottomTabBar() {
   return (
     <nav
       aria-label="Main"
-      className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[440px] px-4"
+      className="pb-safe fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[440px] px-3"
     >
       <ul className="flex rounded-[28px] border border-border-strong bg-[#0c0c0c] p-1.5">
         {TABS.map(({ href, label, icon: Icon }) => {
@@ -39,7 +41,7 @@ export function BottomTabBar() {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative flex flex-col items-center gap-1 rounded-[22px] py-2 text-[11px] font-semibold transition-colors",
+                  "relative flex flex-col items-center gap-1 rounded-[22px] py-2 text-[10.5px] font-semibold transition-colors",
                   active ? "text-accent" : "text-muted hover:text-text",
                 )}
               >
@@ -50,7 +52,7 @@ export function BottomTabBar() {
                     transition={{ type: "spring", stiffness: 500, damping: 38 }}
                   />
                 )}
-                <Icon className="size-[22px]" strokeWidth={1.75} />
+                <Icon className="size-[21px]" strokeWidth={1.75} />
                 {label}
               </Link>
             </li>

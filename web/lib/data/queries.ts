@@ -35,3 +35,24 @@ export async function fetchSession(supabase: ServerSupabase, id: string): Promis
   const { data: sets } = await supabase.from("exercise_sets").select("*").eq("session_id", id).order("created_at");
   return { ...session, sets: sets ?? [] };
 }
+
+/** Everything the Diet tab needs. Meals from the last 36 h: the browser picks today in its own timezone. */
+export async function fetchDiet(supabase: ServerSupabase, userId: string) {
+  const since = new Date(Date.now() - 36 * 3600 * 1000).toISOString();
+  const [profile, meals, plan] = await Promise.all([
+    supabase.from("nutrition_profiles").select("*").eq("user_id", userId).maybeSingle(),
+    supabase.from("meals").select("*").eq("user_id", userId).gte("eaten_at", since).order("eaten_at"),
+    supabase.from("diet_plans").select("*").eq("user_id", userId).maybeSingle(),
+  ]);
+  const mealRows = meals.data ?? [];
+  const items = mealRows.length
+    ? ((await supabase.from("meal_items").select("*").in("meal_id", mealRows.map((m) => m.id))).data ?? [])
+    : [];
+  return {
+    nutrition: profile.data ?? null,
+    meals: mealRows.map((m) => ({ ...m, items: items.filter((i) => i.meal_id === m.id) })),
+    plan: plan.data?.plan ?? null,
+  };
+}
+
+export type DietData = Awaited<ReturnType<typeof fetchDiet>>;
