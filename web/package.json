@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "predev": "node scripts/copy-wasm.mjs",
-    "prebuild": "node scripts/copy-wasm.mjs"
+    "prebuild": "node scripts/copy-wasm.mjs",
+    "test:ai": "node --env-file=.env.local node_modules/vitest/vitest.mjs run lib/ai/live.test.ts --silent=false"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

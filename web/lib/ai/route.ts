@@ -10,6 +10,7 @@ const MESSAGES: Record<AiError["reason"] | "signin" | "quota", { status: number;
   quota: { status: 429, message: "You've used today's AI allowance for this. It resets tomorrow." },
   unavailable: { status: 503, message: "AI features aren't set up on this server yet." },
   busy: { status: 503, message: "The AI is busy right now. Try again in a minute." },
+  "daily-limit": { status: 503, message: "The AI has reached today's limit for the app. It resets tomorrow." },
   "bad-reply": { status: 502, message: "The AI gave an answer we couldn't use. Try rephrasing." },
   failed: { status: 502, message: "Couldn't reach the AI. Try again." },
 };

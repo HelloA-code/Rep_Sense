@@ -44,3 +44,27 @@ export const DietPlanReply = z.object({
 export type DietPlanReply = z.infer<typeof DietPlanReply>;
 
 export const toJsonSchema = (schema: z.ZodType) => z.toJSONSchema(schema);
+
+/** The JSON Schema keywords Gemini's structured output accepts; it rejects the rest with a 400. */
+const GEMINI_KEYWORDS = new Set(["type", "properties", "required", "items", "enum", "description", "nullable"]);
+
+function keepSupported(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(keepSupported);
+  if (typeof node !== "object" || node === null) return node;
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(node)) {
+    if (!GEMINI_KEYWORDS.has(key)) continue;
+    // Under "properties" the keys are field names, not keywords: keep them all.
+    out[key] =
+      key === "properties"
+        ? Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, keepSupported(v)]))
+        : keepSupported(value);
+  }
+  return out;
+}
+
+/**
+ * Shape-only schema for Gemini: types, fields and enums. Limits like min/max are still
+ * enforced, by zod, when the reply comes back.
+ */
+export const toGeminiSchema = (schema: z.ZodType) => keepSupported(toJsonSchema(schema));

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { foodById, macrosFor } from "@/lib/nutrition/foods";
 import { buildPlan, isDietPlan } from "./plan";
 import { itemsTotal, resolveFood, resolveFoods } from "./resolve";
-import { DietPlanReply, ParsedFoods, toJsonSchema } from "./schemas";
+import { DietPlanReply, ParsedFoods, toGeminiSchema, toJsonSchema } from "./schemas";
 
 const ai = (over: Partial<Parameters<typeof resolveFood>[0]> = {}) => ({
   name: "roti",
@@ -57,6 +57,15 @@ describe("schemas", () => {
   it("produce a JSON schema for Gemini's structured output", () => {
     const schema = toJsonSchema(ParsedFoods) as unknown as { properties: { foods: { items: { required: string[] } } } };
     expect(schema.properties.foods.items.required).toContain("kcal_per_100g");
+  });
+
+  it("strip keywords Gemini rejects but keep field names and enums", () => {
+    const text = JSON.stringify(toGeminiSchema(ParsedFoods));
+    for (const keyword of ["$schema", "additionalProperties", "exclusiveMinimum", "maxLength", "maxItems", "maximum"]) {
+      expect(text).not.toContain(`"${keyword}"`);
+    }
+    expect(text).toContain('"kcal_per_100g"');
+    expect(text).toContain('"enum"');
   });
 });
 
