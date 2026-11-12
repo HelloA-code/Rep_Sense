@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EXERCISE_CONFIGS } from "@/lib/exercises";
-import { kneesCaving } from "@/lib/exercises/squat";
+import { kneesCaving } from "@/lib/exercises/rules";
 import type { FormRule, PoseFrame } from "@/lib/exercises/types";
 import { caloriesBurned } from "./calories";
 import { createCueScheduler, createFormTracker, scoreRep } from "./form";

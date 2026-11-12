@@ -4,12 +4,10 @@ import { motion } from "framer-motion";
 import { VideoIcon } from "lucide-react";
 import { SegmentChip } from "@/components/ui/segment-chip";
 import { cn } from "@/lib/utils";
-import {
-  CAMERA_VIEWS,
-  RECORDING_LABELS,
-  type CameraView,
-  type RecordingLabel,
-} from "@/lib/recording/format";
+import { CAMERA_VIEWS, type CameraView, type RecordingLabel } from "@/lib/recording/format";
+import { ExerciseChooser } from "./exercise-chooser";
+
+const IDLE = [{ id: "idle", name: "Idle" }] as const;
 
 export type RecorderPhase = "off" | "countdown" | "recording";
 
@@ -42,18 +40,7 @@ export function RecorderSettings({
   return (
     <fieldset disabled={locked} className={cn("min-w-0 transition-opacity", locked && "opacity-50")}>
       <legend className="sr-only">Recording settings</legend>
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
-        {RECORDING_LABELS.map((l) => (
-          <SegmentChip
-            key={l.id}
-            selected={label === l.id}
-            onClick={() => onLabel(l.id)}
-            className="h-9 flex-none px-3.5 text-[13px]"
-          >
-            {l.name}
-          </SegmentChip>
-        ))}
-      </div>
+      <ExerciseChooser<RecordingLabel> value={label} onChange={onLabel} extra={IDLE} />
       <div className="mt-2 flex gap-2">
         {CAMERA_VIEWS.map((v) => (
           <SegmentChip

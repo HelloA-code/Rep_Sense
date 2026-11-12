@@ -61,7 +61,7 @@ them back. Export one clip, or **Export all** to get a bundle file:
 ```jsonc
 {
   "version": 1,
-  "label": "squat",            // squat | pushup | pullup | dip | lunge | plank | idle
+  "label": "squat",            // any id from web/lib/exercises/catalog.ts, or idle (training uses LABELS in src/features.py; others are skipped)
   "subject": "aditya",         // who is in the clip; split train/test BY THIS (no person in both)
   "view": "side",              // front | side: camera angle relative to the person
   "createdAt": "2026-11-01T14:25:30.000Z",

@@ -21,8 +21,12 @@ export function addToOutbox(items: readonly OutboxItem[], item: OutboxItem): Out
   return next;
 }
 
-/** "drop" = the server will never accept this row, so don't block the queue on it. */
-export type UploadResult = "sent" | "retry" | "drop";
+/**
+ * - "drop": the server will never accept this row, so don't block the queue on it.
+ * - "keep": not accepted yet, but may be later (e.g. a new exercise before the database
+ *   migration that allows it has run). Stays queued; the rest of the queue carries on.
+ */
+export type UploadResult = "sent" | "retry" | "drop" | "keep";
 
 /**
  * Uploads in dependency order and stops at the first "retry" so nothing arrives before
@@ -34,6 +38,7 @@ export async function drainOutbox(
   onDone?: (item: OutboxItem) => void,
 ): Promise<OutboxItem[]> {
   const queue = [...items].sort((a, b) => PRIORITY[a.kind] - PRIORITY[b.kind]);
+  const kept: OutboxItem[] = [];
   while (queue.length > 0) {
     let result: UploadResult;
     try {
@@ -42,10 +47,11 @@ export async function drainOutbox(
       result = "retry";
     }
     if (result === "retry") break;
-    const done = queue.shift() as OutboxItem;
-    onDone?.(done);
+    const item = queue.shift() as OutboxItem;
+    if (result === "keep") kept.push(item);
+    else onDone?.(item);
   }
-  return queue;
+  return [...kept, ...queue];
 }
 
 /** Postgres classes 22 (bad data) and 23 (constraint): retrying can't ever succeed. */

@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { LANDMARK_COUNT, LM, type Landmark } from "@/lib/pose/landmarks";
 import { EXERCISE_CONFIGS, type PoseFrame } from "./index";
-import { chinOverBar } from "./pullup";
-import { inPlankPosition } from "./plank";
+import { chinOverBar, GATES } from "./signals";
 import { createRepCounter } from "./state-machine";
+
+const inPlankPosition = GATES.horizontal;
 
 const W = 1280;
 const H = 720;
@@ -24,8 +25,8 @@ function legPose(kneeAngle: number): PoseFrame {
 }
 
 describe("exercise configs", () => {
-  it("has all 6 exercises", () => {
-    expect(Object.keys(EXERCISE_CONFIGS).sort()).toEqual(["dip", "lunge", "plank", "pullup", "pushup", "squat"]);
+  it("still has the original 6 exercises", () => {
+    expect(Object.keys(EXERCISE_CONFIGS)).toEqual(expect.arrayContaining(["dip", "lunge", "plank", "pullup", "pushup", "squat"]));
   });
 
   it("squat measures the knee angle in pixels", () => {

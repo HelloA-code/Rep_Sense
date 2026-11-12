@@ -110,6 +110,17 @@ describe("outbox", () => {
     expect(dropped).toEqual([]);
   });
 
+  it("keeps a row the server can't take yet, without blocking the rest", async () => {
+    const done: string[] = [];
+    const left = await drainOutbox(
+      [set("a"), set("b")],
+      async (i) => (i.row.id === "a" ? "keep" : "sent"),
+      (i) => done.push(i.row.id),
+    );
+    expect(done).toEqual(["b"]);
+    expect(left.map((i) => i.row.id)).toEqual(["a"]);
+  });
+
   it("only gives up on data errors", () => {
     expect(isPermanentError("23514")).toBe(true);
     expect(isPermanentError("22P02")).toBe(true);
@@ -243,6 +254,22 @@ describe("suggestSession", () => {
     expect(s.sets).toBe(4);
     expect(s.exercises).not.toContain("pullup");
     expect(s.exercises).toEqual(["lunge", "pushup", "plank"]); // never-trained first, plank last
+  });
+
+  it("with all the gear and no history: one legs, push and pull classic", () => {
+    expect(suggestSession(["pullup-bar", "dip-station"], "beginner", {}).exercises).toEqual(["squat", "pushup", "pullup"]);
+  });
+
+  it("brings exercises you've tried into the rotation, never untried new ones", () => {
+    const s = suggestSession(["dumbbells", "pullup-bar"], "beginner", {
+      squat: "2026-11-05",
+      lunge: "2026-11-06",
+      "goblet-squat": "2026-11-01",
+      pushup: "2026-11-02",
+      pullup: "2026-11-02",
+    });
+    expect(s.exercises[0]).toBe("goblet-squat"); // rested longest of the legs you've done
+    expect(s.exercises).not.toContain("romanian-deadlift"); // available, but never tried
   });
 
   it("sets scale with level", () => {

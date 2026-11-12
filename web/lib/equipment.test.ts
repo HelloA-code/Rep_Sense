@@ -12,7 +12,10 @@ const ids = (list: { id: string }[]) => list.map((x) => x.id);
 
 describe("availableExercises", () => {
   it("offers only bodyweight exercises with no equipment", () => {
-    expect(ids(availableExercises([]))).toEqual(["squat", "pushup", "lunge", "plank"]);
+    const list = availableExercises([]);
+    expect(list.every((e) => e.requiresAny.length === 0)).toBe(true);
+    expect(ids(list)).toEqual(expect.arrayContaining(["squat", "lunge", "pushup", "plank", "wall-sit"]));
+    expect(ids(list)).not.toContain("goblet-squat");
   });
 
   it("unlocks pull-ups with a bar but not dips", () => {

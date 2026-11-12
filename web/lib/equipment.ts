@@ -1,6 +1,9 @@
 // Equipment the user owns decides which exercises we offer (no bar → no pull-ups).
 // Pure data + functions, no React, so it is easy to test.
 
+import { CATALOG, type ExerciseId } from "@/lib/exercises/catalog";
+import type { FamilyId } from "@/lib/exercises/families";
+
 export const EQUIPMENT = [
   { id: "pullup-bar", label: "Pull-up bar" },
   { id: "rings", label: "Rings" },
@@ -14,6 +17,11 @@ export const EQUIPMENT = [
   { id: "dumbbells", label: "Dumbbells" },
   { id: "kettlebell", label: "Kettlebell" },
   { id: "mat", label: "Mat" },
+  { id: "barbell", label: "Barbell" },
+  { id: "ez-bar", label: "EZ bar" },
+  { id: "cable-machine", label: "Cable machine" },
+  { id: "machines", label: "Gym machines" },
+  { id: "assist-band", label: "Pull-up assist band" },
 ] as const;
 
 export type EquipmentId = (typeof EQUIPMENT)[number]["id"];
@@ -33,18 +41,25 @@ export const PRESETS = [
 
 export type PresetId = (typeof PRESETS)[number]["id"];
 
-/** The 6 tracked exercises. `requiresAny` empty = bodyweight only. */
-export const EXERCISES = [
-  { id: "squat", name: "Squat", requiresAny: [] },
-  { id: "pushup", name: "Push-up", requiresAny: [] },
-  { id: "pullup", name: "Pull-up", requiresAny: ["pullup-bar", "rings"] },
-  { id: "dip", name: "Dip", requiresAny: ["dip-station", "rings"] },
-  { id: "lunge", name: "Lunge", requiresAny: [] },
-  { id: "plank", name: "Plank", requiresAny: [] },
-] as const satisfies readonly { id: string; name: string; requiresAny: readonly EquipmentId[] }[];
+export type { ExerciseId };
 
-export type Exercise = (typeof EXERCISES)[number];
-export type ExerciseId = Exercise["id"];
+export type Exercise = {
+  id: ExerciseId;
+  name: string;
+  family: FamilyId;
+  /** Any one of these unlocks it; empty = bodyweight only. */
+  requiresAny: readonly EquipmentId[];
+  classic: boolean;
+};
+
+/** Every tracked exercise, in catalog order (the full details live in lib/exercises/catalog.ts). */
+export const EXERCISES: readonly Exercise[] = CATALOG.map((e) => ({
+  id: e.id,
+  name: e.name,
+  family: e.family,
+  requiresAny: e.requiresAny,
+  classic: "classic" in e && e.classic === true,
+}));
 
 export function isEquipmentId(value: unknown): value is EquipmentId {
   return typeof value === "string" && (ALL_IDS as readonly string[]).includes(value);

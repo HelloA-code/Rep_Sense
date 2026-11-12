@@ -84,6 +84,38 @@ const Mat = (p: IconProps) => (
   </Line>
 );
 
+const Barbell = (p: IconProps) => (
+  <Line {...p}>
+    <path d="M2 12h20M5 8v8M7.5 9.5v5M19 8v8M16.5 9.5v5" />
+  </Line>
+);
+
+const EzBar = (p: IconProps) => (
+  <Line {...p}>
+    <path d="M2 12h5l1.5-1.5L10 12l2-1.5 2 1.5 1.5-1.5L17 12h5M4.5 8.5v7M19.5 8.5v7" />
+  </Line>
+);
+
+const CableMachine = (p: IconProps) => (
+  <Line {...p}>
+    <path d="M5 21V3h12v3M3 21h5M17 9v8M15 17h4" />
+    <circle cx="17" cy="7.5" r="1.5" />
+  </Line>
+);
+
+const GymMachine = (p: IconProps) => (
+  <Line {...p}>
+    <rect x="14" y="3" width="6" height="9" rx="1" />
+    <path d="M14 6h6M14 9h6M17 12v8M3 15h8M7 15v5M3 20h16" />
+  </Line>
+);
+
+const AssistBand = (p: IconProps) => (
+  <Line {...p}>
+    <path d="M3 4h18M10 4c-3 6-3 11 2 16 5-5 5-10 2-16" />
+  </Line>
+);
+
 export const EQUIPMENT_ICONS: Record<EquipmentId, React.ComponentType<IconProps>> = {
   "pullup-bar": PullUpBar,
   rings: Rings,
@@ -97,4 +129,9 @@ export const EQUIPMENT_ICONS: Record<EquipmentId, React.ComponentType<IconProps>
   dumbbells: (p) => <DumbbellIcon strokeWidth={1.75} {...p} />,
   kettlebell: Kettlebell,
   mat: Mat,
+  barbell: Barbell,
+  "ez-bar": EzBar,
+  "cable-machine": CableMachine,
+  machines: GymMachine,
+  "assist-band": AssistBand,
 };

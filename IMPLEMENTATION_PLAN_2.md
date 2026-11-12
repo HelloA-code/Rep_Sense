@@ -2,7 +2,7 @@
 ### More exercises + stronger machine learning (6 steps)
 
 > Read this first, then we build it step by step. Each step starts in plan mode, like the 8 days did.
-> Status: **not started.** Written on 11 Nov 2026. Updated 11 Nov 2026: Teach a rep moved to Step 2, and gym machines are now camera-first instead of log-only.
+> Status: **Step 1 done (12 Nov 2026).** Written on 11 Nov 2026. Updated 11 Nov 2026: Teach a rep moved to Step 2, and gym machines are now camera-first instead of log-only.
 
 ---
 

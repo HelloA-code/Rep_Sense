@@ -19,6 +19,7 @@ import { PrimaryButton } from "@/components/ui/button";
 import { SegmentChip } from "@/components/ui/segment-chip";
 import { iconButtonClass } from "@/components/ui/styles";
 import { EXERCISES, type ExerciseId } from "@/lib/equipment";
+import { ExerciseChooser } from "./exercise-chooser";
 import { EXERCISE_CONFIGS, type ExerciseConfig } from "@/lib/exercises";
 import type { RepPhase } from "@/lib/exercises/state-machine";
 import { createAutoDetector } from "@/lib/ml/auto-detect";
@@ -703,30 +704,25 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
                 <span className="text-[13px] font-semibold text-muted">{guided.title}</span>
               </p>
             ) : (
-              <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
-                {modelInfo && (
-                  <SegmentChip
-                    selected={auto !== null}
-                    onClick={() => (auto ? pickExercise(exerciseId) : void turnOnAuto())}
-                    className="h-9 flex-none gap-1.5 px-3.5 text-[13px]"
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <SparklesIcon className="size-3.5" />
-                      Auto
-                    </span>
-                  </SegmentChip>
-                )}
-                {EXERCISES.map((e) => (
-                  <SegmentChip
-                    key={e.id}
-                    selected={!auto && exerciseId === e.id}
-                    onClick={() => pickExercise(e.id)}
-                    className="h-9 flex-none px-3.5 text-[13px]"
-                  >
-                    {e.name}
-                  </SegmentChip>
-                ))}
-              </div>
+              <ExerciseChooser
+                value={exerciseId}
+                onChange={pickExercise}
+                noneSelected={auto !== null}
+                leading={
+                  modelInfo && (
+                    <SegmentChip
+                      selected={auto !== null}
+                      onClick={() => (auto ? pickExercise(exerciseId) : void turnOnAuto())}
+                      className="h-8 flex-none gap-1.5 px-3 text-[12px]"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <SparklesIcon className="size-3.5" />
+                        Auto
+                      </span>
+                    </SegmentChip>
+                  )
+                }
+              />
             )}
             {auto && <AutoDetectBar status={auto} synthetic={modelInfo?.provenance === "synthetic"} exercise={exercise.name} />}
             <p className="mt-2 text-[12px] font-semibold text-muted">

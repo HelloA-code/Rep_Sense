@@ -1,4 +1,4 @@
-import { EXERCISES } from "@/lib/equipment";
+import { EXERCISES, type ExerciseId } from "@/lib/equipment";
 import type { Landmark, WorldLandmark } from "@/lib/pose/landmarks";
 
 // Landmark recording format v1, shared with the Python scripts in ml/.
@@ -7,9 +7,16 @@ import type { Landmark, WorldLandmark } from "@/lib/pose/landmarks";
 export const RECORDING_VERSION = 1;
 export const MAX_RECORDING_MS = 60_000;
 
-/** The 6 exercises plus "idle" (standing, walking, resting) as a negative class. */
-export const RECORDING_LABELS = [...EXERCISES.map((e) => ({ id: e.id, name: e.name })), { id: "idle", name: "Idle" }] as const;
-export type RecordingLabel = (typeof EXERCISES)[number]["id"] | "idle";
+/**
+ * Every catalog exercise plus "idle" (standing, walking, resting) as a negative class.
+ * The classifier is only trained on some of them (ml/src/features.py LABELS); the others
+ * can still be recorded for future training.
+ */
+export type RecordingLabel = ExerciseId | "idle";
+export const RECORDING_LABELS: readonly { id: RecordingLabel; name: string }[] = [
+  ...EXERCISES.map((e) => ({ id: e.id, name: e.name })),
+  { id: "idle", name: "Idle" },
+];
 
 export const CAMERA_VIEWS = ["front", "side"] as const;
 export type CameraView = (typeof CAMERA_VIEWS)[number];

@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { EXERCISE_CONFIGS } from "@/lib/exercises";
-import type { ExerciseId } from "@/lib/equipment";
+import { EXERCISES, type ExerciseId } from "@/lib/equipment";
 import type { Recording } from "@/lib/recording/format";
 import { countRepsInRecording } from "./replay";
 
@@ -19,8 +19,9 @@ const fixtures = readdirSync(folder)
   .map((name) => ({ name, clip: JSON.parse(readFileSync(join(folder, name), "utf8")) as Fixture }));
 
 describe("rep-count regression", () => {
-  it("covers all 6 exercises", () => {
-    expect(new Set(fixtures.map((f) => f.clip.label))).toEqual(new Set(Object.keys(EXERCISE_CONFIGS)));
+  it("covers the original 6 exercises", () => {
+    const classics = EXERCISES.filter((e) => e.classic).map((e) => e.id);
+    expect(new Set(fixtures.map((f) => f.clip.label))).toEqual(new Set(classics));
   });
 
   it.each(fixtures)("$name", ({ clip }) => {

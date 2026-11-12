@@ -1,12 +1,10 @@
-import type { ExerciseId } from "@/lib/equipment";
-import { config as dip } from "./dip";
-import { config as lunge } from "./lunge";
-import { config as plank } from "./plank";
-import { config as pullup } from "./pullup";
-import { config as pushup } from "./pushup";
-import { config as squat } from "./squat";
+import { buildExercise } from "./build";
+import { CATALOG, type ExerciseId } from "./catalog";
 import type { ExerciseConfig } from "./types";
 
-export const EXERCISE_CONFIGS: Record<ExerciseId, ExerciseConfig> = { squat, pushup, pullup, dip, lunge, plank };
+export const EXERCISE_CONFIGS = Object.fromEntries(CATALOG.map((entry) => [entry.id, buildExercise(entry)])) as Record<
+  ExerciseId,
+  ExerciseConfig
+>;
 
 export type { ExerciseConfig, HoldExercise, PoseFrame, RepExercise } from "./types";

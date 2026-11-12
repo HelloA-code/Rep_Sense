@@ -33,6 +33,8 @@ async function signedInUserId(supabase: BrowserSupabase): Promise<string | null>
   return data.session?.user.id ?? null;
 }
 
+const CHECK_VIOLATION = "23514";
+
 async function upload(supabase: BrowserSupabase, item: OutboxItem, userId: string): Promise<UploadResult> {
   const { error } =
     item.kind === "session"
@@ -41,6 +43,8 @@ async function upload(supabase: BrowserSupabase, item: OutboxItem, userId: strin
         ? await supabase.from("exercise_sets").upsert({ ...item.row, user_id: userId })
         : await supabase.from("checkins").upsert({ ...item.row, user_id: userId });
   if (!error) return "sent";
+  // A set of a newer exercise, before migration 0003 has run: keep it until it can upload.
+  if (item.kind === "set" && error.code === CHECK_VIOLATION) return "keep";
   return isPermanentError(error.code) ? "drop" : "retry";
 }
 
