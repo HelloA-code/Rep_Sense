@@ -2,6 +2,15 @@ import { loadVoiceOn, saveVoiceOn } from "@/components/workout/voice";
 import { clearOnboarding, loadOnboarding, saveOnboarding, type OnboardingData } from "@/lib/onboarding";
 import { browserSupabase, type BrowserSupabase } from "@/lib/supabase/client";
 import { addToOutbox, drainOutbox, isPermanentError, type OutboxItem, type UploadResult } from "./outbox";
+import type { CustomExercise } from "@/lib/exercises/custom";
+import {
+  customToRow,
+  loadCustomExercises,
+  mergeCustom,
+  replaceCustomExercises,
+  rowToCustom,
+  storeCustomExercise,
+} from "./custom-store";
 import { onboardingToRow, rowToOnboarding } from "./rows";
 
 // Browser side of saving: the localStorage outbox, uploading it, and keeping the
@@ -34,6 +43,8 @@ async function signedInUserId(supabase: BrowserSupabase): Promise<string | null>
 }
 
 const CHECK_VIOLATION = "23514";
+/** A table or column a newer migration adds (0004) doesn't exist yet. */
+const NOT_MIGRATED = new Set(["42P01", "42703", "PGRST204", "PGRST205"]);
 
 async function upload(supabase: BrowserSupabase, item: OutboxItem, userId: string): Promise<UploadResult> {
   const { error } =
@@ -41,10 +52,13 @@ async function upload(supabase: BrowserSupabase, item: OutboxItem, userId: strin
       ? await supabase.from("workout_sessions").upsert({ ...item.row, user_id: userId })
       : item.kind === "set"
         ? await supabase.from("exercise_sets").upsert({ ...item.row, user_id: userId })
-        : await supabase.from("checkins").upsert({ ...item.row, user_id: userId });
+        : item.kind === "custom"
+          ? await supabase.from("custom_exercises").upsert({ ...item.row, user_id: userId })
+          : await supabase.from("checkins").upsert({ ...item.row, user_id: userId });
   if (!error) return "sent";
-  // A set of a newer exercise, before migration 0003 has run: keep it until it can upload.
+  // Rows that need a migration the database hasn't had yet (0003, 0004): keep them until it has.
   if (item.kind === "set" && error.code === CHECK_VIOLATION) return "keep";
+  if (NOT_MIGRATED.has(error.code ?? "")) return "keep";
   return isPermanentError(error.code) ? "drop" : "retry";
 }
 
@@ -106,6 +120,28 @@ export async function syncProfile(): Promise<void> {
   saveVoiceOn(row.voice_on);
 }
 
+/** After login: taught exercises saved on the server join the ones on this device. */
+export async function syncCustomExercises(): Promise<void> {
+  const supabase = browserSupabase();
+  const userId = supabase ? await signedInUserId(supabase) : null;
+  if (!supabase || !userId) return;
+  const { data, error } = await supabase.from("custom_exercises").select("*");
+  if (error || !data) return; // table not there yet (0004 not run): local copies still work
+  const remote = data.map(rowToCustom).filter((c): c is CustomExercise => c !== null);
+  if (remote.length) replaceCustomExercises(mergeCustom(loadCustomExercises(), remote));
+}
+
+/** Saves a taught (or archived) exercise here, and to the account when signed in. */
+export function saveCustomExercise(c: CustomExercise): Promise<FlushResult> {
+  storeCustomExercise(c);
+  return saveToOutbox([{ kind: "custom", row: customToRow(c) }]);
+}
+
+/** Removes a taught exercise from the pickers; kept (archived) so old workouts keep its name. */
+export function archiveCustom(c: CustomExercise): Promise<FlushResult> {
+  return saveCustomExercise({ ...c, archived: true });
+}
+
 /** Change the user's name or password. Returns an error message, or null on success. */
 export async function updateAccount(attributes: { data?: { full_name: string }; password?: string }): Promise<string | null> {
   const supabase = browserSupabase();
@@ -126,12 +162,15 @@ export async function exportMyData() {
   ]);
   const failed = [profile, sessions, sets, checkins].find((r) => r.error);
   if (failed?.error) throw failed.error;
+  // Optional: the table only exists once 0004 has run.
+  const custom = await supabase.from("custom_exercises").select("*").order("created_at");
   return {
     exportedAt: new Date().toISOString(),
     profile: profile.data?.[0] ?? null,
     workouts: sessions.data,
     sets: sets.data,
     checkins: checkins.data,
+    customExercises: custom.error ? [] : custom.data,
   };
 }
 
@@ -145,4 +184,5 @@ export async function signOut(): Promise<void> {
   await browserSupabase()?.auth.signOut();
   clearOnboarding();
   writeOutbox([]);
+  replaceCustomExercises([]);
 }

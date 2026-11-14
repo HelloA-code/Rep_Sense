@@ -15,3 +15,7 @@ export const secondaryButtonClass = cn(
 
 export const iconButtonClass =
   "grid size-10 shrink-0 place-items-center rounded-full border border-border-strong bg-surface text-text transition hover:bg-surface-raised active:scale-95 focus-visible:outline-2 focus-visible:outline-accent";
+
+/** Single-line text field (52px, like the buttons). */
+export const inputClass =
+  "h-[52px] w-full rounded-tile border border-border-strong bg-surface px-4 text-[16px] font-semibold outline-none placeholder:text-white/30 focus:border-accent-border";

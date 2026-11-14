@@ -6,7 +6,28 @@ import { SIDE_LM, isHorizontal, jointAngle, px, visible, type PoseFrame } from "
 // Rep counting needs "large at rest, small at the bottom of the rep", so signals that
 // naturally grow during a rep (arm raises, heel raises) are flipped.
 
-export type SignalId = "knee" | "front-knee" | "hip" | "elbow" | "arm-raise" | "heel-raise" | "body-line";
+export type SignalId =
+  | "knee"
+  | "front-knee"
+  | "hip"
+  | "elbow"
+  | "shoulder"
+  | "arm-raise"
+  | "heel-raise"
+  | "body-line"
+  | "wrist-spread"
+  | "knee-spread";
+
+/** Distance between two landmarks ÷ shoulder width × 100: 100 = one shoulder width apart. */
+function spread(f: PoseFrame, a: number, b: number): number | null {
+  if (!visible(f, a, b, LM.LEFT_SHOULDER, LM.RIGHT_SHOULDER)) return null;
+  const shoulders = Math.hypot(
+    px(f, LM.LEFT_SHOULDER).x - px(f, LM.RIGHT_SHOULDER).x,
+    px(f, LM.LEFT_SHOULDER).y - px(f, LM.RIGHT_SHOULDER).y,
+  );
+  if (shoulders < 1) return null; // side view: shoulders overlap, so there's no scale
+  return (Math.hypot(px(f, a).x - px(f, b).x, px(f, a).y - px(f, b).y) / shoulders) * 100;
+}
 
 type Signal = {
   /** Shown next to the live value: "Knee angle 92°". */
@@ -53,6 +74,23 @@ export const SIGNALS: Record<SignalId, Signal> = {
       const s = SIDE_LM[f.side];
       return jointAngle(f, [s.shoulder, s.elbow, s.wrist]);
     },
+  },
+  // Hip–shoulder–elbow, as measured: arm hanging ≈ 10, arm overhead ≈ 170.
+  shoulder: {
+    metric: "Shoulder angle",
+    measure(f) {
+      const s = SIDE_LM[f.side];
+      return jointAngle(f, [s.hip, s.shoulder, s.elbow]);
+    },
+  },
+  // Limbs opening and closing (pec deck, hip abductor), in shoulder widths × 100.
+  "wrist-spread": {
+    metric: "Hands apart",
+    measure: (f) => spread(f, LM.LEFT_WRIST, LM.RIGHT_WRIST),
+  },
+  "knee-spread": {
+    metric: "Knees apart",
+    measure: (f) => spread(f, LM.LEFT_KNEE, LM.RIGHT_KNEE),
   },
   // 180° − hip–shoulder–elbow: arm hanging ≈ 170, arm at shoulder height ≈ 90.
   "arm-raise": {

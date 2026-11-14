@@ -1,11 +1,12 @@
-import { EXERCISES, type ExerciseId } from "@/lib/equipment";
+import type { AnyExerciseId } from "@/lib/exercises/ids";
+import { exerciseName } from "@/lib/exercises/registry";
 
 // Pre-workout check-in: three 0–10 answers become a suggestion through plain rules.
 
 export type CheckinAnswers = { sleep: number; energy: number; soreness: number };
 export type CheckinChoice = "move" | "trim" | "half" | "keep";
 
-export type PlanItem = { exerciseId: ExerciseId; sets: number };
+export type PlanItem = { exerciseId: AnyExerciseId; sets: number };
 
 const LOW = 4;
 const HIGH_SORENESS = 7;
@@ -51,7 +52,7 @@ export function adjustPlan(plan: readonly PlanItem[], choice: Exclude<CheckinCho
 
 /** "4 of 6 sets: one set less on Squat and Push-up" */
 export function describeAdjustment(plan: readonly PlanItem[], adjusted: readonly PlanItem[]): string {
-  const name = (id: ExerciseId) => EXERCISES.find((e) => e.id === id)?.name ?? id;
+  const name = (id: AnyExerciseId) => exerciseName(id);
   const changed = plan
     .filter((p) => (adjusted.find((a) => a.exerciseId === p.exerciseId)?.sets ?? 0) < p.sets)
     .map((p) => name(p.exerciseId));

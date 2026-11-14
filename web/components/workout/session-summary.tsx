@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CheckIcon, FlameIcon } from "lucide-react";
 import { PrimaryButton, SecondaryButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { EXERCISE_CONFIGS } from "@/lib/exercises";
+import { exerciseName } from "@/lib/exercises/registry";
 import type { FlushResult } from "@/lib/data/sync";
 import type { SessionSummary as Summary } from "@/lib/workout/summary";
 import { formatClock } from "./rep-display";
@@ -104,10 +104,9 @@ export function SessionSummary({
       <h2 className="mt-8 mb-3 text-[17px] font-bold">Exercises</h2>
       <div className="flex flex-col gap-3">
         {summary.exercises.map((ex) => {
-          const cfg = EXERCISE_CONFIGS[ex.exerciseId];
           return (
             <Card key={ex.exerciseId} className="p-0">
-              <p className="px-5 pt-4 pb-2 text-[15px] font-bold">{cfg.name}</p>
+              <p className="px-5 pt-4 pb-2 text-[15px] font-bold">{exerciseName(ex.exerciseId)}</p>
               <ul>
                 {ex.sets.map((s, i) => (
                   <li key={i} className="flex items-center justify-between border-t border-border px-5 py-2.5 text-[13px]">
@@ -115,6 +114,7 @@ export function SessionSummary({
                     <span className="font-bold tabular-nums">
                       {s.mode === "hold" ? `${s.loggedValue}s` : `${s.loggedValue} reps`}
                       {s.loadKg > 0 && ` · +${s.loadKg} kg`}
+                      {s.manualReps > 0 && <span className="ml-2 text-muted">{s.manualReps} by hand</span>}
                       {s.score !== null && <span className="ml-2 text-muted">form {s.score}</span>}
                     </span>
                   </li>

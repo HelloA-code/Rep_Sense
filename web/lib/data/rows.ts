@@ -30,6 +30,8 @@ export function setToRow(set: LoggedSet, id: string, sessionId: string, setNumbe
     missed: set.missed,
     calories: Math.round(caloriesBurned(set.exerciseId, weightKg + set.loadKg, set.durationMs) * 100) / 100,
     form_issues: set.issueCounts,
+    // Only sent when used, so ordinary sets still upload before migration 0004 adds the column.
+    ...(set.manualReps > 0 ? { manual_reps: set.manualReps } : {}),
   };
 }
 

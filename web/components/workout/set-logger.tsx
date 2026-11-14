@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { PrimaryButton } from "@/components/ui/button";
 import { Keypad } from "@/components/ui/keypad";
 import { SegmentChip } from "@/components/ui/segment-chip";
-import type { ExerciseId } from "@/lib/equipment";
-import { EXERCISE_CONFIGS } from "@/lib/exercises";
+import type { AnyExerciseId } from "@/lib/exercises/ids";
+import { exerciseName } from "@/lib/exercises/registry";
 import { applyKey, keypadNumber, type KeypadKey } from "@/lib/keypad";
 import { cn } from "@/lib/utils";
 import type { SetResult } from "@/lib/workout/set-engine";
@@ -16,7 +16,7 @@ type Field = "value" | "load";
 type SetLoggerProps = {
   result: SetResult;
   /** Exercises in this session, for the page dots. */
-  exercises: readonly ExerciseId[];
+  exercises: readonly AnyExerciseId[];
   /** "Set 2 of 3" */
   title: string;
   sessionStartedAt: number;
@@ -29,7 +29,6 @@ type SetLoggerProps = {
  * added load. Styled after the keypad reference screen.
  */
 export function SetLogger({ result, exercises, title, sessionStartedAt, onDone, onDiscard }: SetLoggerProps) {
-  const exercise = EXERCISE_CONFIGS[result.exerciseId];
   const isHold = result.mode === "hold";
   const [field, setField] = useState<Field>("value");
   const [value, setValue] = useState(String(isHold ? Math.round(result.heldMs / 1000) : result.reps));
@@ -74,7 +73,7 @@ export function SetLogger({ result, exercises, title, sessionStartedAt, onDone, 
             />
           ))}
         </div>
-        <h1 className="mt-3 text-[22px] font-extrabold tracking-tight">{exercise.name}</h1>
+        <h1 className="mt-3 text-[22px] font-extrabold tracking-tight">{exerciseName(result.exerciseId)}</h1>
         <p className="text-[13px] font-semibold text-muted">{title}</p>
       </div>
 

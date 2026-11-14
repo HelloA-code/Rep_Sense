@@ -1,9 +1,9 @@
-import type { ExerciseId } from "@/lib/equipment";
 import { MIN_VISIBILITY } from "@/lib/pose/frame-check";
 import { angle, hipOffset, toPixels, torsoLean, type Point } from "@/lib/pose/geometry";
 import { LM, type Landmark } from "@/lib/pose/landmarks";
 import type { Side } from "@/lib/pose/side";
 import type { CameraView } from "@/lib/recording/format";
+import type { AnyExerciseId } from "./ids";
 import type { HoldConfig, RepCounterConfig, RepPhase, RepRejection } from "./state-machine";
 
 /** One smoothed pose plus what we need to measure it. */
@@ -33,7 +33,7 @@ export type FormRule = {
 };
 
 type ExerciseBase = {
-  id: ExerciseId;
+  id: AnyExerciseId;
   name: string;
   preferredView: CameraView;
   /** Shown before starting, e.g. "Side view, whole body in frame". */

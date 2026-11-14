@@ -15,7 +15,7 @@ export function SessionSync() {
 
     // Loaded after the page is up: the Supabase client is big, and this can wait.
     void Promise.all([import("@/lib/data/sync"), import("@/lib/supabase/client")]).then(
-      ([{ flushOutbox, syncProfile }, { browserSupabase }]) => {
+      ([{ flushOutbox, syncCustomExercises, syncProfile }, { browserSupabase }]) => {
         const supabase = browserSupabase();
         if (cancelled || !supabase) return;
         const flush = async () => {
@@ -26,7 +26,9 @@ export function SessionSync() {
           if (!session || (event !== "SIGNED_IN" && event !== "INITIAL_SESSION")) return;
           // Deferred: awaiting Supabase calls inside this callback can deadlock its auth lock.
           setTimeout(() => {
-            void syncProfile().then(flush);
+            void syncProfile()
+              .then(syncCustomExercises)
+              .then(flush);
           }, 0);
         });
         window.addEventListener("online", flush);

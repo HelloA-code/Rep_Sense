@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -18,8 +18,15 @@ import { SaveClipSheet, type PendingClip } from "@/components/clips/save-clip-sh
 import { PrimaryButton } from "@/components/ui/button";
 import { SegmentChip } from "@/components/ui/segment-chip";
 import { iconButtonClass } from "@/components/ui/styles";
-import { EXERCISES, type ExerciseId } from "@/lib/equipment";
+import type { ExerciseId } from "@/lib/equipment";
+import { activeCustomExercises } from "@/lib/data/custom-store";
+import { isCustomId } from "@/lib/exercises/custom";
+import type { AnyExerciseId } from "@/lib/exercises/ids";
+import { exerciseConfig, isKnownExercise } from "@/lib/exercises/registry";
+import { createTrackingMonitor } from "@/lib/pose/visibility";
 import { ExerciseChooser } from "./exercise-chooser";
+import { ManualCounter } from "./manual-counter";
+import { useCustomExercises } from "./use-custom-exercises";
 import { EXERCISE_CONFIGS, type ExerciseConfig } from "@/lib/exercises";
 import type { RepPhase } from "@/lib/exercises/state-machine";
 import { createAutoDetector } from "@/lib/ml/auto-detect";
@@ -50,7 +57,7 @@ type Recorder = ReturnType<typeof createRecorder>;
 export type GuidedSet = {
   /** New value = a new set: shows the tip (first set of an exercise) or the countdown again. */
   key: string;
-  exerciseId: ExerciseId;
+  exerciseId: AnyExerciseId;
   /** "Set 2 of 3" */
   title: string;
   showTip: boolean;
@@ -93,10 +100,6 @@ function writeStorage(key: string, value: string) {
   }
 }
 
-function isExerciseId(v: string | null): v is ExerciseId {
-  return EXERCISES.some((e) => e.id === v);
-}
-
 export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -111,9 +114,20 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
   const [warning, setWarning] = useState<string | null>(null);
 
   // Exercise + counting. The frame loop reads refs; React state is what's on screen.
-  const [freeExerciseId, setFreeExerciseId] = useState<ExerciseId>("squat");
+  const [freeExerciseId, setFreeExerciseId] = useState<AnyExerciseId>("squat");
   const exerciseId = guided?.exerciseId ?? freeExerciseId;
-  const exercise = EXERCISE_CONFIGS[exerciseId];
+  // A taught exercise removed on another device falls back to squats rather than crashing.
+  const exercise = exerciseConfig(exerciseId) ?? EXERCISE_CONFIGS.squat;
+  const allCustom = useCustomExercises();
+  const customChoices = useMemo(
+    () => activeCustomExercises(allCustom).map((c) => ({ id: c.id as AnyExerciseId, name: c.name })),
+    [allCustom],
+  );
+  // Lost tracking: after ~2 s without the joints this exercise needs, count by hand.
+  const monitorRef = useRef(createTrackingMonitor());
+  const [lost, setLost] = useState(false);
+  const [manual, setManual] = useState(0);
+  const manualRef = useRef(0);
   const engineRef = useRef<SetEngine | null>(null);
   const setStartRef = useRef<number | null>(null);
   const [stage, setStage] = useState<Stage>(guided ? (guided.showTip ? "tip" : "countdown") : "active");
@@ -167,6 +181,10 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
   /** New set: fresh engine (counter, timer, form tracker) for the given exercise. */
   const resetSet = useCallback((ex: ExerciseConfig | null) => {
     engineRef.current = ex ? createSetEngine(ex) : null;
+    monitorRef.current.reset();
+    setLost(false);
+    manualRef.current = 0;
+    setManual(0);
     setStartRef.current = null;
     samplesRef.current = [];
     setCount({ reps: 0, phase: "up" });
@@ -177,25 +195,31 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
   }, []);
 
   const changeExercise = useCallback(
-    (id: ExerciseId) => {
+    (id: AnyExerciseId) => {
+      const config = exerciseConfig(id) ?? EXERCISE_CONFIGS.squat;
       setFreeExerciseId(id);
-      setLabel(id);
-      setView(EXERCISE_CONFIGS[id].preferredView);
-      resetSet(EXERCISE_CONFIGS[id]);
+      if (!isCustomId(id)) setLabel(id); // taught exercises are not recording labels
+      setView(config.preferredView);
+      resetSet(config);
       writeStorage(EXERCISE_KEY, id);
     },
     [resetSet],
   );
 
   const pickExercise = useCallback(
-    (id: ExerciseId) => {
+    (id: AnyExerciseId) => {
       setAuto(null);
       classifierRef.current = null;
-      detectorRef.current.setCurrent(id);
+      detectorRef.current.setCurrent(isCustomId(id) ? null : id);
       changeExercise(id);
     },
     [changeExercise],
   );
+
+  function changeManual(value: number) {
+    manualRef.current = Math.max(0, value);
+    setManual(manualRef.current);
+  }
 
   useEffect(() => {
     onDetectedRef.current = changeExercise;
@@ -227,7 +251,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
     voiceOnRef.current = v;
     if (!guided) {
       const saved = readStorage(EXERCISE_KEY);
-      changeExercise(isExerciseId(saved) ? saved : "squat");
+      changeExercise(saved && isKnownExercise(saved) ? saved : "squat");
     }
     return stopVoice;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only; `guided` changes are handled below
@@ -271,7 +295,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
   function finishGuidedSet() {
     const engine = engineRef.current;
     if (!guided || !engine) return;
-    const result = engine.finish(performance.now());
+    const result = engine.finish(performance.now(), manualRef.current);
     engineRef.current = null;
     changeStage("done");
     stopVoice();
@@ -429,6 +453,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
     let lastInFrame = performance.now();
     let shown: { reps: number; phase: RepPhase } = { reps: 0, phase: "up" };
     let shownEngine: SetEngine | null = null;
+    let lostShown = false;
     let ticks = 0;
     let classifying = false;
     let lastDetectMs = 0;
@@ -483,8 +508,16 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
       if (engine !== shownEngine) {
         shownEngine = engine; // the set was reset
         shown = { reps: 0, phase: "up" };
+        lostShown = false;
       }
       const out = engine ? engine.process(raw, now, canvas.width, canvas.height) : null;
+      if (engine) {
+        const isLost = monitorRef.current.update(out !== null && out.value !== null, now) === "lost";
+        if (isLost !== lostShown) {
+          lostShown = isLost;
+          setLost(isLost);
+        }
+      }
 
       drawSkeleton(ctx, out ? out.smooth : raw, canvas.width, canvas.height);
       if (out) drawIssues(ctx, out.smooth, out.issues, canvas.width, canvas.height, mirroredRef.current);
@@ -546,7 +579,8 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
   const cameraError = camera.status === "error" ? camera.error : null;
 
   const isHold = exercise.mode === "hold";
-  const displayValue = isHold ? Math.floor(hold.heldMs / 1000) : count.reps;
+  const reps = count.reps + manual;
+  const displayValue = isHold ? Math.floor(hold.heldMs / 1000) : reps;
   const waiting = guided && stage !== "active";
   const phaseText = waiting
     ? "Get ready"
@@ -557,7 +591,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
           ? "Paused"
           : "Get in position"
       : exercise.phaseLabel[count.phase];
-  const pillCount = isHold ? formatClock(hold.heldMs) : `${count.reps} ${count.reps === 1 ? "rep" : "reps"}`;
+  const pillCount = isHold ? formatClock(hold.heldMs) : `${reps} ${reps === 1 ? "rep" : "reps"}`;
   const graphLines =
     exercise.mode === "reps" ? [exercise.counter.downBelow, exercise.counter.upAbove] : [exercise.hold.maxDeviation];
   const topMessage = warning ?? (cue ? cue.text : toast);
@@ -704,9 +738,10 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
                 <span className="text-[13px] font-semibold text-muted">{guided.title}</span>
               </p>
             ) : (
-              <ExerciseChooser
+              <ExerciseChooser<AnyExerciseId>
                 value={exerciseId}
                 onChange={pickExercise}
+                custom={customChoices}
                 noneSelected={auto !== null}
                 leading={
                   modelInfo && (
@@ -729,6 +764,10 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
               {exercise.setupHint}
               {metric.smooth !== null && ` · ${exercise.metric} ${metric.smooth.toFixed(0)}°`}
             </p>
+
+            {lost && stage === "active" && (
+              <ManualCounter hold={isHold} value={manual} onChange={changeManual} />
+            )}
 
             <div className="mt-3 flex items-center gap-3">
               <RepDisplay

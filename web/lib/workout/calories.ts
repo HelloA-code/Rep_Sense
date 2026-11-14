@@ -12,6 +12,10 @@ export const MET = Object.fromEntries(
   CATALOG.map((e) => [e.id, "met" in e ? e.met : FAMILIES[e.family].met]),
 ) as Record<ExerciseId, number>;
 
-export function caloriesBurned(exerciseId: ExerciseId, weightKg: number, durationMs: number): number {
-  return (MET[exerciseId] ?? 3.8) * weightKg * (durationMs / 3_600_000);
+/** Taught exercises (and anything unknown) count as moderate effort. */
+export const DEFAULT_MET = 3.8;
+
+export function caloriesBurned(exerciseId: string, weightKg: number, durationMs: number): number {
+  const met = exerciseId in MET ? MET[exerciseId as ExerciseId] : DEFAULT_MET;
+  return met * weightKg * (durationMs / 3_600_000);
 }

@@ -7,11 +7,61 @@ import { addToOutbox, drainOutbox, isPermanentError, type OutboxItem, type Uploa
 import { onboardingToRow, rowToOnboarding, sessionToRow, setToRow } from "./rows";
 import { dayKey, formTrend, lastTrained, monthCalendar, profileStats, repsPerDay, streak, type SessionWithSets } from "./stats";
 import { suggestSession } from "./suggest";
+import { customToRow, mergeCustom, rowToCustom } from "./custom-store";
+import type { CustomExercise } from "@/lib/exercises/custom";
+
+const taught = (over: Partial<CustomExercise> = {}): CustomExercise => ({
+  id: "custom-abc123def456",
+  name: "Cable curl",
+  signal: "elbow",
+  mirror: null,
+  counter: { downBelow: 80, upAbove: 140, minRepMs: 400 },
+  view: "side",
+  createdAt: "2026-11-14T10:00:00.000Z",
+  archived: false,
+  ...over,
+});
+
+describe("taught exercises in storage", () => {
+  it("round-trips through a database row", () => {
+    const c = taught({ mirror: 190, signal: "shoulder", view: "front" });
+    const row = { ...customToRow(c), user_id: "u", updated_at: "" };
+    expect(rowToCustom(row)).toEqual(c);
+  });
+
+  it("rejects a row edited into nonsense", () => {
+    const row = { ...customToRow(taught()), definition: { signal: "elbow" } };
+    expect(rowToCustom(row)).toBeNull();
+  });
+
+  it("server copies win per id; local-only ones stay", () => {
+    const local = [taught(), taught({ id: "custom-zzz999yyy888", name: "Only here" })];
+    const merged = mergeCustom(local, [taught({ name: "Renamed", archived: true })]);
+    expect(merged.map((c) => c.name)).toEqual(["Renamed", "Only here"]);
+  });
+
+  it("sets record reps counted by hand only when there were some", () => {
+    expect(setToRow(logged({ manualReps: 2 }), "s", "w", 1, 70)).toMatchObject({ manual_reps: 2 });
+    expect(setToRow(logged(), "s", "w", 1, 70)).not.toHaveProperty("manual_reps");
+  });
+
+  it("queues taught exercises before sessions and sets", async () => {
+    const order: string[] = [];
+    const custom: OutboxItem = { kind: "custom", row: customToRow(taught()) };
+    const aSet: OutboxItem = { kind: "set", row: setToRow(logged(), "a", "w", 1, 70) };
+    await drainOutbox([aSet, custom], async (i) => {
+      order.push(i.kind);
+      return "sent";
+    });
+    expect(order).toEqual(["custom", "set"]);
+  });
+});
 
 const logged = (over: Partial<LoggedSet> = {}): LoggedSet => ({
   exerciseId: "squat",
   mode: "reps",
   reps: 8,
+  manualReps: 0,
   repScores: [100, 65],
   goodReps: 1,
   missed: 2,

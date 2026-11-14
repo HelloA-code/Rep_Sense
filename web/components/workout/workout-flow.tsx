@@ -7,7 +7,10 @@ import { adjustPlan, type CheckinAnswers, type CheckinChoice, type PlanItem } fr
 import type { OutboxItem } from "@/lib/data/outbox";
 import { sessionToRow, setToRow } from "@/lib/data/rows";
 import { saveToOutbox, type FlushResult } from "@/lib/data/sync";
-import { availableExercises, type ExerciseId } from "@/lib/equipment";
+import { archiveCustom } from "@/lib/data/sync";
+import { availableExercises } from "@/lib/equipment";
+import { activeCustomExercises } from "@/lib/data/custom-store";
+import type { AnyExerciseId } from "@/lib/exercises/ids";
 import { loadOnboarding, saveOnboarding, type OnboardingData } from "@/lib/onboarding";
 import { loadPlan, savePlan } from "@/lib/workout/plan-store";
 import type { SetResult } from "@/lib/workout/set-engine";
@@ -16,6 +19,7 @@ import { CheckinSheet } from "./checkin-sheet";
 import { ExercisePicker } from "./exercise-picker";
 import { SessionSummary } from "./session-summary";
 import { SetLogger } from "./set-logger";
+import { useCustomExercises } from "./use-custom-exercises";
 import { WorkoutCamera } from "./workout-camera";
 
 // pick → check-in → (per set: tip → 3-2-1 → set → log) → summary.
@@ -29,7 +33,9 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
   const [profile, setProfile] = useState<OnboardingData | null>(null);
   const [step, setStep] = useState<Step>("pick");
   const [checkingIn, setCheckingIn] = useState(false);
-  const [selected, setSelected] = useState<ExerciseId[]>([]);
+  const [selected, setSelected] = useState<AnyExerciseId[]>([]);
+  const allCustom = useCustomExercises();
+  const custom = useMemo(() => activeCustomExercises(allCustom), [allCustom]);
   const [setsPer, setSetsPer] = useState(3);
   const [plan, setPlan] = useState<PlanItem[]>([]);
   const [setIndex, setSetIndex] = useState(0);
@@ -52,9 +58,10 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
       return;
     }
     setProfile(saved);
-    const ids = availableExercises(saved.equipment).map((e) => e.id);
+    const ids: AnyExerciseId[] = availableExercises(saved.equipment).map((e) => e.id);
+    const allowed = [...ids, ...activeCustomExercises().map((c) => c.id)];
     const last = loadPlan();
-    const restored = last?.exercises.filter((id) => ids.includes(id)) ?? [];
+    const restored = last?.exercises.filter((id) => allowed.includes(id)) ?? [];
     setSelected(restored.length ? restored : ids.filter((id) => id === "squat" || id === "pushup"));
     if (last) setSetsPer(last.sets);
   }, [router, serverProfile]);
@@ -74,7 +81,14 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
   const current = queue[setIndex];
   const title = current ? `Set ${current.setNumber} of ${current.total}` : "";
 
-  function toggle(id: ExerciseId) {
+  function archive(id: AnyExerciseId) {
+    const c = custom.find((x) => x.id === id);
+    if (!c) return;
+    setSelected((s) => s.filter((x) => x !== id));
+    void archiveCustom(c);
+  }
+
+  function toggle(id: AnyExerciseId) {
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
   }
 
@@ -211,6 +225,8 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
     <AppShell>
       <ExercisePicker
         available={available}
+        custom={custom}
+        onArchive={archive}
         selected={selected}
         sets={setsPer}
         onToggle={toggle}

@@ -1,4 +1,4 @@
-import type { ExerciseId } from "@/lib/equipment";
+import type { AnyExerciseId } from "@/lib/exercises/ids";
 import { caloriesBurned } from "./calories";
 import { GOOD_REP_SCORE } from "./form";
 import type { SetResult } from "./set-engine";
@@ -12,7 +12,7 @@ export type LoggedSet = SetResult & {
 };
 
 export type ExerciseSummary = {
-  exerciseId: ExerciseId;
+  exerciseId: AnyExerciseId;
   sets: LoggedSet[];
   /** Most frequent cues first. */
   topIssues: string[];
@@ -39,7 +39,7 @@ export function summarizeSession(sets: readonly LoggedSet[], weightKg: number, d
   let badReps = 0;
   let missed = 0;
   let calories = 0;
-  const byExercise = new Map<ExerciseId, LoggedSet[]>();
+  const byExercise = new Map<AnyExerciseId, LoggedSet[]>();
 
   for (const set of sets) {
     if (set.mode === "hold") {

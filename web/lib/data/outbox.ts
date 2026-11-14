@@ -1,3 +1,4 @@
+import type { NewCustomRow } from "./custom-store";
 import type { NewCheckin, NewSession, NewSet } from "./rows";
 
 // Workouts are written here first, then uploaded. A dropped connection or a workout
@@ -7,10 +8,11 @@ import type { NewCheckin, NewSession, NewSet } from "./rows";
 export type OutboxItem =
   | { kind: "session"; row: NewSession }
   | { kind: "checkin"; row: NewCheckin }
-  | { kind: "set"; row: NewSet };
+  | { kind: "set"; row: NewSet }
+  | { kind: "custom"; row: NewCustomRow };
 
 /** Parents first: sets and check-ins reference a session that must already exist. */
-const PRIORITY: Record<OutboxItem["kind"], number> = { session: 0, checkin: 1, set: 2 };
+const PRIORITY: Record<OutboxItem["kind"], number> = { custom: 0, session: 0, checkin: 1, set: 2 };
 
 /** Adds an item, replacing any queued version of the same row. */
 export function addToOutbox(items: readonly OutboxItem[], item: OutboxItem): OutboxItem[] {

@@ -6,10 +6,9 @@ import { ChevronRightIcon, HistoryIcon } from "lucide-react";
 import { formatClock } from "@/components/workout/rep-display";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useCustomExercises } from "@/components/workout/use-custom-exercises";
 import type { SessionWithSets } from "@/lib/data/stats";
-import { EXERCISES } from "@/lib/equipment";
-
-export const exerciseName = (id: string) => EXERCISES.find((e) => e.id === id)?.name ?? id;
+import { exerciseName } from "@/lib/exercises/registry";
 
 /** "Tue 3 Nov, 6:30 pm" in the user's timezone. */
 export function sessionDate(iso: string) {
@@ -26,6 +25,8 @@ export function HistoryList({ sessions }: { sessions: SessionWithSets[] }) {
   // Dates render in the browser's timezone; the server would show UTC.
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
+  // Taught exercises are named from this device's list.
+  const custom = useCustomExercises();
   if (!ready) return null;
 
   if (sessions.length === 0) {
@@ -42,7 +43,7 @@ export function HistoryList({ sessions }: { sessions: SessionWithSets[] }) {
     <ul className="flex flex-col gap-2.5">
       {sessions.map((s) => {
         const reps = s.sets.reduce((sum, set) => sum + set.reps, 0);
-        const names = [...new Set(s.sets.map((set) => exerciseName(set.exercise)))].join(", ");
+        const names = [...new Set(s.sets.map((set) => exerciseName(set.exercise, custom)))].join(", ");
         return (
           <li key={s.id}>
             <Link href={`/history/${s.id}`} className="block">

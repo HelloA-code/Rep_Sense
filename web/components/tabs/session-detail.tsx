@@ -6,7 +6,9 @@ import { Card } from "@/components/ui/card";
 import { TopBar } from "@/components/ui/top-bar";
 import type { SessionWithSets } from "@/lib/data/stats";
 import type { SetRow } from "@/lib/supabase/database";
-import { exerciseName, sessionDate } from "./history-list";
+import { useCustomExercises } from "@/components/workout/use-custom-exercises";
+import { exerciseName } from "@/lib/exercises/registry";
+import { sessionDate } from "./history-list";
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
@@ -25,6 +27,7 @@ function issueText(set: SetRow) {
 }
 
 export function SessionDetail({ session }: { session: SessionWithSets }) {
+  const custom = useCustomExercises();
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
 
@@ -45,7 +48,7 @@ export function SessionDetail({ session }: { session: SessionWithSets }) {
       <div className="mt-4 flex flex-col gap-3">
         {[...groups].map(([exercise, sets]) => (
           <Card key={exercise} className="p-0">
-            <p className="px-5 pt-4 pb-2 text-[15px] font-bold">{exerciseName(exercise)}</p>
+            <p className="px-5 pt-4 pb-2 text-[15px] font-bold">{exerciseName(exercise, custom)}</p>
             <ul>
               {sets.map((s) => (
                 <li key={s.id} className="border-t border-border px-5 py-2.5 text-[13px]">
@@ -54,6 +57,7 @@ export function SessionDetail({ session }: { session: SessionWithSets }) {
                     <span className="font-bold tabular-nums">
                       {s.hold_seconds > 0 ? `${s.hold_seconds}s` : `${s.reps} reps`}
                       {Number(s.load_kg) > 0 && ` · +${Number(s.load_kg)} kg`}
+                      {(s.manual_reps ?? 0) > 0 && <span className="ml-2 text-muted">{s.manual_reps} by hand</span>}
                       {s.avg_form_score !== null && <span className="ml-2 text-muted">form {s.avg_form_score}</span>}
                     </span>
                   </div>

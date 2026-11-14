@@ -1,4 +1,4 @@
-import type { ExerciseId } from "@/lib/equipment";
+import type { AnyExerciseId } from "@/lib/exercises/ids";
 import type { ExerciseConfig, PoseFrame } from "@/lib/exercises/types";
 import {
   createHoldTimer,
@@ -43,10 +43,12 @@ export type FrameOutput = {
 };
 
 export type SetResult = {
-  exerciseId: ExerciseId;
+  exerciseId: AnyExerciseId;
   mode: ExerciseConfig["mode"];
-  /** Counted reps (0 for planks). */
+  /** Counted reps (0 for planks), including any counted by hand. */
   reps: number;
+  /** Of those, reps added by hand while the camera had lost you. */
+  manualReps: number;
   /** Form score of each counted rep, in order. */
   repScores: number[];
   goodReps: number;
@@ -155,14 +157,16 @@ export function createSetEngine(exercise: ExerciseConfig) {
     };
   }
 
-  function finish(tMs: number = lastT): SetResult {
+  /** `manualReps`: reps the user added by hand while the camera had lost them. */
+  function finish(tMs: number = lastT, manualReps = 0): SetResult {
     const heldMs = hold?.state.heldMs ?? 0;
     const avg = repScores.length ? Math.round(repScores.reduce((a, b) => a + b, 0) / repScores.length) : null;
     const holdScore = inPositionMs > 0 ? Math.round((100 * Math.min(heldMs, inPositionMs)) / inPositionMs) : null;
     return {
       exerciseId: exercise.id,
       mode: exercise.mode,
-      reps: repScores.length,
+      reps: repScores.length + manualReps,
+      manualReps,
       repScores: [...repScores],
       goodReps: repScores.filter((s) => s >= GOOD_REP_SCORE).length,
       missed,

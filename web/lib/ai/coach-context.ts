@@ -1,4 +1,4 @@
-import { EXERCISES } from "@/lib/equipment";
+import { exerciseName } from "@/lib/exercises/registry";
 import { streak, type SessionWithSets } from "@/lib/data/stats";
 import type { NutritionAnswers } from "@/lib/nutrition/profile";
 import type { Targets } from "@/lib/nutrition/targets";
@@ -10,7 +10,8 @@ import { GOALS, LEVELS, type OnboardingData } from "@/lib/onboarding";
 type MealWithItems = { eaten_at: string; items: { kcal: number | string; protein: number | string }[] };
 
 const DAY = 24 * 3600 * 1000;
-const name = (id: string) => EXERCISES.find((e) => e.id === id)?.name ?? id;
+// Server side: taught exercises have no name here, so they show as "Taught exercise".
+const name = (id: string) => exerciseName(id, []);
 
 export function buildCoachContext({
   now,

@@ -103,6 +103,7 @@ describe("calories + summary", () => {
     exerciseId: "squat",
     mode: "reps",
     reps: 3,
+    manualReps: 0,
     repScores: [100, 65, 85],
     goodReps: 2,
     missed: 1,

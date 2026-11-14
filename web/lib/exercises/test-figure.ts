@@ -101,7 +101,40 @@ export function poseForSignal(signal: SignalId, value: number): PoseFrame {
       return figure({ shoulder: 180 - value, elbow: 175 });
     case "heel-raise":
       return figure({ footTilt: 90 - value });
+    case "shoulder":
+      return figure({ shoulder: value, elbow: 175 });
     case "body-line":
       return figure({ hip: 180 - value, lie: 90 });
+    case "wrist-spread":
+      return frontFigure({ wristSpread: value });
+    case "knee-spread":
+      return frontFigure({ kneeSpread: value });
   }
+}
+
+/**
+ * Facing the camera, shoulders 200 px apart. Spreads are in shoulder widths × 100, so
+ * 100 = hands (or knees) one shoulder width apart. Arms hang straight down from the
+ * shoulders' height to the hands' spread, so no joint angle changes much.
+ */
+export function frontFigure({ wristSpread = 60, kneeSpread = 90 }: { wristSpread?: number; kneeSpread?: number } = {}) {
+  const cx = 640;
+  const shoulder = 100; // half the shoulder width
+  const w = wristSpread; // px from the centre: (2w / 200) × 100 = w
+  const k = kneeSpread;
+  return frame({
+    [LM.NOSE]: { x: cx, y: 160 },
+    [LM.LEFT_SHOULDER]: { x: cx + shoulder, y: 230 },
+    [LM.RIGHT_SHOULDER]: { x: cx - shoulder, y: 230 },
+    [LM.LEFT_ELBOW]: { x: cx + (shoulder + w) / 2, y: 330 },
+    [LM.RIGHT_ELBOW]: { x: cx - (shoulder + w) / 2, y: 330 },
+    [LM.LEFT_WRIST]: { x: cx + w, y: 420 },
+    [LM.RIGHT_WRIST]: { x: cx - w, y: 420 },
+    [LM.LEFT_HIP]: { x: cx + 70, y: 480 },
+    [LM.RIGHT_HIP]: { x: cx - 70, y: 480 },
+    [LM.LEFT_KNEE]: { x: cx + k, y: 600 },
+    [LM.RIGHT_KNEE]: { x: cx - k, y: 600 },
+    [LM.LEFT_ANKLE]: { x: cx + k, y: 700 },
+    [LM.RIGHT_ANKLE]: { x: cx - k, y: 700 },
+  });
 }

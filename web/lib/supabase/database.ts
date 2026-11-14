@@ -38,6 +38,8 @@ export type SetRow = {
   missed: number;
   calories: number;
   form_issues: Record<string, number>;
+  /** Reps counted by hand while the camera had lost you (0004). */
+  manual_reps?: number;
   created_at: string;
 };
 
@@ -92,6 +94,17 @@ export type MealItemRow = {
 
 export type DietPlanRow = { user_id: string; plan: unknown; created_at: string };
 
+/** A taught exercise (0004_custom_exercises.sql). `definition` is checked by isCustomExercise. */
+export type CustomExerciseRow = {
+  id: string;
+  user_id: string;
+  name: string;
+  definition: Record<string, unknown>;
+  archived: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type CoachMessageRow = { id: string; user_id: string; role: string; content: string; created_at: string };
 
 type Table<Row, Required extends keyof Row> = {
@@ -119,6 +132,7 @@ export type Database = {
       >;
       diet_plans: Table<DietPlanRow, "plan">;
       coach_messages: Table<CoachMessageRow, "role" | "content">;
+      custom_exercises: Table<CustomExerciseRow, "id" | "name" | "definition">;
     };
     Views: Record<string, never>;
     Functions: {
