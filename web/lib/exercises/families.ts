@@ -14,6 +14,7 @@ export type FamilyId =
   | "row"
   | "vertical-pull"
   | "single-joint"
+  | "core"
   | "hold";
 
 /** Broad movement patterns, used to build a balanced session. */
@@ -119,7 +120,7 @@ export const FAMILIES: Record<FamilyId, Family> = {
   },
   "single-joint": {
     id: "single-joint",
-    name: "Arms & calves",
+    name: "Isolation",
     // Accessory work: suggestions build sessions from the big patterns, not this one.
     pattern: "accessory",
     met: 3.8,
@@ -128,6 +129,17 @@ export const FAMILIES: Record<FamilyId, Family> = {
     setupHint: "Side view, whole body in frame",
     phaseLabel: { up: "Arms long", down: "Curled" },
     missCues: { shallow: "Full range", "no-lockout": "All the way back" },
+  },
+  core: {
+    id: "core",
+    name: "Core",
+    pattern: "core",
+    met: 3.8,
+    signal: "hip",
+    view: "side",
+    setupHint: "Side view, camera at floor height, whole body in frame",
+    phaseLabel: { up: "Extended", down: "Crunched" },
+    missCues: { shallow: "Further", "no-lockout": "All the way back" },
   },
   hold: {
     id: "hold",
@@ -151,5 +163,6 @@ export const FAMILY_ORDER: readonly FamilyId[] = [
   "row",
   "vertical-pull",
   "single-joint",
+  "core",
   "hold",
 ];

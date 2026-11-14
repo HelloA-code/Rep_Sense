@@ -1,6 +1,7 @@
 import type { ExerciseId } from "@/lib/equipment";
 import { CATALOG } from "@/lib/exercises/catalog";
 import { FAMILIES } from "@/lib/exercises/families";
+import { exerciseInfo, groupMet } from "@/lib/exercises/library";
 
 // Energy estimate: kcal = MET × body weight (kg) × time (hours).
 // MET values from the Compendium of Physical Activities (2011):
@@ -16,6 +17,7 @@ export const MET = Object.fromEntries(
 export const DEFAULT_MET = 3.8;
 
 export function caloriesBurned(exerciseId: string, weightKg: number, durationMs: number): number {
-  const met = exerciseId in MET ? MET[exerciseId as ExerciseId] : DEFAULT_MET;
+  const info = exerciseId in MET ? null : exerciseInfo(exerciseId);
+  const met = exerciseId in MET ? MET[exerciseId as ExerciseId] : info ? groupMet(info.group) : DEFAULT_MET;
   return met * weightKg * (durationMs / 3_600_000);
 }

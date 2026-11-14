@@ -17,8 +17,8 @@ const reps = entries.filter((e): e is RepEntry => "counter" in e);
 const holds = entries.filter((e): e is HoldEntry => "hold" in e);
 
 describe("catalog data", () => {
-  it("has the original 6 plus 40 new exercises", () => {
-    expect(entries).toHaveLength(46);
+  it("has the original 6 plus the newer camera exercises", () => {
+    expect(entries).toHaveLength(78);
     expect(entries.filter((e) => e.classic).map((e) => e.id).sort()).toEqual(
       ["dip", "lunge", "plank", "pullup", "pushup", "squat"],
     );
@@ -54,8 +54,8 @@ describe("catalog data", () => {
   });
 
   it("builds a config for every exercise, with a calorie rate", () => {
-    expect(Object.keys(EXERCISE_CONFIGS)).toHaveLength(46);
-    expect(EXERCISES).toHaveLength(46);
+    expect(Object.keys(EXERCISE_CONFIGS)).toHaveLength(78);
+    expect(EXERCISES).toHaveLength(78);
     for (const e of entries) {
       const cfg = EXERCISE_CONFIGS[e.id as keyof typeof EXERCISE_CONFIGS];
       expect(cfg.name).toBe(e.name);

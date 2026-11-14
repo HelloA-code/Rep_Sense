@@ -11,6 +11,8 @@ import { TopBar } from "@/components/ui/top-bar";
 import { CAMERA_ERROR_TEXT, useCamera } from "@/components/workout/use-camera";
 import { saveCustomExercise } from "@/lib/data/sync";
 import { MAX_NAME_LENGTH, customFromTeach } from "@/lib/exercises/custom";
+import type { AnyExerciseId } from "@/lib/exercises/ids";
+import { exerciseInfo } from "@/lib/exercises/library";
 import { analyseTeach, type TeachFrame, type TeachResult, type TeachSuccess } from "@/lib/exercises/teach";
 import { drawIssues, drawSkeleton } from "@/lib/pose/draw";
 import { getPoseLandmarker } from "@/lib/pose/landmarker";
@@ -74,7 +76,10 @@ function BottomPose({ result, width, height }: { result: TeachSuccess; width: nu
   );
 }
 
-export function TeachCamera() {
+export function TeachCamera({ forId }: { forId?: string }) {
+  // Teaching a library exercise ("Tap to teach"): its name is known, and it keeps its own id.
+  const target = forId ? exerciseInfo(forId) : undefined;
+  const library = target && target.tracking === "teach" ? target : undefined;
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -90,7 +95,7 @@ export function TeachCamera() {
   const startRef = useRef(0);
   const [result, setResult] = useState<TeachResult | null>(null);
   const [frameSize, setFrameSize] = useState({ width: 1280, height: 720 });
-  const [name, setName] = useState("");
+  const [name, setName] = useState(library?.name ?? "");
   const [saving, setSaving] = useState(false);
 
   const changeStage = useCallback((s: Stage) => {
@@ -180,10 +185,13 @@ export function TeachCamera() {
   async function save() {
     if (!result?.ok || !name.trim()) return;
     setSaving(true);
-    const exercise = customFromTeach(name, result);
+    const exercise = customFromTeach(name, result, new Date(), library?.id);
     void saveCustomExercise(exercise); // stored on this device now; uploads in the background
+    // Picked in the workout straight away: by its library id when taught for one.
+    const picked = (library?.id ?? exercise.id) as AnyExerciseId;
     const plan = loadPlan();
-    savePlan({ exercises: [...(plan?.exercises ?? []), exercise.id], sets: plan?.sets ?? 3 });
+    const kept = (plan?.exercises ?? []).filter((id) => id !== picked);
+    savePlan({ exercises: [...kept, picked], sets: plan?.sets ?? 3 });
     camera.stop();
     router.push("/workout");
   }
@@ -193,7 +201,7 @@ export function TeachCamera() {
 
   return (
     <AppShell>
-      <TopBar title="Teach an exercise" backHref="/workout" />
+      <TopBar title={library ? `Teach: ${library.name}` : "Teach an exercise"} backHref="/workout" />
 
       {stage === "intro" && (
         <div className="flex flex-1 flex-col">

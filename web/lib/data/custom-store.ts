@@ -36,8 +36,20 @@ export function loadCustomExercises(): CustomExercise[] {
 }
 
 /** The ones shown in pickers. */
-export function activeCustomExercises(list = loadCustomExercises()): CustomExercise[] {
+export function activeCustomExercises(list: readonly CustomExercise[] = loadCustomExercises()): CustomExercise[] {
   return list.filter((c) => !c.archived);
+}
+
+/** Taught from scratch ("My exercises"); ones taught for a library exercise show under that exercise. */
+export function ownCustomExercises(list: readonly CustomExercise[] = loadCustomExercises()): CustomExercise[] {
+  return activeCustomExercises(list).filter((c) => !c.libraryId);
+}
+
+/** The newest active counter taught for a library exercise, if any. */
+export function taughtFor(libraryId: string, list: readonly CustomExercise[] = loadCustomExercises()): CustomExercise | undefined {
+  return activeCustomExercises(list)
+    .filter((c) => c.libraryId === libraryId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
 }
 
 function writeAll(list: readonly CustomExercise[]) {
@@ -79,7 +91,13 @@ export function customToRow(c: CustomExercise): NewCustomRow {
   return {
     id: c.id,
     name: c.name,
-    definition: { signal: c.signal, mirror: c.mirror, counter: c.counter, view: c.view },
+    definition: {
+      signal: c.signal,
+      mirror: c.mirror,
+      counter: c.counter,
+      view: c.view,
+      ...(c.libraryId ? { libraryId: c.libraryId } : {}),
+    },
     archived: c.archived,
     created_at: c.createdAt,
   };

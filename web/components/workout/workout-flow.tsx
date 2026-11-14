@@ -9,7 +9,10 @@ import { sessionToRow, setToRow } from "@/lib/data/rows";
 import { saveToOutbox, type FlushResult } from "@/lib/data/sync";
 import { archiveCustom } from "@/lib/data/sync";
 import { availableExercises } from "@/lib/equipment";
-import { activeCustomExercises } from "@/lib/data/custom-store";
+import { activeCustomExercises, ownCustomExercises } from "@/lib/data/custom-store";
+import { ALL_EXERCISES, exerciseInfo, filterExercises } from "@/lib/exercises/library";
+import { exerciseConfig } from "@/lib/exercises/registry";
+import { blankResult, handLoggedSet } from "@/lib/workout/manual";
 import type { AnyExerciseId } from "@/lib/exercises/ids";
 import { loadOnboarding, saveOnboarding, type OnboardingData } from "@/lib/onboarding";
 import { loadPlan, savePlan } from "@/lib/workout/plan-store";
@@ -35,7 +38,7 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
   const [checkingIn, setCheckingIn] = useState(false);
   const [selected, setSelected] = useState<AnyExerciseId[]>([]);
   const allCustom = useCustomExercises();
-  const custom = useMemo(() => activeCustomExercises(allCustom), [allCustom]);
+  const custom = useMemo(() => ownCustomExercises(allCustom), [allCustom]);
   const [setsPer, setSetsPer] = useState(3);
   const [plan, setPlan] = useState<PlanItem[]>([]);
   const [setIndex, setSetIndex] = useState(0);
@@ -59,14 +62,14 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
     }
     setProfile(saved);
     const ids: AnyExerciseId[] = availableExercises(saved.equipment).map((e) => e.id);
-    const allowed = [...ids, ...activeCustomExercises().map((c) => c.id)];
+    const library = filterExercises(ALL_EXERCISES, { owned: saved.equipment }).map((e) => e.id as AnyExerciseId);
+    const allowed = [...ids, ...library, ...activeCustomExercises().map((c) => c.id)];
     const last = loadPlan();
     const restored = last?.exercises.filter((id) => allowed.includes(id)) ?? [];
     setSelected(restored.length ? restored : ids.filter((id) => id === "squat" || id === "pushup"));
     if (last) setSetsPer(last.sets);
   }, [router, serverProfile]);
 
-  const available = useMemo(() => (profile ? availableExercises(profile.equipment) : []), [profile]);
   const pickedPlan = useMemo(() => selected.map((exerciseId) => ({ exerciseId, sets: setsPer })), [selected, setsPer]);
   const queue = useMemo(
     () =>
@@ -80,6 +83,8 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
 
   const current = queue[setIndex];
   const title = current ? `Set ${current.setNumber} of ${current.total}` : "";
+  // Exercises the camera can't count (not taught yet, or log-only) are typed in instead.
+  const handMode = current && exerciseConfig(current.exerciseId) === null ? (exerciseInfo(current.exerciseId)?.mode ?? "reps") : null;
 
   function archive(id: AnyExerciseId) {
     const c = custom.find((x) => x.id === id);
@@ -137,8 +142,12 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
   }
 
   function logSet(values: { loggedValue: number; loadKg: number }) {
-    if (!logging || !profile || !current) return;
-    const set: LoggedSet = { ...logging, ...values };
+    if (!profile || !current) return;
+    const result = logging ?? (handMode ? blankResult(current.exerciseId, handMode) : null);
+    if (!result) return;
+    const set: LoggedSet = handMode
+      ? handLoggedSet(result, handMode, values.loggedValue, values.loadKg)
+      : { ...result, ...values };
     const sets = [...logged, set];
     const items: OutboxItem[] = [
       sessionItem(sets, null),
@@ -163,6 +172,17 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
   function redoSet() {
     setLogging(null);
     setAttempt((a) => a + 1);
+  }
+
+  /** Hand-logged sets can be skipped (there's nothing to redo). */
+  function skipSet() {
+    if (setIndex + 1 >= queue.length) {
+      if (logged.length > 0) finishWorkout(logged);
+      else exitRun();
+      return;
+    }
+    setLogging(null);
+    setSetIndex((i) => i + 1);
   }
 
   function exitRun() {
@@ -201,21 +221,35 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
             key: `${setIndex}-${attempt}`,
             exerciseId: current.exerciseId,
             title,
-            showTip: current.setNumber === 1 && attempt === 0,
-            paused: logging !== null,
+            // Hand-logged sets park the camera on its tip screen (no countdown or voice behind the logger).
+            showTip: handMode !== null || (current.setNumber === 1 && attempt === 0),
+            paused: logging !== null || handMode !== null,
             onFinish: setLogging,
             onExit: exitRun,
           }}
         />
-        {logging && (
+        {handMode ? (
           <SetLogger
-            result={logging}
+            key={`${setIndex}-hand`}
+            result={blankResult(current.exerciseId, handMode)}
+            manual={handMode}
             exercises={plan.map((p) => p.exerciseId)}
             title={title}
             sessionStartedAt={startedAt}
             onDone={logSet}
-            onDiscard={redoSet}
+            onDiscard={skipSet}
           />
+        ) : (
+          logging && (
+            <SetLogger
+              result={logging}
+              exercises={plan.map((p) => p.exerciseId)}
+              title={title}
+              sessionStartedAt={startedAt}
+              onDone={logSet}
+              onDiscard={redoSet}
+            />
+          )
         )}
       </div>
     );
@@ -224,8 +258,9 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
   return (
     <AppShell>
       <ExercisePicker
-        available={available}
+        equipment={profile.equipment}
         custom={custom}
+        taught={allCustom}
         onArchive={archive}
         selected={selected}
         sets={setsPer}

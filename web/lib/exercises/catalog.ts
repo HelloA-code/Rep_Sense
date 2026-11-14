@@ -117,6 +117,39 @@ export const CATALOG = [
     counter: { downBelow: 100, upAbove: 155, minRepMs: 500 },
   },
 
+  {
+    id: "barbell-squat",
+    name: "Barbell back squat",
+    family: "squat",
+    requiresAny: ["barbell"],
+    counter: { downBelow: 100, upAbove: 160, minRepMs: 500 },
+    rules: [{ id: "knees-caving" }, CHEST_UP],
+  },
+  {
+    id: "front-squat",
+    name: "Front squat",
+    family: "squat",
+    requiresAny: ["barbell", "kettlebell"],
+    counter: { downBelow: 100, upAbove: 160, minRepMs: 500 },
+    rules: [{ id: "knees-caving" }, CHEST_UP],
+  },
+  {
+    id: "hack-squat",
+    name: "Hack squat (machine)",
+    family: "squat",
+    requiresAny: ["machines"],
+    setupHint: "Side view, whole body and machine in frame",
+    counter: { downBelow: 100, upAbove: 160, minRepMs: 500 },
+  },
+  {
+    id: "smith-squat",
+    name: "Smith machine squat",
+    family: "squat",
+    requiresAny: ["machines"],
+    counter: { downBelow: 100, upAbove: 160, minRepMs: 500 },
+    rules: [CHEST_UP],
+  },
+
   // ---------- Hinge (hip angle) ----------
   {
     id: "romanian-deadlift",
@@ -169,6 +202,14 @@ export const CATALOG = [
     requiresAny: ["kettlebell"],
     met: 8.0,
     counter: { downBelow: 125, upAbove: 160, minRepMs: 300 },
+  },
+
+  {
+    id: "sumo-deadlift",
+    name: "Sumo deadlift",
+    family: "hinge",
+    requiresAny: ["barbell", "kettlebell", "dumbbells"],
+    counter: { downBelow: 115, upAbove: 160, minRepMs: 500 },
   },
 
   // ---------- Lunge (front knee) ----------
@@ -226,6 +267,24 @@ export const CATALOG = [
     setupHint: "Front view, whole body in frame",
     // From the front a bent knee looks less bent, so the bottom line is higher.
     counter: { downBelow: 120, upAbove: 160, minRepMs: 400 },
+  },
+
+  {
+    id: "shrimp-squat",
+    name: "Shrimp squat",
+    family: "lunge",
+    requiresAny: [],
+    setupHint: "Side view, holding your back foot, whole body in frame",
+    counter: { downBelow: 100, upAbove: 155, minRepMs: 500 },
+  },
+  {
+    id: "cossack-squat",
+    name: "Cossack squat",
+    family: "lunge",
+    requiresAny: [],
+    view: "front",
+    setupHint: "Front view, whole body in frame",
+    counter: { downBelow: 115, upAbove: 160, minRepMs: 500 },
   },
 
   // ---------- Push (elbow) ----------
@@ -292,6 +351,67 @@ export const CATALOG = [
     missCues: { shallow: "Go lower", "no-lockout": "Lock out at the top" },
   },
 
+  {
+    id: "archer-pushup",
+    name: "Archer push-up",
+    family: "push",
+    requiresAny: [],
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 500 },
+    rules: [PUSHUP_HIPS],
+  },
+  {
+    id: "pseudo-planche-pushup",
+    name: "Pseudo-planche push-up",
+    family: "push",
+    requiresAny: [],
+    // Hands by the hips and leaning forward: the elbows bend less than in a normal push-up.
+    counter: { downBelow: 110, upAbove: 150, minRepMs: 500 },
+    rules: [PUSHUP_HIPS],
+  },
+  {
+    id: "ring-pushup",
+    name: "Ring push-up",
+    family: "push",
+    requiresAny: ["rings"],
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
+    rules: [PUSHUP_HIPS],
+  },
+  {
+    id: "ring-dip",
+    name: "Ring dip",
+    family: "push",
+    requiresAny: ["rings"],
+    setupHint: "Side view, rings and whole body in frame",
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
+    missCues: { shallow: "Go lower", "no-lockout": "Lock out at the top" },
+  },
+  {
+    id: "straight-bar-dip",
+    name: "Straight bar dip",
+    family: "push",
+    requiresAny: ["pullup-bar", "dip-station"],
+    setupHint: "Side view, bar and whole body in frame",
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
+    missCues: { shallow: "Go lower", "no-lockout": "Lock out at the top" },
+  },
+  {
+    id: "chest-press-machine",
+    name: "Chest press machine",
+    family: "push",
+    requiresAny: ["machines"],
+    setupHint: "Side view, seated, arms in frame",
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
+  },
+  {
+    id: "assisted-dip",
+    name: "Assisted dip machine",
+    family: "push",
+    requiresAny: ["machines"],
+    setupHint: "Side view, whole body and machine in frame",
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
+    missCues: { shallow: "Go lower", "no-lockout": "Lock out at the top" },
+  },
+
   // ---------- Overhead push (elbow) ----------
   {
     id: "pike-pushup",
@@ -317,6 +437,32 @@ export const CATALOG = [
     requiresAny: ["dumbbells"],
     counter: { downBelow: 100, upAbove: 155, minRepMs: 500 },
     rules: [{ id: "no-swing" }],
+  },
+
+  {
+    id: "military-press",
+    name: "Military press",
+    family: "overhead",
+    requiresAny: ["barbell"],
+    counter: { downBelow: 100, upAbove: 155, minRepMs: 400 },
+    rules: [{ id: "no-swing" }],
+  },
+  {
+    id: "shoulder-press-machine",
+    name: "Shoulder press machine",
+    family: "overhead",
+    requiresAny: ["machines"],
+    setupHint: "Front view, seated, arms in frame",
+    counter: { downBelow: 100, upAbove: 155, minRepMs: 400 },
+  },
+  {
+    id: "handstand-pushup",
+    name: "Handstand push-up (wall)",
+    family: "overhead",
+    requiresAny: [],
+    view: "side",
+    setupHint: "Side view against a wall, whole body in frame",
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 500 },
   },
 
   // ---------- Row (elbow) ----------
@@ -345,6 +491,30 @@ export const CATALOG = [
     setupHint: "Side view, arms and torso in frame",
     counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
     rules: [{ id: "no-swing" }],
+  },
+
+  {
+    id: "barbell-row",
+    name: "Bent-over barbell row",
+    family: "row",
+    requiresAny: ["barbell"],
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
+  },
+  {
+    id: "seated-cable-row",
+    name: "Seated cable row",
+    family: "row",
+    requiresAny: ["cable-machine"],
+    setupHint: "Side view, seated, arms and torso in frame",
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
+    rules: [{ id: "no-swing" }],
+  },
+  {
+    id: "t-bar-row",
+    name: "T-bar row",
+    family: "row",
+    requiresAny: ["barbell", "machines"],
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
   },
 
   // ---------- Vertical pull (elbow + chin over the bar) ----------
@@ -377,6 +547,35 @@ export const CATALOG = [
     // A rep is the slow lowering: from reaching the top to a full hang must take 2.5 s+.
     counter: { downBelow: 90, upAbove: 150, minRepMs: 2500 },
     missCues: { "too-fast": "Lower slower" },
+  },
+
+  {
+    id: "wide-pullup",
+    name: "Wide-grip pull-up",
+    family: "vertical-pull",
+    requiresAny: ["pullup-bar"],
+    counter: { downBelow: 90, upAbove: 150, minRepMs: 500 },
+    goal: "chin-over-bar",
+    missCues: { goal: "Chin over the bar", shallow: "Pull higher", "no-lockout": "Full hang at the bottom" },
+  },
+  {
+    id: "assisted-pullup",
+    name: "Assisted pull-up",
+    family: "vertical-pull",
+    requiresAny: ["assist-band", "machines"],
+    counter: { downBelow: 90, upAbove: 150, minRepMs: 500 },
+    goal: "chin-over-bar",
+    missCues: { goal: "Chin over the bar", shallow: "Pull higher", "no-lockout": "Full hang at the bottom" },
+  },
+  {
+    id: "lat-pulldown",
+    name: "Lat pulldown",
+    family: "vertical-pull",
+    requiresAny: ["machines", "cable-machine"],
+    setupHint: "Front view, seated, arms and bar in frame",
+    phaseLabel: { up: "Arms up", down: "Pulled" },
+    counter: { downBelow: 90, upAbove: 150, minRepMs: 500 },
+    missCues: { shallow: "Pull the bar to your chest", "no-lockout": "Arms straight at the top" },
   },
 
   // ---------- Single joint ----------
@@ -446,6 +645,89 @@ export const CATALOG = [
     missCues: { shallow: "Rise higher" },
     // Small movement: the foot tilts only ~30–40°, so the band is narrow.
     counter: { downBelow: 70, upAbove: 80, minRepMs: 300 },
+  },
+
+  {
+    id: "concentration-curl",
+    name: "Concentration curl",
+    family: "single-joint",
+    requiresAny: ["dumbbells"],
+    setupHint: "Side view, seated, working arm closest to the camera",
+    phaseLabel: CURL_LABELS,
+    missCues: CURL_CUES,
+    counter: { downBelow: 70, upAbove: 150, minRepMs: 400 },
+  },
+  {
+    id: "cable-curl",
+    name: "Cable curl",
+    family: "single-joint",
+    requiresAny: ["cable-machine"],
+    phaseLabel: CURL_LABELS,
+    missCues: CURL_CUES,
+    counter: { downBelow: 70, upAbove: 150, minRepMs: 400 },
+    rules: [{ id: "no-swing" }],
+  },
+  {
+    id: "preacher-curl",
+    name: "Preacher curl",
+    family: "single-joint",
+    requiresAny: ["barbell", "ez-bar", "dumbbells", "machines"],
+    setupHint: "Side view, seated at the bench, arms in frame",
+    phaseLabel: CURL_LABELS,
+    missCues: CURL_CUES,
+    counter: { downBelow: 70, upAbove: 150, minRepMs: 400 },
+  },
+  {
+    id: "triceps-pushdown",
+    name: "Triceps pushdown",
+    family: "single-joint",
+    requiresAny: ["cable-machine", "bands"],
+    setupHint: "Side view, arms and torso in frame",
+    // Starts with elbows bent: each push down to straight arms counts.
+    phaseLabel: { up: "Arms straight", down: "Bent" },
+    missCues: { "no-lockout": "Straighten your arms fully" },
+    counter: { downBelow: 100, upAbove: 150, minRepMs: 400 },
+    rules: [{ id: "no-swing" }],
+  },
+
+  // ---------- Core (hip angle) ----------
+  {
+    id: "sit-up",
+    name: "Sit-up",
+    family: "core",
+    requiresAny: [],
+    // Lying with bent knees the hip is ~135°; sitting up closes it to ~60°.
+    counter: { downBelow: 80, upAbove: 115, minRepMs: 500 },
+  },
+  {
+    id: "lying-leg-raise",
+    name: "Lying leg raise",
+    family: "core",
+    requiresAny: [],
+    counter: { downBelow: 115, upAbove: 155, minRepMs: 500 },
+  },
+  {
+    id: "captains-chair-knee-raise",
+    name: "Knee raise (captain's chair)",
+    family: "core",
+    requiresAny: ["dip-station", "machines"],
+    setupHint: "Side view, whole body in frame",
+    counter: { downBelow: 120, upAbove: 155, minRepMs: 500 },
+  },
+  {
+    id: "hanging-leg-raise",
+    name: "Hanging leg raise",
+    family: "core",
+    requiresAny: ["pullup-bar"],
+    setupHint: "Side view, bar and whole body in frame",
+    counter: { downBelow: 115, upAbove: 155, minRepMs: 500 },
+  },
+  {
+    id: "v-up",
+    name: "V-up",
+    family: "core",
+    requiresAny: [],
+    counter: { downBelow: 110, upAbove: 155, minRepMs: 500 },
   },
 
   // ---------- Holds ----------

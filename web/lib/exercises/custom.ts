@@ -21,6 +21,8 @@ export type CustomExercise = {
   createdAt: string;
   /** Removed from the picker, kept so old workouts still show its name. */
   archived: boolean;
+  /** Set when taught for a library exercise ("Tap to teach"): picking that exercise uses this counter. */
+  libraryId?: string;
 };
 
 export const MAX_NAME_LENGTH = 40;
@@ -36,8 +38,9 @@ export function newCustomId(random: () => number = Math.random): CustomExerciseI
   return `custom-${s}`;
 }
 
-export function customFromTeach(name: string, result: TeachSuccess, now = new Date()): CustomExercise {
+export function customFromTeach(name: string, result: TeachSuccess, now = new Date(), libraryId?: string): CustomExercise {
   return {
+    ...(libraryId ? { libraryId } : {}),
     id: newCustomId(),
     name: name.trim().slice(0, MAX_NAME_LENGTH),
     signal: result.signal,
@@ -72,7 +75,8 @@ export function isCustomExercise(v: unknown): v is CustomExercise {
     counter.downBelow < counter.upAbove &&
     (c.view === "front" || c.view === "side") &&
     typeof c.createdAt === "string" &&
-    typeof c.archived === "boolean"
+    typeof c.archived === "boolean" &&
+    (c.libraryId === undefined || (typeof c.libraryId === "string" && /^[a-z0-9-]{1,40}$/.test(c.libraryId)))
   );
 }
 

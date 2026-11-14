@@ -431,6 +431,7 @@ repsense/
 | `src/write_fixtures.py` | Golden features + regression clips for the web tests | `python -m src.write_fixtures` |
 | `src/plot_one_euro.py` | Draws `docs/one-euro.png` | `python -m src.plot_one_euro` |
 | `src/build_foods.py` | Builds the USDA food list for the Diet tab | `python -m src.build_foods` |
+| `src/build_exercises.py` | Builds the exercise library (instructions, muscles, tracking level) from free-exercise-db | `python -m src.build_exercises` |
 | `tests/test_pipeline.py` | pytest checks of the pipeline | `python -m pytest` |
 | `reports/` | `RESULTS_synthetic.md` (**not a result**), `rep_counting.md` (to fill with real counts) |
 | `README.md` | Recording format and how to collect data |

@@ -5,6 +5,7 @@ import { PrimaryButton } from "@/components/ui/button";
 import { Keypad } from "@/components/ui/keypad";
 import { SegmentChip } from "@/components/ui/segment-chip";
 import type { AnyExerciseId } from "@/lib/exercises/ids";
+import type { LogMode } from "@/lib/exercises/library";
 import { exerciseName } from "@/lib/exercises/registry";
 import { applyKey, keypadNumber, type KeypadKey } from "@/lib/keypad";
 import { cn } from "@/lib/utils";
@@ -22,16 +23,18 @@ type SetLoggerProps = {
   sessionStartedAt: number;
   onDone: (logged: { loggedValue: number; loadKg: number }) => void;
   onDiscard: () => void;
+  /** Set for exercises logged by hand: what to type (reps, seconds or minutes). */
+  manual?: LogMode;
 };
 
 /**
  * After each set: confirm or correct the counted reps (plank: seconds) and enter any
  * added load. Styled after the keypad reference screen.
  */
-export function SetLogger({ result, exercises, title, sessionStartedAt, onDone, onDiscard }: SetLoggerProps) {
-  const isHold = result.mode === "hold";
+export function SetLogger({ result, exercises, title, sessionStartedAt, onDone, onDiscard, manual }: SetLoggerProps) {
+  const isHold = manual ? manual !== "reps" : result.mode === "hold";
   const [field, setField] = useState<Field>("value");
-  const [value, setValue] = useState(String(isHold ? Math.round(result.heldMs / 1000) : result.reps));
+  const [value, setValue] = useState(manual ? "0" : String(isHold ? Math.round(result.heldMs / 1000) : result.reps));
   const [load, setLoad] = useState("0");
   const [elapsed, setElapsed] = useState(0);
 
@@ -48,8 +51,13 @@ export function SetLogger({ result, exercises, title, sessionStartedAt, onDone, 
   }
 
   const shown = field === "value" ? value : load;
-  const unit = field === "load" ? "kg" : isHold ? "s" : value === "1" ? "rep" : "reps";
-  const counted = isHold ? `Held ${formatClock(result.heldMs)}` : `Counted ${result.reps}`;
+  const unit =
+    field === "load" ? "kg" : manual === "minutes" ? "min" : isHold ? "s" : value === "1" ? "rep" : "reps";
+  const counted = manual
+    ? "Logged by hand"
+    : isHold
+      ? `Held ${formatClock(result.heldMs)}`
+      : `Counted ${result.reps}`;
   const extra = [
     result.score !== null ? `form ${result.score}` : null,
     result.missed ? `${result.missed} missed` : null,
@@ -108,10 +116,10 @@ export function SetLogger({ result, exercises, title, sessionStartedAt, onDone, 
         </div>
         <button
           type="button"
-          onClick={() => window.confirm("Throw this set away and redo it?") && onDiscard()}
+          onClick={() => window.confirm(manual ? "Skip this set?" : "Throw this set away and redo it?") && onDiscard()}
           className="w-full py-3 text-[13px] font-semibold text-muted"
         >
-          Redo this set
+          {manual ? "Skip this set" : "Redo this set"}
         </button>
       </div>
     </div>

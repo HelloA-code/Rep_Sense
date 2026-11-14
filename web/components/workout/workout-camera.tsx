@@ -20,7 +20,6 @@ import { SegmentChip } from "@/components/ui/segment-chip";
 import { iconButtonClass } from "@/components/ui/styles";
 import type { ExerciseId } from "@/lib/equipment";
 import { activeCustomExercises } from "@/lib/data/custom-store";
-import { isCustomId } from "@/lib/exercises/custom";
 import type { AnyExerciseId } from "@/lib/exercises/ids";
 import { exerciseConfig, isKnownExercise } from "@/lib/exercises/registry";
 import { createTrackingMonitor } from "@/lib/pose/visibility";
@@ -81,6 +80,8 @@ const CUE_TOAST_MS = 2200;
 const CLASSIFY_EVERY_TICKS = 5;
 /** Leave this much idle time per unit of detection time, to keep the UI responsive. */
 const DETECT_IDLE_RATIO = 0.5;
+
+const isCatalogId = (id: string): id is ExerciseId => id in EXERCISE_CONFIGS;
 
 const glassButton = cn(iconButtonClass, "border-white/15 bg-black/60");
 
@@ -198,7 +199,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
     (id: AnyExerciseId) => {
       const config = exerciseConfig(id) ?? EXERCISE_CONFIGS.squat;
       setFreeExerciseId(id);
-      if (!isCustomId(id)) setLabel(id); // taught exercises are not recording labels
+      if (isCatalogId(id)) setLabel(id); // only catalog exercises are recording labels
       setView(config.preferredView);
       resetSet(config);
       writeStorage(EXERCISE_KEY, id);
@@ -210,7 +211,7 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
     (id: AnyExerciseId) => {
       setAuto(null);
       classifierRef.current = null;
-      detectorRef.current.setCurrent(isCustomId(id) ? null : id);
+      detectorRef.current.setCurrent(isCatalogId(id) ? id : null);
       changeExercise(id);
     },
     [changeExercise],
@@ -251,7 +252,8 @@ export function WorkoutCamera({ guided }: { guided?: GuidedSet }) {
     voiceOnRef.current = v;
     if (!guided) {
       const saved = readStorage(EXERCISE_KEY);
-      changeExercise(saved && isKnownExercise(saved) ? saved : "squat");
+      // Free mode needs something the camera can count (not a log-only exercise).
+      changeExercise(saved && isKnownExercise(saved) && exerciseConfig(saved) ? saved : "squat");
     }
     return stopVoice;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only; `guided` changes are handled below
