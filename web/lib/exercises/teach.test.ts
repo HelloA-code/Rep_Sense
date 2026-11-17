@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { createTrackingMonitor } from "@/lib/pose/visibility";
-import { buildCustomExercise, customFromTeach, isCustomExercise, isCustomId, newCustomId } from "./custom";
+import { buildCustomExercise, customFromTeach, isCustomExercise, isCustomId, newCustomId, upgradedCounter } from "./custom";
 import { exerciseConfig, exerciseName } from "./registry";
-import { createRepCounter } from "./state-machine";
+import { createRepCounter, type RepRejection } from "./state-machine";
 import { analyseTeach, type TeachFrame, type TeachSuccess } from "./teach";
 import { FIG_H, FIG_W, figure, frontFigure } from "./test-figure";
 import type { PoseFrame } from "./types";
@@ -118,6 +118,72 @@ describe("teach a rep", () => {
     const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
     const noisy = recording(() => figure({ elbow: 60 + rand() * 110, knee: 100 + rand() * 75 }));
     expect(analyseTeach(noisy, FIG_W, FIG_H).ok).toBe(false);
+  });
+});
+
+/** Replays reps through a taught exercise like a set would: reps counted and attempts rejected. */
+function replayWith(taught: TeachSuccess, pose: (p: number) => PoseFrame, reps: number) {
+  const config = buildCustomExercise(customFromTeach("Test", taught));
+  const counter = createRepCounter(config.counter);
+  const rejected: RepRejection[] = [];
+  for (const f of recording(pose, reps)) {
+    const frame: PoseFrame = { lm: f.landmarks, width: FIG_W, height: FIG_H, side: "left" };
+    const v = config.measure(frame);
+    if (v === null) continue;
+    const s = counter.update(v, f.t, config.goal ? config.goal(frame) : true);
+    if (s.rejected) rejected.push(s.rejected);
+  }
+  return { reps: counter.state.reps, rejected };
+}
+
+describe("taught exercises only count reps done like you taught them", () => {
+  const curl = (p: number) => figure({ elbow: lerp(170, 40, p) });
+
+  it("half reps don't count (and are flagged as too shallow)", () => {
+    const t = teach(curl);
+    const half = replayWith(t, (p) => figure({ elbow: lerp(170, 105, p) }), 4);
+    expect(half.reps).toBe(0);
+    expect(half.rejected).toContain("shallow");
+  });
+
+  it("nearly full reps still count", () => {
+    const t = teach(curl);
+    expect(replayWith(t, (p) => figure({ elbow: lerp(168, 52, p) }), 4).reps).toBe(4);
+  });
+
+  it("records how the rest of the body stayed", () => {
+    const t = teach(curl);
+    expect(t.posture.map((p) => p.signal)).toEqual(expect.arrayContaining(["hip", "torso-lean"]));
+    expect(t.posture.map((p) => p.signal)).not.toContain("elbow");
+  });
+
+  it("reps with a swinging torso don't count", () => {
+    const t = teach(curl);
+    const swing = replayWith(t, (p) => figure({ elbow: lerp(170, 40, p), hip: lerp(175, 130, p) }), 3);
+    expect(swing.reps).toBe(0);
+    expect(swing.rejected).toContain("goal");
+  });
+
+  it("small natural wobble is fine", () => {
+    const t = teach(curl);
+    expect(replayWith(t, (p) => figure({ elbow: lerp(170, 40, p), hip: lerp(175, 165, p) }), 3).reps).toBe(3);
+  });
+
+  it("exercises taught before this fix get the stricter thresholds", () => {
+    // Old style: down = bottom + 30 % of the range, up = top - 25 %; taught range 40..170.
+    const old = { ...customFromTeach("Old", teach(curl)), version: undefined, posture: undefined };
+    old.counter = { downBelow: 40 + 0.3 * 130, upAbove: 170 - 0.25 * 130, minRepMs: 400 };
+    const c = upgradedCounter(old);
+    expect(c.downBelow).toBeCloseTo(40 + 0.15 * 130, 5);
+    expect(c.upAbove).toBeCloseTo(170 - 0.15 * 130, 5);
+    expect(isCustomExercise(old)).toBe(true);
+  });
+
+  it("rejects stored posture data that makes no sense", () => {
+    const c = customFromTeach("X", teach(curl));
+    expect(isCustomExercise({ ...c, posture: [{ signal: "nose", min: 0, max: 1 }] })).toBe(false);
+    expect(isCustomExercise({ ...c, posture: [{ signal: "hip", min: 90, max: 10 }] })).toBe(false);
+    expect(isCustomExercise({ ...c, version: 3 })).toBe(false);
   });
 });
 

@@ -96,6 +96,7 @@ describe("taught library exercises", () => {
     trace: [],
     bottomPose: null,
     joints: [],
+    posture: [],
   };
 
   it("keeps the library link and validates it", () => {

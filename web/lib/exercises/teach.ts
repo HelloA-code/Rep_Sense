@@ -25,9 +25,28 @@ const MIN_RANGE = (s: SignalId) => (isSpread(s) ? 30 : 25);
 const MIN_COVERAGE = 0.7;
 const MIN_REPS = 2;
 const MAX_REPS = 6;
-/** Thresholds as a share of the range: down = bottom + 30 %, up = top − 25 %. */
-const DOWN_AT = 0.3;
-const UP_AT = 0.25;
+/**
+ * How close to the taught bottom (and back to the taught start) a rep must get, as a share
+ * of the taught range: 15 % means about 85 % of the depth you showed. Never tighter than
+ * MIN_TOLERANCE (camera noise) and never looser than 30 %.
+ */
+const DEPTH_TOLERANCE = 0.15;
+const MIN_TOLERANCE = (s: SignalId) => (isSpread(s) ? 10 : 8);
+const MAX_TOLERANCE = 0.3;
+
+/** Thresholds for a taught range: down near the bottom, up near the start. */
+export function teachThresholds(signal: SignalId, bottom: number, top: number) {
+  const range = top - bottom;
+  const tol = Math.min(MAX_TOLERANCE * range, Math.max(DEPTH_TOLERANCE * range, MIN_TOLERANCE(signal)));
+  return { downBelow: bottom + tol, upAbove: top - tol };
+}
+
+/** Everything else the body does is checked against what you taught (see PostureRange). */
+export const POSTURE_SIGNALS = [...TEACHABLE_SIGNALS, "torso-lean"] as const;
+export type PostureSignal = (typeof POSTURE_SIGNALS)[number];
+
+/** The range another joint stayed in while you taught (5th–95th percentile). */
+export type PostureRange = { signal: PostureSignal; min: number; max: number };
 
 export type TeachFrame = { t: number; landmarks: readonly Landmark[] };
 
@@ -40,6 +59,8 @@ export type TeachSuccess = {
   view: CameraView;
   reps: number;
   confidence: "high" | "ok";
+  /** How the rest of the body stayed while you taught, so cheated reps don't count. */
+  posture: PostureRange[];
   /** The counted value over time (already mirrored), for the result chart. */
   trace: { t: number; value: number | null }[];
   /** A smoothed pose at the bottom of the first rep, and the joints to ring on it. */
@@ -73,6 +94,24 @@ function median(values: number[]): number {
   return quantile([...values].sort((a, b) => a - b), 0.5);
 }
 
+/**
+ * Real reps cross the middle of their range about twice per rep; noise or fidgeting
+ * crosses it all the time. Reps found ÷ (crossings ÷ 2) below this = not a clean rhythm.
+ */
+const MIN_RHYTHM = 0.5;
+
+function midlineCrossings(values: (number | null)[], mid: number): number {
+  let crossings = 0;
+  let above: boolean | null = null;
+  for (const v of values) {
+    if (v === null) continue;
+    const now = v > mid;
+    if (above !== null && now !== above) crossings += 1;
+    above = now;
+  }
+  return crossings;
+}
+
 /** Replays the rep counter; returns the reps and when each one finished. */
 function replay(values: (number | null)[], times: number[], config: RepCounterConfig) {
   const counter = createRepCounter(config);
@@ -104,7 +143,7 @@ export function signalJoints(signal: TeachableSignal, side: Side): number[] {
   }
 }
 
-type Candidate = Omit<TeachSuccess, "ok" | "view" | "bottomPose" | "joints" | "confidence"> & {
+type Candidate = Omit<TeachSuccess, "ok" | "view" | "bottomPose" | "joints" | "confidence" | "posture"> & {
   score: number;
   coverage: number;
   values: (number | null)[];
@@ -151,7 +190,7 @@ export function analyseTeach(frames: readonly TeachFrame[], width: number, heigh
     const mirror = rest < (top + bottom) / 2 ? top + bottom : null;
     const values = raw.map((v) => (v === null || mirror === null ? v : mirror - v));
 
-    const thresholds = { downBelow: bottom + DOWN_AT * range, upAbove: top - UP_AT * range };
+    const thresholds = teachThresholds(signal, bottom, top);
     const first = replay(values, times, { ...thresholds, minRepMs: 200 });
     if (first.length < MIN_REPS || first.length > MAX_REPS) continue;
 
@@ -161,6 +200,8 @@ export function analyseTeach(frames: readonly TeachFrame[], width: number, heigh
     const counter = { ...thresholds, minRepMs: Math.max(300, Math.round(typical * 0.3)) };
     const reps = replay(values, times, counter).length;
     if (reps < MIN_REPS || reps > MAX_REPS) continue;
+    const crossings = midlineCrossings(values, (top + bottom) / 2);
+    if (crossings > 0 && reps / (crossings / 2) < MIN_RHYTHM) continue;
 
     candidates.push({
       signal,
@@ -180,6 +221,17 @@ export function analyseTeach(frames: readonly TeachFrame[], width: number, heigh
 
   const best = candidates.reduce((a, b) => (b.score > a.score ? b : a));
 
+  // The other joints' ranges while you taught: reps done with a different body position
+  // (swinging, bending other joints to cheat the movement) won't count.
+  const posture: PostureRange[] = [];
+  for (const signal of POSTURE_SIGNALS) {
+    if (signal === best.signal) continue;
+    const values = poses.map((p) => SIGNALS[signal].measure(p)).filter((v): v is number => v !== null);
+    if (values.length / poses.length < MIN_COVERAGE) continue;
+    const sorted = values.sort((a, b) => a - b);
+    posture.push({ signal, min: quantile(sorted, 0.05), max: quantile(sorted, 0.95) });
+  }
+
   // The bottom of the first rep: the lowest value before the counter first comes back up.
   let bottomIndex = -1;
   for (let i = 0; i < best.values.length; i++) {
@@ -198,6 +250,7 @@ export function analyseTeach(frames: readonly TeachFrame[], width: number, heigh
     view: views.front > views.side ? "front" : "side",
     reps: best.reps,
     confidence: best.reps === 3 && best.coverage >= 0.9 ? "high" : "ok",
+    posture,
     trace: best.trace,
     bottomPose: bottom ? bottom.lm : null,
     joints: bottom ? signalJoints(best.signal, bottom.side) : [],

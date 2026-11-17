@@ -109,6 +109,8 @@ export function poseForSignal(signal: SignalId, value: number): PoseFrame {
       return frontFigure({ wristSpread: value });
     case "knee-spread":
       return frontFigure({ kneeSpread: value });
+    case "torso-lean":
+      return figure({ hip: 180 - value });
   }
 }
 

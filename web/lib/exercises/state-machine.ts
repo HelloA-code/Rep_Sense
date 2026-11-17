@@ -21,6 +21,11 @@ export type RepCounterConfig = {
    * Back past it from the bottom but not to the top, then down again → "no-lockout".
    */
   partialBelow?: number;
+  /**
+   * "all": the goal must hold on every frame of the bottom phase (a posture check), not
+   * just at some point (the default, e.g. the chin getting over the bar once).
+   */
+  goalMode?: "any" | "all";
 };
 
 /**
@@ -79,7 +84,7 @@ export function createRepCounter(config: RepCounterConfig): RepCounter {
           }
         }
       } else {
-        if (goalMet) goalSeen = true;
+        goalSeen = config.goalMode === "all" ? goalSeen && goalMet : goalSeen || goalMet;
         maxSinceBottom = Math.max(maxSinceBottom, angle);
         if (angle > config.upAbove) {
           phase = "up";

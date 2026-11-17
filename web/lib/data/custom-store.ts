@@ -97,6 +97,8 @@ export function customToRow(c: CustomExercise): NewCustomRow {
       counter: c.counter,
       view: c.view,
       ...(c.libraryId ? { libraryId: c.libraryId } : {}),
+      ...(c.version ? { version: c.version } : {}),
+      ...(c.posture ? { posture: c.posture } : {}),
     },
     archived: c.archived,
     created_at: c.createdAt,

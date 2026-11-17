@@ -29,6 +29,12 @@ describe("taught exercises in storage", () => {
     expect(rowToCustom(row)).toEqual(c);
   });
 
+  it("keeps the posture check and version through the database", () => {
+    const c = taught({ version: 2, posture: [{ signal: "torso-lean", min: 2, max: 9 }] });
+    const row = { ...customToRow(c), user_id: "u", updated_at: "" };
+    expect(rowToCustom(row)).toEqual(c);
+  });
+
   it("rejects a row edited into nonsense", () => {
     const row = { ...customToRow(taught()), definition: { signal: "elbow" } };
     expect(rowToCustom(row)).toBeNull();

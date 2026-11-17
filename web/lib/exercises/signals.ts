@@ -16,7 +16,8 @@ export type SignalId =
   | "heel-raise"
   | "body-line"
   | "wrist-spread"
-  | "knee-spread";
+  | "knee-spread"
+  | "torso-lean";
 
 /** Distance between two landmarks ÷ shoulder width × 100: 100 = one shoulder width apart. */
 function spread(f: PoseFrame, a: number, b: number): number | null {
@@ -91,6 +92,15 @@ export const SIGNALS: Record<SignalId, Signal> = {
   "knee-spread": {
     metric: "Knees apart",
     measure: (f) => spread(f, LM.LEFT_KNEE, LM.RIGHT_KNEE),
+  },
+  // Shoulder–hip line away from vertical: 0 standing tall, 90 lying flat. Used to check
+  // a taught exercise is done in the same body position, not counted on its own.
+  "torso-lean": {
+    metric: "Torso lean",
+    measure(f) {
+      const s = SIDE_LM[f.side];
+      return visible(f, s.shoulder, s.hip) ? torsoLean(px(f, s.shoulder), px(f, s.hip)) : null;
+    },
   },
   // 180° − hip–shoulder–elbow: arm hanging ≈ 170, arm at shoulder height ≈ 90.
   "arm-raise": {
