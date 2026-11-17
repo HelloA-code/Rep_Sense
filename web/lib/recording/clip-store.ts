@@ -20,6 +20,8 @@ export type ClipMeta = {
   frameCount: number;
   /** Set when a real video was saved with the landmarks. */
   video?: { type: string; bytes: number };
+  /** Made from a video file rather than recorded live. */
+  origin?: "import";
 };
 
 let dbPromise: Promise<IDBDatabase> | null = null;
@@ -65,6 +67,7 @@ function result<T>(req: IDBRequest<T>): Promise<T> {
 export function toMeta(id: string, rec: Recording, video?: Blob | null): ClipMeta {
   return {
     ...(video ? { video: { type: video.type, bytes: video.size } } : {}),
+    ...(rec.origin === "import" ? { origin: "import" as const } : {}),
     id,
     label: rec.label,
     view: rec.view,

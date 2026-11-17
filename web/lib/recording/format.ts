@@ -41,10 +41,12 @@ export type Recording = {
   frameCount: number;
   fpsAvg: number;
   source: { facing: "user" | "environment"; width: number; height: number };
+  /** "import" = made from a video file on the phone; missing = recorded live (older clips). */
+  origin?: "camera" | "import";
   frames: RecordedFrame[];
 };
 
-export type RecorderOptions = Pick<Recording, "label" | "subject" | "view" | "source"> & {
+export type RecorderOptions = Pick<Recording, "label" | "subject" | "view" | "source" | "origin"> & {
   /** performance.now() at start, same clock as push() */
   startedAt: number;
   createdAt: Date;
@@ -87,6 +89,7 @@ export function createRecorder(options: RecorderOptions) {
         frameCount: frames.length,
         fpsAvg: Math.round(fpsAvg * 10) / 10,
         source: options.source,
+        ...(options.origin ? { origin: options.origin } : {}),
         frames,
       };
     },
@@ -98,4 +101,25 @@ export function recordingFileName(rec: Recording): string {
   const stamp = rec.createdAt.replace(/[-:]/g, "").replace("T", "-").slice(0, 15);
   const subject = rec.subject.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "anonymous";
   return `repsense_${rec.label}_${rec.view}_${subject}_${stamp}.json`;
+}
+
+/**
+ * A clip made from a video file: frame times are the video's own, so playback of the
+ * video and the skeleton line up.
+ */
+export function recordingFromVideo(
+  frames: readonly { t: number; landmarks: readonly Landmark[]; world: readonly WorldLandmark[] | null }[],
+  options: Pick<Recording, "label" | "subject" | "view"> & { width: number; height: number; createdAt?: Date },
+): Recording {
+  const recorder = createRecorder({
+    label: options.label,
+    subject: options.subject,
+    view: options.view,
+    source: { facing: "environment", width: options.width, height: options.height },
+    origin: "import",
+    startedAt: 0,
+    createdAt: options.createdAt ?? new Date(),
+  });
+  for (const f of frames) if (!recorder.push(f.t, f.landmarks, f.world)) break;
+  return recorder.finish();
 }

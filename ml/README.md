@@ -69,6 +69,7 @@ them back. Export one clip, or **Export all** to get a bundle file:
   "frameCount": 547,
   "fpsAvg": 29.7,
   "source": { "facing": "user", "width": 1280, "height": 720 },
+  "origin": "import",          // optional: "import" = made in the app from a video file (Clips → Import a video); missing = recorded live
   "frames": [
     {
       "t": 0,                                  // ms since recording start
@@ -85,6 +86,9 @@ them back. Export one clip, or **Export all** to get a bundle file:
   0–1 when a joint is out of frame. Use `visibility` to filter those.
 - **`world`**: 33 × `[x, y, z]` in metres with the origin between the hips. Independent
   of camera distance, so it's usually the better input for the classifier.
+- **Imported clips** (`origin: "import"`) are read from a video file at 15 frames a second,
+  and `t` is the time in that video. They train like any other clip. Give each person
+  their own `subject` (for a reel, the creator) so the person-wise split stays honest.
 - **Not mirrored.** Coordinates are the raw camera image, even though the selfie
   view is mirrored on screen. To augment with mirroring, flip `x` (`1 - x` for `lm`,
   `-x` for `world`) **and** swap left/right landmark indices.

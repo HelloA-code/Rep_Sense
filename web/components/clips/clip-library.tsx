@@ -23,6 +23,7 @@ import { videoExtension } from "@/components/workout/video-recorder";
 import { ClipFields, clipSummary } from "./clip-fields";
 import { ClipAppCount } from "./clip-app-count";
 import { ClipPreview } from "./clip-preview";
+import { ImportVideo } from "./import-video";
 import { shareOrDownload } from "./export";
 
 const labelName = (id: string) => RECORDING_LABELS.find((l) => l.id === id)?.name ?? id;
@@ -129,6 +130,7 @@ export function ClipLibrary() {
         <Link href="/record" className={primaryButtonClass}>
           Open camera
         </Link>
+        <ImportVideo onImported={() => void refresh()} />
       </div>
     );
   }
@@ -157,7 +159,10 @@ export function ClipLibrary() {
                         {c.video && <VideoIcon className="size-3.5 text-accent" aria-label="Has video" />}
                         {c.view} · {formatDate(c.createdAt)}
                       </span>
-                      <span className="block text-[12px] font-medium text-muted">{clipSummary(c)}</span>
+                      <span className="block text-[12px] font-medium text-muted">
+                        {clipSummary(c)}
+                        {c.origin === "import" && " · imported"}
+                      </span>
                     </span>
                     <ChevronRightIcon className="size-4 text-muted" />
                   </button>
@@ -167,7 +172,10 @@ export function ClipLibrary() {
           </Card>
         ))}
 
-        <SecondaryButton onClick={exportAll} disabled={busy} className="mt-2">
+        <div className="mt-2 flex flex-col gap-3">
+          <ImportVideo onImported={() => void refresh()} />
+        </div>
+        <SecondaryButton onClick={exportAll} disabled={busy}>
           <DownloadIcon className="size-4" />
           {busy ? "Preparing…" : clips.length === 1 ? "Export 1 clip" : `Export all ${clips.length} clips`}
         </SecondaryButton>

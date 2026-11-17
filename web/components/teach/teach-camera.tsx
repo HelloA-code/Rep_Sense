@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CameraIcon, RotateCcwIcon, SparklesIcon } from "lucide-react";
+import { CameraIcon, FileVideoIcon, RotateCcwIcon, SparklesIcon } from "lucide-react";
 import { AppShell } from "@/components/ui/app-shell";
 import { PrimaryButton, SecondaryButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,13 +16,24 @@ import { exerciseInfo } from "@/lib/exercises/library";
 import { analyseTeach, type TeachFrame, type TeachResult, type TeachSuccess } from "@/lib/exercises/teach";
 import { drawIssues, drawSkeleton } from "@/lib/pose/draw";
 import { getPoseLandmarker } from "@/lib/pose/landmarker";
+import { VideoReadError, extractFromVideo } from "@/lib/pose/video-landmarks";
 import { cn } from "@/lib/utils";
 import { loadPlan, savePlan } from "@/lib/workout/plan-store";
 
 // Teach a rep: record ~3 reps, find the joint that moves, name it, save. Its own small
 // camera loop (detect → draw → collect frames) so the workout camera stays as it is.
 
-type Stage = "intro" | "live" | "countdown" | "recording" | "result";
+type Stage = "intro" | "live" | "countdown" | "recording" | "reading" | "result";
+
+/** A reel or old recording often shows more reps than the 3 we ask for live. */
+const VIDEO_MAX_REPS = 20;
+
+const VIDEO_ERRORS: Record<VideoReadError["reason"], string> = {
+  unsupported: "This phone can't open that video. Try an MP4 or MOV file.",
+  empty: "That video seems to be empty or too short.",
+  model: "Couldn't load body tracking. Check your connection and try again.",
+  cancelled: "",
+};
 
 const MAX_RECORDING_MS = 20_000;
 
@@ -97,6 +108,12 @@ export function TeachCamera({ forId }: { forId?: string }) {
   const [frameSize, setFrameSize] = useState({ width: 1280, height: 720 });
   const [name, setName] = useState(library?.name ?? "");
   const [saving, setSaving] = useState(false);
+  // Teaching from a video file instead of the live camera.
+  const fileRef = useRef<HTMLInputElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const [fromVideo, setFromVideo] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [videoNote, setVideoNote] = useState<string | null>(null);
 
   const changeStage = useCallback((s: Stage) => {
     stageRef.current = s;
@@ -105,6 +122,8 @@ export function TeachCamera({ forId }: { forId?: string }) {
 
   async function begin() {
     setModelError(false);
+    setFromVideo(false);
+    setVideoNote(null);
     const loading = getPoseLandmarker(); // downloads while the permission prompt is open
     await camera.start("user");
     try {
@@ -179,7 +198,30 @@ export function TeachCamera({ forId }: { forId?: string }) {
 
   function retry() {
     setResult(null);
-    changeStage("live");
+    // From a video there's no camera running: go back to choose again.
+    changeStage(fromVideo ? "intro" : "live");
+  }
+
+  async function teachFromVideo(file: File) {
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setFromVideo(true);
+    setVideoNote(null);
+    setProgress(0);
+    changeStage("reading");
+    try {
+      const video = await extractFromVideo(file, { onProgress: setProgress, signal: controller.signal });
+      setFrameSize({ width: video.width, height: video.height });
+      setResult(analyseTeach(video.frames, video.width, video.height, { maxReps: VIDEO_MAX_REPS }));
+      if (video.truncated) setVideoNote("Only the first 60 seconds were used.");
+      changeStage("result");
+    } catch (e) {
+      const reason = e instanceof VideoReadError ? e.reason : "unsupported";
+      setVideoNote(VIDEO_ERRORS[reason] || null);
+      changeStage("intro");
+    } finally {
+      abortRef.current = null;
+    }
   }
 
   async function save() {
@@ -224,11 +266,61 @@ export function TeachCamera({ forId }: { forId?: string }) {
           {modelError && (
             <p className="mt-4 text-[13px] font-semibold text-danger">Couldn&rsquo;t load body tracking. Try again.</p>
           )}
+
+          <Card className="mt-4 p-5">
+            <p className="flex items-center gap-2 text-[14px] font-bold">
+              <FileVideoIcon className="size-4 text-accent" />
+              Or teach from a video
+            </p>
+            <p className="mt-1 text-[13px] font-medium text-muted">
+              An old recording or a saved reel works best with one person, the whole moving body in view, no zoom or
+              cuts, and at least 3 reps. It&rsquo;s read on this phone and never uploaded. Use videos you have the right
+              to use.
+            </p>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="video/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = ""; // picking the same file again should work
+                if (file) void teachFromVideo(file);
+              }}
+            />
+            <SecondaryButton onClick={() => fileRef.current?.click()} className="mt-3">
+              Choose a video
+            </SecondaryButton>
+            {videoNote && <p className="mt-3 text-[13px] font-semibold text-danger">{videoNote}</p>}
+          </Card>
+
           <div className="mt-auto pt-8 pb-8">
             <PrimaryButton onClick={() => void begin()} disabled={camera.status === "starting"}>
               <CameraIcon className="size-5" />
               {camera.status === "starting" ? "Starting camera…" : "Allow camera"}
             </PrimaryButton>
+          </div>
+        </div>
+      )}
+
+      {stage === "reading" && (
+        <div className="flex flex-1 flex-col">
+          <Card className="mt-1 p-5">
+            <p className="text-[17px] font-extrabold">Reading your video…</p>
+            <p className="mt-1 text-[13px] font-medium text-muted">Finding your body in each frame, on this phone.</p>
+            <div
+              className="mt-4 h-2 overflow-hidden rounded-full bg-white/10"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress * 100)}
+            >
+              <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${progress * 100}%` }} />
+            </div>
+            <p className="mt-2 text-[13px] font-bold tabular-nums">{Math.round(progress * 100)}%</p>
+          </Card>
+          <div className="mt-auto pt-8 pb-8">
+            <SecondaryButton onClick={() => abortRef.current?.abort()}>Cancel</SecondaryButton>
           </div>
         </div>
       )}
@@ -272,6 +364,7 @@ export function TeachCamera({ forId }: { forId?: string }) {
                 <p className="mt-1 text-[13px] font-medium text-muted">
                   Best from the {result.view} view, like this recording.
                   {result.confidence === "ok" && " If counts look off later, teach it again with 3 slower reps."}
+                  {fromVideo && videoNote && ` ${videoNote}`}
                 </p>
                 <TraceChart result={result} />
                 <BottomPose result={result} width={frameSize.width} height={frameSize.height} />

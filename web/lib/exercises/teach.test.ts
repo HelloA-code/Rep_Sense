@@ -113,6 +113,20 @@ describe("teach a rep", () => {
     if (!short.ok) expect(short.reason).toBe("too-short");
   });
 
+  it("videos can have more reps (a reel often shows 8-15)", () => {
+    const twelve = recording(curl, 12);
+    expect(analyseTeach(twelve, FIG_W, FIG_H).ok).toBe(false); // live: 2-6 reps
+    const fromVideo = analyseTeach(twelve, FIG_W, FIG_H, { maxReps: 20 });
+    expect(fromVideo.ok && fromVideo.reps).toBe(12);
+  });
+
+  it("slow-motion teaching still counts normal-speed reps", () => {
+    const slow = analyseTeach(recording(curl, 3, 9600), FIG_W, FIG_H); // 4x slower than usual
+    if (!slow.ok) throw new Error(slow.message);
+    expect(slow.counter.minRepMs).toBeLessThanOrEqual(800);
+    expect(countWith(slow, curl, 4)).toBe(4); // replayed at the normal 2.4 s per rep
+  });
+
   it("refuses random noise", () => {
     let seed = 7;
     const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);

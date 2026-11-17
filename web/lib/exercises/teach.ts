@@ -24,7 +24,13 @@ const MIN_RANGE = (s: SignalId) => (isSpread(s) ? 30 : 25);
 /** The signal must be measurable in at least this share of frames. */
 const MIN_COVERAGE = 0.7;
 const MIN_REPS = 2;
+/** Live teaching asks for ~3 reps; a video (a reel) often has more, so it can raise this. */
 const MAX_REPS = 6;
+/**
+ * "Too fast" is 30 % of your taught rep time, but never more than this: a slow, careful
+ * (or slow-motion) teaching rep shouldn't make normal-speed reps count as glitches.
+ */
+const MAX_MIN_REP_MS = 800;
 /**
  * How close to the taught bottom (and back to the taught start) a rep must get, as a share
  * of the taught range: 15 % means about 85 % of the depth you showed. Never tighter than
@@ -149,7 +155,12 @@ type Candidate = Omit<TeachSuccess, "ok" | "view" | "bottomPose" | "joints" | "c
   values: (number | null)[];
 };
 
-export function analyseTeach(frames: readonly TeachFrame[], width: number, height: number): TeachResult {
+export function analyseTeach(
+  frames: readonly TeachFrame[],
+  width: number,
+  height: number,
+  { maxReps = MAX_REPS }: { maxReps?: number } = {},
+): TeachResult {
   if (frames.length < 15 || frames[frames.length - 1].t - frames[0].t < 2000) return fail("too-short");
 
   // Same steps as the set engine: smooth, pick the visible side, judge the view.
@@ -192,14 +203,14 @@ export function analyseTeach(frames: readonly TeachFrame[], width: number, heigh
 
     const thresholds = teachThresholds(signal, bottom, top);
     const first = replay(values, times, { ...thresholds, minRepMs: 200 });
-    if (first.length < MIN_REPS || first.length > MAX_REPS) continue;
+    if (first.length < MIN_REPS || first.length > maxReps) continue;
 
     // Ignore "reps" much faster than the ones you just did: tracking glitches.
     const gaps = first.slice(1).map((t, i) => t - first[i]);
     const typical = gaps.length ? median(gaps) : (times[times.length - 1] - times[0]) / first.length;
-    const counter = { ...thresholds, minRepMs: Math.max(300, Math.round(typical * 0.3)) };
+    const counter = { ...thresholds, minRepMs: Math.min(MAX_MIN_REP_MS, Math.max(300, Math.round(typical * 0.3))) };
     const reps = replay(values, times, counter).length;
-    if (reps < MIN_REPS || reps > MAX_REPS) continue;
+    if (reps < MIN_REPS || reps > maxReps) continue;
     const crossings = midlineCrossings(values, (top + bottom) / 2);
     if (crossings > 0 && reps / (crossings / 2) < MIN_RHYTHM) continue;
 
