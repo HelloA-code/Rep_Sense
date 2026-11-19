@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SegmentChip } from "@/components/ui/segment-chip";
 import { EXERCISES } from "@/lib/equipment";
+import { GROUP_EMOJI } from "@/lib/exercises/emoji";
 import { FAMILIES, FAMILY_ORDER, type FamilyId } from "@/lib/exercises/families";
 
 type Group = FamilyId | "mine" | "other";
@@ -67,7 +68,7 @@ export function ExerciseChooser<T extends string>({
             onClick={() => setBrowsing(g)}
             className="h-8 flex-none px-3 text-[12px]"
           >
-            {g === "other" ? "Other" : g === "mine" ? "Mine" : FAMILIES[g].name}
+            {g === "other" ? "🧍 Other" : `${GROUP_EMOJI[g]} ${g === "mine" ? "Mine" : FAMILIES[g].name}`}
           </SegmentChip>
         ))}
       </div>

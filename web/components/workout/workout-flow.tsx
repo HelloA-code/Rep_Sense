@@ -15,7 +15,7 @@ import { exerciseConfig } from "@/lib/exercises/registry";
 import { blankResult, handLoggedSet } from "@/lib/workout/manual";
 import type { AnyExerciseId } from "@/lib/exercises/ids";
 import { loadOnboarding, saveOnboarding, type OnboardingData } from "@/lib/onboarding";
-import { loadPlan, savePlan } from "@/lib/workout/plan-store";
+import { loadSetsPreference, savePlan, saveSetsPreference, takePlan } from "@/lib/workout/plan-store";
 import type { SetResult } from "@/lib/workout/set-engine";
 import { summarizeSession, type LoggedSet } from "@/lib/workout/summary";
 import { CheckinSheet } from "./checkin-sheet";
@@ -64,10 +64,11 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
     const ids: AnyExerciseId[] = availableExercises(saved.equipment).map((e) => e.id);
     const library = filterExercises(ALL_EXERCISES, { owned: saved.equipment }).map((e) => e.id as AnyExerciseId);
     const allowed = [...ids, ...library, ...activeCustomExercises().map((c) => c.id)];
-    const last = loadPlan();
-    const restored = last?.exercises.filter((id) => allowed.includes(id)) ?? [];
-    setSelected(restored.length ? restored : ids.filter((id) => id === "squat" || id === "pushup"));
-    if (last) setSetsPer(last.sets);
+    // Nothing is picked for you, unless you just asked for it (Today's suggestion, a newly
+    // taught exercise, or your picks kept while you taught one).
+    const handOff = takePlan();
+    setSelected(handOff?.exercises.filter((id) => allowed.includes(id)) ?? []);
+    setSetsPer(handOff?.sets ?? loadSetsPreference() ?? 3);
   }, [router, serverProfile]);
 
   const pickedPlan = useMemo(() => selected.map((exerciseId) => ({ exerciseId, sets: setsPer })), [selected, setsPer]);
@@ -97,8 +98,13 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
   }
 
-  function start(runPlan: PlanItem[]) {
+  /** Going to teach an exercise: keep what's picked so far for when you come back. */
+  function keepPicksForTeach() {
     savePlan({ exercises: selected, sets: setsPer });
+  }
+
+  function start(runPlan: PlanItem[]) {
+    saveSetsPreference(setsPer);
     sessionId.current = crypto.randomUUID();
     setPlan(runPlan);
     setSetIndex(0);
@@ -267,6 +273,8 @@ export function WorkoutFlow({ serverProfile }: { serverProfile: OnboardingData |
         onToggle={toggle}
         onSets={setSetsPer}
         onStart={() => setCheckingIn(true)}
+        onTeach={keepPicksForTeach}
+        onClear={() => setSelected([])}
       />
       <CheckinSheet
         open={checkingIn}
